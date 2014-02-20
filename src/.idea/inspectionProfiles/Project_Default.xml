@@ -1,0 +1,9 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0" is_locked="false">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="false" />
+    <inspection_tool class="SpringOsgiElementsInconsistencyInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SpringOsgiListenerInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SpringOsgiServiceCommonInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+  </profile>
+</component>
