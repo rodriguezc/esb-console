@@ -32,6 +32,8 @@ define([
             var domNode = this.domNode;
             // Run any parent postCreate processes - can be done at any point
             this.inherited(arguments);
+            console.log(this.size);
+
         },
         resize: function() {
             //  this.inherited(arguments);

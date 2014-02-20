@@ -50,6 +50,8 @@ define([
 
             var centerPaneWidget = this.centerPaneWidget;
 
+            //TODO: etre plus fin au niveau du topic: Tous les widget HermesWidget reçoive le message alors qu'ils ne sont pas tous concernés
+            //-> Passer le broker en paramètre et si c'est pas le même on ignore le message
             this.queueSelectedHandle= topic.subscribe("hermes/queueSelected", function(queueName){
                 var found = false;
                 array.forEach(centerPaneWidget.getChildren(), function (item, index) {
@@ -75,10 +77,10 @@ define([
                         function (data) {
                             var hermesDetailsWidget = new HermesDetailsWidget(data);
                             hermesDetailsWidget.placeAt(cp1);
-
                         },
                         function (error) {
                             console.log(error);
+
                         }
                     );
 
@@ -105,7 +107,8 @@ define([
         },
         _onRowClick: function (evt) {
             var line = this.queuesGridWidget.getItem(evt.rowIndex);
-            topic.publish("hermes/queueSelected", line.name);
+            hash("env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line.name);
+            //   topic.publish("hermes/queueSelected", line.name);
         }
 
     });
