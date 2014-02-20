@@ -1,0 +1,7 @@
+{
+    "size": 10,
+    "dequeue": 5,
+    "enqueue": 2,
+    "inflight": 1,
+    "averageEnqueueTime": 100
+}

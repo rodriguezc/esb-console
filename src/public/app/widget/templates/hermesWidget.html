@@ -1,0 +1,36 @@
+<div style="width: 100%; height: 100%;">
+
+    <div data-dojo-attach-point="containerWidget" class="appLayout"  data-dojo-type="dijit/layout/BorderContainer">
+
+        <div style="width: 300px" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left', splitter: true">
+            <input data-dojo-attach-point="queuesFilterInputWidget" data-dojo-type="dijit/form/TextBox" type="text" style="width: 99%" data-dojo-attach-event='keyup: _onKeyUpInputFilter' />
+
+
+            <span data-dojo-id="queuesStore" data-dojo-type="dojo/store/JsonRest"
+                  data-dojo-props="target: '/services/environnements/${env}/brokers/${broker}/queues'">
+             </span>
+              <span data-dojo-id="queuesOStore" data-dojo-type="dojo/data/ObjectStore"
+                    data-dojo-props="objectStore: queuesStore">
+             </span>
+
+
+            <div    data-dojo-type="dojox/grid/DataGrid"
+                    data-dojo-attach-point="queuesGridWidget"
+                    data-dojo-props=" store: queuesOStore,
+                                      query: { name: '*'},
+                               queryOptions: {},
+                                  structure: [
+                                                  { name: 'Queue', field: 'name', width: '100%' }
+                                             ],
+                                    canSort: false"
+                    data-dojo-attach-event="onRowClick: _onRowClick"
+
+                    style="height: 90%;">
+            </div>
+        </div>
+
+        <div data-dojo-attach-point="centerPaneWidget" class="centerPanel" data-dojo-type="dijit/layout/TabContainer" data-dojo-props="region: 'center', tabPosition: 'top'">
+
+        </div>
+    </div>
+</div>

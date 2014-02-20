@@ -1,0 +1,31 @@
+{
+    "environnements": [
+        {
+            "name": "INTEGRATION",
+
+            "pagesGranted": [
+                "Audit", "Erreurs", "Info queues", "Composants", "Hermes like"
+
+            ],
+
+            "brokers": [
+                "INA", "INB"
+
+            ]
+
+        },
+        {
+            "name": "VALIDATION",
+            "pagesGranted": [
+                "Audit", "Erreurs", "Info queues", "Composants", "Hermes like"
+
+            ],
+            "brokers": [
+                "VAA", "VAB"
+
+            ]
+
+
+        }
+    ]
+}

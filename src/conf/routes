@@ -1,0 +1,11 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+# Home page
+GET        /services/environnements                                                 controllers.Application.environnements
+GET        /services/environnements/:environnement/brokers/:broker/queues           controllers.Application.broker(environnement, broker)
+GET        /services/environnements/:environnement/brokers/:broker/queues/:queue    controllers.Application.queue(environnement, broker, queue)
+GET        /                                                                        controllers.Assets.at(path="/public", file="index.html")
+GET        /*file                                                                   controllers.Assets.at(path="/public", file)
