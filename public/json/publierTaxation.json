@@ -1,7 +1,10 @@
 {
-    "size": 10,
-    "dequeue": 5,
+    "size": 20,
+    "consumers" : [{"name":"christophe"}, {"name":"giampaolo"}],
+    "consumersSize" : 2,
+    "dequeue": 6,
     "enqueue": 2,
     "inflight": 1,
-    "averageEnqueueTime": 100
+    "averageEnqueueTime": 100,
+    "memoryLimit" : 1048576
 }

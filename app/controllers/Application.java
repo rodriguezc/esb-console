@@ -149,4 +149,13 @@ public class Application extends Controller {
             return internalServerError(e.getMessage());
         }
     }
+
+    public static Result messages(String environnement, String broker, String queue) {
+        try {
+            return ok(IOUtils.toString(new FileReader("public/json/messages.json")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return internalServerError();
+    }
 }

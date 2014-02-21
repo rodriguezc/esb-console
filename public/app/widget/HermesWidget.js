@@ -37,57 +37,52 @@ define([
 
         postCreate: function() {
             this.inherited(arguments);
-
             var env = this.env;
             var page = this.page;
             var broker= this.broker;
+            var centerPaneWidget = this.centerPaneWidget;
 
             this.centerPaneWidget.watch("selectedChildWidget", function(name, oval, nval){
                 hash("env="+env+"&page="+page+"&broker="+broker+"&queue="+nval.queue);
             });
 
-
-
-            var centerPaneWidget = this.centerPaneWidget;
-
-            //TODO: etre plus fin au niveau du topic: Tous les widget HermesWidget reçoive le message alors qu'ils ne sont pas tous concernés
-            //-> Passer le broker en paramètre et si c'est pas le même on ignore le message
-            this.queueSelectedHandle= topic.subscribe("hermes/queueSelected", function(queueName){
-                var found = false;
-                array.forEach(centerPaneWidget.getChildren(), function (item, index) {
-                    //C'est la même ligne
-                    if (item.title == queueName) {
-                        found = true;
-                        centerPaneWidget.selectChild(item);  //Sélection du tab déjà ouvert
-                    } else {
-                    }
-                });
-
-                if (!found) {
-                    var cp1 = new ContentPane({
-                        queue: queueName,
-                        title: queueName,
-                        closable: true
-                    });
-
-                    centerPaneWidget.addChild(cp1);
-                    centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
-                    //JSON REQUEST -> dans HermesDetailsWidget
-                    request("/services/environnements/" + env + "/brokers/" + broker + "/queues/" + queueName).then(
-                        function (data) {
-                            var hermesDetailsWidget = new HermesDetailsWidget(data);
-                            hermesDetailsWidget.placeAt(cp1);
-                        },
-                        function (error) {
-                            console.log(error);
-
+            this.queueSelectedHandle= topic.subscribe("hermes/queueSelected", function(envP, pageP, brokerP, queueName){
+                if(env == envP && page == pageP && broker == brokerP) {
+                    var found = false;
+                    array.forEach(centerPaneWidget.getChildren(), function (item, index) {
+                        //C'est la même ligne
+                        if (item.title == queueName) {
+                            found = true;
+                            centerPaneWidget.selectChild(item);  //Sélection du tab déjà ouvert
+                        } else {
                         }
-                    );
+                    });
+                    if (!found) {
+                        var cp1 = new ContentPane({
+                            queue: queueName,
+                            title: queueName,
+                            closable: true
+                        });
 
+                        centerPaneWidget.addChild(cp1);
+                        centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
+                        //JSON REQUEST -> dans HermesDetailsWidget
+                        request("/services/environnements/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
+                            function (data) {
+                                data.env = env;
+                                data.broker = broker;
+                                data.queueName = queueName;
 
+                                var hermesDetailsWidget = new HermesDetailsWidget(data);
+                                hermesDetailsWidget.placeAt(cp1);
+                            },
+                            function (error) {
+                                console.log(error);
+
+                            }
+                        );
+                    }
                 }
-
-
             });
 
 

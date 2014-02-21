@@ -4,8 +4,10 @@
 
 # Home page
 # Home page
-GET        /services/environnements                                                 controllers.Application.environnements
-GET        /services/environnements/:environnement/brokers/:broker/queues           controllers.Application.broker(environnement, broker)
-GET        /services/environnements/:environnement/brokers/:broker/queues/:queue    controllers.Application.queue(environnement, broker, queue)
-GET        /                                                                        controllers.Assets.at(path="/public", file="index.html")
-GET        /*file                                                                   controllers.Assets.at(path="/public", file)
+GET        /services/environnements                                                              controllers.Application.environnements
+GET        /services/environnements/:environnement/brokers/:broker/queues                        controllers.Application.broker(environnement, broker)
+GET        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages        controllers.Application.messages(environnement, broker, queue)
+GET        /services/environnements/:environnement/brokers/:broker/queues/:queue                 controllers.Application.queue(environnement, broker, queue)
+
+GET        /                                                                                     controllers.Assets.at(path="/public", file="index.html")
+GET        /*file                                                                                controllers.Assets.at(path="/public", file)
