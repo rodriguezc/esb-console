@@ -7,13 +7,17 @@
     <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'consumersSize')"></span>
 
     <div data-dojo-type="dijit/Dialog" data-dojo-id="consumersDialog" title="Consumers" style="width:400px">
+        <ul data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'consumers')" >
+            <li>
+                <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span>
+            </li>
+        </ul>
     </div>
 
     <button data-dojo-type="dijit/form/Button"
             data-dojo-props="iconClass:'zoomIcon', showLabel: false" type="button"
             onclick="consumersDialog.show();">
-
-            </button>
+    </button>
 
 
 

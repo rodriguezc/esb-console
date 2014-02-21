@@ -40,29 +40,7 @@ define([
             );
             //rafraichir le tableau des messages
             this.messagesGridWidget.setQuery({jmsMessageId: "*"}, {ignoreCase: true});
-        }/*,
-
-        onConsumersDetailsClick: function() {
-            var myDialog = new Dialog({
-                title: "Consumers",
-                style: "width: 200px"
-
-
-            });
-
-            var content = "<ul>";
-            array.forEach(this.consumers, function (consumer, index) {
-                console.log(consumer);
-                content+="<li>"+consumer.name+"</li>";
-
-            });
-            content+="</ul>";
-
-            myDialog.set("content", content);
-
-            myDialog.show();
-        } */
-
+        }
     });
 
 });
