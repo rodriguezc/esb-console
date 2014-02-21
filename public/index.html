@@ -38,7 +38,7 @@
                 topic.publish("menu/pageSelected", env, page, broker);
 
                 if(queue != null) {
-                    topic.publish("hermes/queueSelected", queue);
+                    topic.publish("hermes/queueSelected", env, page, broker, queue);
                 }
 
 

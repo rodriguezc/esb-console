@@ -13,11 +13,39 @@
     <span style="font-weight: bold">Average enqueue time ms:</span>
     <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'averageEnqueueTime')"></span>
 
-    <br/>
-    <br/>
+    <div style="margin-top: 3px">
+        <div data-dojo-type="dijit/MenuBar">
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">Refresh</div>
+            <!--div data-dojo-type="dijit/MenuBarItem">Delete</div>
+            <div data-dojo-type="dijit/MenuBarItem">Purge</div>
+            <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
+        </div>
 
-    <div>
-        LA TABLE
-
+             <span data-dojo-id="messagesStore" data-dojo-type="dojo/store/JsonRest"
+                   data-dojo-props="target: '/services/environnements/${env}/brokers/${broker}/queues/{queue}/messages'">
+             </span>
+           <span data-dojo-id="messagesOStore" data-dojo-type="dojo/data/ObjectStore"
+                 data-dojo-props="objectStore: messagesStore">
+             </span>
     </div>
+
+        <div data-dojo-type="dojox/grid/DataGrid"
+
+             data-dojo-attach-point="messagesGridWidget"
+             data-dojo-props=" store: messagesOStore,
+                                          query: { jmsMessageId: '*'},
+                                   queryOptions: {},
+                                      structure: [
+                                                      { name: '#', field: 'position', width: '20px' },
+                                                      { name: 'Type', field: 'type', width: '100px' },
+                                                      { name: 'jmsMessageId', field: 'jmsMessageId', width: '30%' },
+                                                      { name: 'jmsTimestamp', field: 'jmsTimestamp', width: '30%' },
+
+                                                 ],
+                                        canSort: false"
+             style="height: 90%;margin-top: 1px">
+        </div>
+
+
+
 </div>
