@@ -1,9 +1,22 @@
 <div style="width: 100%; height: 100%;">
-    <span style="font-weight: bold">Taille:</span>
 
     <script type="dojo/require">at: "dojox/mvc/at"</script>
-    <script type="dojo/require">Output: "dojox/mvc/Output"</script>
+    <span style="font-weight: bold">Size:</span>
     <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'size')"></span>
+    <span style="font-weight: bold">Consumers:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'consumersSize')"></span>
+
+    <div data-dojo-type="dijit/Dialog" data-dojo-id="consumersDialog" title="Consumers" style="width:400px">
+    </div>
+
+    <button data-dojo-type="dijit/form/Button"
+            data-dojo-props="iconClass:'zoomIcon', showLabel: false" type="button"
+            onclick="consumersDialog.show();">
+
+            </button>
+
+
+
     <span style="font-weight: bold">Dequeue:</span>
     <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'dequeue')"></span>
     <span style="font-weight: bold">Enqueue:</span>

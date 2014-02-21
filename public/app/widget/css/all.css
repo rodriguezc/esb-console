@@ -13,3 +13,11 @@ html, body {
 #leftCol {
     width: 14em;
 }
+
+.zoomIcon {
+    background-image: url("../images/Zoom-icon16.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}

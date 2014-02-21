@@ -1,6 +1,7 @@
 {
     "size": 20,
-    "consumers" : ["christophe", "giampaolo"],
+    "consumers" : [{"name":"christophe"}, {"name":"giampaolo"}],
+    "consumersSize" : 2,
     "dequeue": 6,
     "enqueue": 2,
     "inflight": 1,

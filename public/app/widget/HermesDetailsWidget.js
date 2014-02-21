@@ -5,9 +5,12 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./templates/hermesDetailsWidget.html",
-    "dojo/request"
+    "dojo/request",
+    "dijit/Dialog",
+    "dojo/_base/array",
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request) {
+
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -37,7 +40,29 @@ define([
             );
             //rafraichir le tableau des messages
             this.messagesGridWidget.setQuery({jmsMessageId: "*"}, {ignoreCase: true});
-        }
+        }/*,
+
+        onConsumersDetailsClick: function() {
+            var myDialog = new Dialog({
+                title: "Consumers",
+                style: "width: 200px"
+
+
+            });
+
+            var content = "<ul>";
+            array.forEach(this.consumers, function (consumer, index) {
+                console.log(consumer);
+                content+="<li>"+consumer.name+"</li>";
+
+            });
+            content+="</ul>";
+
+            myDialog.set("content", content);
+
+            myDialog.show();
+        } */
+
     });
 
 });
