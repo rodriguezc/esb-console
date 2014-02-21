@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.vd.ch/esb" elementFormDefault="unqualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.vd.ch/esb">
+
+	<element name="esb">
+    	<complexType>
+		    <sequence>
+			    <element name="environnement" type="tns:esbType" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<complexType name="esbType">
+		    <sequence>
+                <element name="activemq" type="tns:ActiveMQType" maxOccurs="unbounded"/>
+			    <element name="serviceMix" type="tns:ServiceMixType"  maxOccurs="unbounded" />
+                <element name="auditDataSource" type="tns:dataSourceType"/>
+                <element name="cmptDataSource" type="tns:dataSourceType"/>
+                <element name="raft" type="string"/>
+            </sequence>
+		   <attribute name="name" type="string"/>
+           <attribute name="label" type="string"/>
+    </complexType>
+
+    <complexType name="ActiveMQType">
+        <complexContent>
+            <extension base="tns:JmxServerType">
+                <sequence>
+                    <element name="jmsUrl" type="string"/>
+                    <element name="jmsUser" type="string"/>
+                    <element name="jmsPassword" type="string"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="ServiceMixType">
+        <complexContent>
+            <extension base="tns:JmxServerType"/>
+        </complexContent>
+    </complexType>
+
+    <complexType name="JmxServerType">
+        <sequence>
+            <element name="jmxUrl" type="string"/>
+            <element name="jmxUser" type="string"/>
+            <element name="jmxPassword" type="string"/>
+        </sequence>
+        <attribute name="node" type="string"/>
+    </complexType>
+
+    <complexType name="dataSourceType">
+        <sequence>
+            <element name="url" type="string"/>
+            <element name="user" type="string"/>
+            <element name="password" type="string"/>
+        </sequence>
+    </complexType>
+
+</schema>
