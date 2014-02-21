@@ -73,7 +73,7 @@ define([
                     centerPaneWidget.addChild(cp1);
                     centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
                     //JSON REQUEST -> dans HermesDetailsWidget
-                    request("/services/environnements/" + env + "/brokers/" + broker + "/queues/" + queueName).then(
+                    request("/services/environnements/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
                         function (data) {
                             var hermesDetailsWidget = new HermesDetailsWidget(data);
                             hermesDetailsWidget.placeAt(cp1);
