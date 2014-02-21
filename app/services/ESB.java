@@ -98,6 +98,7 @@ public class ESB {
 
             ConnectionFactory cf = new ActiveMQConnectionFactory(activemq.getJmsUser(), activemq.getJmsPassword(), activemq.getJmsUrl());
             Connection connection = cf.createConnection();
+            connection.start();
             connections.put(key, connection);
 
         }

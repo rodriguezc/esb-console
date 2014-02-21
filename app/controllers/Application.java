@@ -18,6 +18,8 @@ import services.BrokerUtils;
 import services.ESB;
 import views.html.index;
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
 import javax.management.*;
 import javax.management.remote.JMXConnector;
 import java.io.FileReader;
@@ -98,11 +100,23 @@ public class Application extends Controller {
     }
 
         /*
-    "size": 10,
-    "dequeue": 5,
+{
+    "size": 20,
+    "consumers": [
+        {
+            "name": "christophe"
+        },
+        {
+            "name": "giampaolo"
+        }
+    ],
+    "consumersSize": 2,
+    "dequeue": 6,
     "enqueue": 2,
     "inflight": 1,
-    "averageEnqueueTime": 100
+    "averageEnqueueTime": 100,
+    "memoryLimit": 1048576
+}
     */
 
 
@@ -125,10 +139,17 @@ public class Application extends Controller {
 
                         ObjectNode queueNode = Json.newObject();
                         queueNode.put("size", queueViewMBean.getQueueSize());
+
+                        ArrayNode arrayNode = queueNode.putArray("consumers");
+                        for (ObjectName subscriptionObjectName : queueViewMBean.getSubscriptions()) {
+                            arrayNode.add(Json.newObject().put("name", subscriptionObjectName.getKeyProperty("clientId")));
+                        }
+                        queueNode.put("consumersSize", queueViewMBean.getConsumerCount());
                         queueNode.put("dequeue", queueViewMBean.getDequeueCount());
                         queueNode.put("enqueue", queueViewMBean.getEnqueueCount());
                         queueNode.put("inflight", queueViewMBean.getInFlightCount());
                         queueNode.put("averageEnqueueTime", queueViewMBean.getAverageEnqueueTime());
+                        queueNode.put("memoryLimit", queueViewMBean.getMemoryLimit());
 
                         return ok(queueNode);
 
@@ -151,20 +172,16 @@ public class Application extends Controller {
     }
 
     public static Result messages(String environnement, String broker, String queue) {
+
         try {
-            return ok(IOUtils.toString(new FileReader("public/json/messages.json")));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            Connection connection = ESB.getConnection(ESB.getActiveMQByLabel(environnement, broker));
+            return ok(BrokerUtils.browse(connection, queue));
+
+        } catch (JMSException e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
         }
-        return internalServerError();
     }
 
-    public static Result messages(String environnement, String broker, String queue) {
-        try {
-            return ok(IOUtils.toString(new FileReader("public/json/messages.json")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return internalServerError();
-    }
 }
