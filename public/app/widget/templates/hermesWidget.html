@@ -1,32 +1,29 @@
 <div style="width: 100%; height: 100%;">
+    <script type="dojo/require">Filter: "gridx/modules/Filter"</script>
+    <script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
+    <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
+    <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
 
     <div data-dojo-attach-point="containerWidget" class="appLayout"  data-dojo-type="dijit/layout/BorderContainer">
 
         <div style="width: 300px" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left', splitter: true">
-            <input data-dojo-attach-point="queuesFilterInputWidget" data-dojo-type="dijit/form/TextBox" type="text" style="width: 99%" data-dojo-attach-event='keyup: _onKeyUpInputFilter' />
+            <div data-dojo-attach-point="queueGridStoreWidget" data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
 
+            <div data-dojo-type="gridx/Grid"
+                 data-dojo-attach-point="queueGridWidget"
+                 data-dojo-attach-event="onCellClick : _onRowClick"
+                 data-dojo-props="store: store,
+                             cacheClass: Cache,
+                                modules: [
+                                            Sort,
+                                            Filter,
+                                            QuickFilter
+                                         ],
+                              structure: [
+            {field: 'id', name: 'Name'}
+        ]
+        " style="width: 100%;height: 100%"></div>
 
-            <span data-dojo-id="queuesStore" data-dojo-type="dojo/store/JsonRest"
-                  data-dojo-props="target: '/services/environnements/${env}/brokers/${broker}/queues'">
-             </span>
-              <span data-dojo-id="queuesOStore" data-dojo-type="dojo/data/ObjectStore"
-                    data-dojo-props="objectStore: queuesStore">
-             </span>
-
-
-            <div    data-dojo-type="dojox/grid/DataGrid"
-                    data-dojo-attach-point="queuesGridWidget"
-                    data-dojo-props=" store: queuesOStore,
-                                      query: { name: '*'},
-                               queryOptions: {},
-                                  structure: [
-                                                  { name: 'Queue', field: 'name', width: '100%' }
-                                             ],
-                                    canSort: false"
-                    data-dojo-attach-event="onRowDblClick: _onRowClick"
-
-                    style="height: 90%;">
-            </div>
         </div>
 
         <div data-dojo-attach-point="centerPaneWidget" class="centerPanel" data-dojo-type="dijit/layout/TabContainer" data-dojo-props="region: 'center', tabPosition: 'top'">

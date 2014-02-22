@@ -1,0 +1,77 @@
+<html>
+<head>
+    <title>Gridx Demo</title>
+    <script type="text/javascript" src="dojo/dojo.js" data-dojo-config="async: true"></script>
+    <link rel="stylesheet" href="gridx/resources/claro/Gridx.css" />
+    <style type="text/css">
+        /*applied to a single gridx instance by ID*/
+        #grid {
+            height: 100%;
+            width: 100%;
+        }
+        /* or applied to all gridx instances*/
+        .gridx {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<!-- We'd like to show a grid here -->
+<div id="gridNode" style="width: 400px; height: 300px;"></div>
+<script type="text/javascript">
+    require([
+        'dojo/store/Memory',
+        'gridx/Grid',
+        'gridx/core/model/cache/Sync',
+        'gridx/modules/SingleSort'
+    ], function(Store, Grid, Cache, Sort){
+        var store = new Store({
+            data: [
+                {id: 1, title: 'Hey There', artist: 'Bette Midler'},
+                {id: 2, title: 'Love or Confusion', artist: 'Jimi Hendrix'},
+                {id: 3, title: 'Sugar Street', artist: 'Andy Narell'}
+            ]
+        });
+
+        var columns = [
+            {field: 'id', name: 'Identity'},
+            {field: 'title', name: 'Title'},
+            {field: 'artist', name: 'Artist'}
+        ];
+
+        var grid = new Grid({
+            barTop: [
+                {pluginClass: "gridx/support/QuickFilter", style: 'text-align: right;'}
+            ],
+
+
+            cacheClass: Cache,
+            store: store,
+            structure: columns,
+            modules: [
+                Sort,       //Declare modules in a grid instanceance
+                "gridx/modules/Pagination",
+                "gridx/modules/Filter",
+                "gridx/modules/Bar"
+            ]
+        }, 'gridNode'); //Assume we have a node with id 'gridNode'
+        grid.startup();
+
+
+        store.put({id: 4, title: 'Title', artist: 'Me'});
+        grid.model.clearCache();
+        store = new Store({data: store.data});
+        grid.model.setStore(store)
+        grid.body.refresh();
+
+        //Sort par nom ascendant
+        grid.column(2).sort(false);
+
+
+    });
+</script>
+
+</body>
+</html>

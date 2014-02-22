@@ -1,7 +1,7 @@
 [
-    {"position": 1, "type": "TextMessage", "jmsMessageId": "ID:1", "jmsTimestamp" : "18.11.2013 10:05"},
-    {"position": 2, "type": "TextMessage", "jmsMessageId": "ID:2", "jmsTimestamp" :"18.11.2013 10:06"},
-    {"position": 3, "type": "TextMessage", "jmsMessageId": "ID:12345", "jmsTimestamp" :"18.11.2013 10:07"},
-    {"position": 4, "type": "TextMessage", "jmsMessageId": "ID:12345", "jmsTimestamp" : "18.11.2013 10:08"}
+    {"position": 1, "type": "TextMessage", "id": "ID:1", "jmsTimestamp" : "18.11.2013 10:05"},
+    {"position": 2, "type": "TextMessage", "id": "ID:2", "jmsTimestamp" :"18.11.2013 10:06"},
+    {"position": 3, "type": "TextMessage", "id": "ID:3", "jmsTimestamp" :"18.11.2013 10:07"},
+    {"position": 4, "type": "TextMessage", "id": "ID:4", "jmsTimestamp" : "18.11.2013 10:08"}
 ]
 

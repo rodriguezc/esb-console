@@ -1,11 +1,18 @@
 [
-        {
-            "name": "BRIDGE.traiterDemandeInformationsFiscales"
-        },
-        {
-            "name": "DLQ.INTERNAL.esb-bvrPoste.splitter"
-        },
-        {
-            "name": "publierTaxation"
-        }
+    {"id": "publierTaxation"},
+    {"id": "envoyerSms"},
+    {"id": "imprimer"},
+    {"id": "envoyer1"},
+    {"id": "envoyer2"},
+    {"id": "envoyer3"},
+    {"id": "envoyer4"},
+    {"id": "envoyer5"},
+    {"id": "envoyer6"},
+    {"id": "envoyer7"},
+    {"id": "envoyer8"},
+    {"id": "envoyer9"},
+    {"id": "envoyer10"},
+    {"id": "envoyer11"},
+    {"id": "envoyer12"}
+
 ]

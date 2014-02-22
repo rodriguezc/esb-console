@@ -1,4 +1,8 @@
 {
+    "appUser": "Tranchida",
+    "appVersion": "1.0",
+    "appEnvironment" : "DEV",
+
     "environnements": [
         {
             "name": "INTEGRATION",
@@ -28,4 +32,7 @@
 
         }
     ]
+
+
+
 }

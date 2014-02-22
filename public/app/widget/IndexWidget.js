@@ -29,7 +29,7 @@ define([
 
             var pSubMenu = new DropDownMenu({});
             pMenuBar.addChild(new PopupMenuBarItem({
-                label: "Environnements",
+                label: "Environments",
                 popup: pSubMenu
             }));
 
@@ -42,10 +42,16 @@ define([
 
 
 
-
+            var indexWidget = this;
 
             request("/services/environnements", {handleAs: "json"}).then(
                 function(text) {
+                    indexWidget.set("appUser", text.appUser);
+                    indexWidget.set("appVersion", text.appVersion);
+                    indexWidget.set("appEnvironment", text.appEnvironment);
+
+
+
                     array.forEach(text.environnements, function(environnement, i){
 
                         var dropDownMenu = new DropDownMenu({});

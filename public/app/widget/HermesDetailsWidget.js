@@ -8,18 +8,52 @@ define([
     "dojo/request",
     "dijit/Dialog",
     "dojo/_base/array",
+    "dojo/store/Memory"
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
         postCreate: function () {
             this.inherited(arguments);
+
+            this._reloadMessages();
+
+
+
+
         },
+
+
+        _reloadMessages : function() {
+            var messagesGridWidget = this.messagesGridWidget;
+            request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
+                function (text) {
+                    console.log("valeuur=");
+
+                    console.log(text);
+                    messagesGridWidget.model.clearCache();
+                    var store = new Store({data: text});
+                    messagesGridWidget.model.setStore(store);
+                    messagesGridWidget.body.refresh();
+
+                },
+                function (error) {
+                    console.log(error);
+
+                }
+            );
+        },
+
+
         _onRefreshClick : function() {
 
             var widget = this;
+
+            this._reloadMessages();
+
+
 
             //rafraichir les stats jmx
             request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
@@ -38,8 +72,6 @@ define([
 
                 }
             );
-            //rafraichir le tableau des messages
-            this.messagesGridWidget.setQuery({jmsMessageId: "*"}, {ignoreCase: true});
         }
     });
 

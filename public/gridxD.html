@@ -1,0 +1,57 @@
+<html>
+<head>
+    <title>Gridx Demo</title>
+    <script type="text/javascript" src="dojo/dojo.js" data-dojo-config="async: true"></script>
+    <link rel="stylesheet" href="gridx/resources/claro/Gridx.css" />
+    <style type="text/css">
+        /*applied to a single gridx instance by ID*/
+        #grid {
+            height: 100%;
+            width: 100%;
+        }
+        /* or applied to all gridx instances*/
+        .gridx {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
+
+<div data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [
+                {id: 1, title: 'Hey There', artist: 'Bette Midler'},
+                {id: 2, title: 'Love or Confusion', artist: 'Jimi Hendrix'},
+                {id: 3, title: 'Sugar Street', artist: 'Andy Narell'}
+            ]">
+
+            </div>
+
+<div data-dojo-type="gridx/Grid"
+     data-dojo-props="store: store,
+                 cacheClass: Cache,
+
+                      structure: [
+            {field: 'id', name: 'Identity'},
+            {field: 'title', name: 'Title'},
+            {field: 'artist', name: 'Artist'}]
+        " style="width: 100%;height: 100%">
+
+
+
+</div>
+
+<script type="text/javascript">
+    require([
+        "dojo/parser",
+        "dojo/domReady!"
+    ], function (parser) {
+        parser.parse();
+    });
+</script>
+
+
+
+</body>
+</html>

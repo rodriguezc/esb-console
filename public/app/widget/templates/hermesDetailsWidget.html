@@ -1,6 +1,11 @@
 <div style="width: 100%; height: 100%;">
-
     <script type="dojo/require">at: "dojox/mvc/at"</script>
+    <script type="dojo/require">Filter: "gridx/modules/Filter"</script>
+    <script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
+    <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
+    <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
+
+
     <span style="font-weight: bold">Size:</span>
     <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'size')"></span>
     <span style="font-weight: bold">Consumers:</span>
@@ -46,21 +51,29 @@
              </span>
     </div>
 
-        <div data-dojo-type="dojox/grid/DataGrid"
+    <div data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
 
-             data-dojo-attach-point="messagesGridWidget"
-             data-dojo-props=" store: messagesOStore,
-                                          query: { jmsMessageId: '*'},
-                                   queryOptions: {},
-                                      structure: [
-                                                      { name: '#', field: 'position', width: '20px' },
-                                                      { name: 'Type', field: 'type', width: '100px' },
-                                                      { name: 'jmsMessageId', field: 'jmsMessageId', width: '30%' },
-                                                      { name: 'jmsTimestamp', field: 'jmsTimestamp', width: '30%' },
+    <div data-dojo-type="gridx/Grid"
+         data-dojo-attach-point="messagesGridWidget"
+         data-dojo-props="store: store,
+                             cacheClass: Cache,
+                                modules: [
+                                            Sort,
+                                            Filter,
+                                            QuickFilter
+                                         ],
+                              structure: [
+                                            {field: 'position', name: '#'},
+                                            {field: 'type', name: 'Type'},
+                                            {field: 'id', name: 'jmsMessageId'},
+                                            {field: 'jmsTimestamp', name: 'jmsTimestamp'}
 
-                                                 ],
-                                        canSort: false"
-             style="height: 90%;margin-top: 1px">
+
+        ]
+        "style="width: 100%;height: 90%;margin-top: 1px"></div>
+
+        <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="messageDetailsDialog" title="Consumers" style="width:400px;height: 400px">
+            Details
         </div>
 
 

@@ -15,13 +15,15 @@ define([
     "dijit/PopupMenuItem",
     "dijit/layout/ContentPane",
     "app/widget/HermesDetailsWidget",
-    "dojo/hash"
+    "dojo/hash",
+    "dojo/store/Memory"
 
 
 
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             request, array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem, ContentPane, HermesDetailsWidget, hash) {
+             request, array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem,
+             ContentPane, HermesDetailsWidget, hash,Store) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         env: "DEFAULTENV",
 
@@ -41,6 +43,24 @@ define([
             var page = this.page;
             var broker= this.broker;
             var centerPaneWidget = this.centerPaneWidget;
+
+            var queueGridWidget = this.queueGridWidget;
+
+            request("/services/environnements/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
+                function(text) {
+                    queueGridWidget.model.clearCache();
+                    var store = new Store({data: text});
+                    queueGridWidget.model.setStore(store);
+                    queueGridWidget.body.refresh();
+                    queueGridWidget.column(0).sort(false);
+
+
+                },
+                function(error) {
+                    alert("error");
+                    console.log(queueGridWidget);
+                }
+            );
 
             this.centerPaneWidget.watch("selectedChildWidget", function(name, oval, nval){
                 hash("env="+env+"&page="+page+"&broker="+broker+"&queue="+nval.queue);
@@ -93,17 +113,11 @@ define([
             this.containerWidget.resize();      //WORKAROUND
         },
 
-        _onKeyUpInputFilter: function (evt) {
-            var query = this.queuesFilterInputWidget.get("value");
-            this.queuesGridWidget.setQuery({name: "*" + query + "*"}, {ignoreCase: true});
-        },
-        _onBrokerSelect: function () {
-
-        },
         _onRowClick: function (evt) {
-            var line = this.queuesGridWidget.getItem(evt.rowIndex);
-            hash("env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line.name);
-            //   topic.publish("hermes/queueSelected", line.name);
+            console.log(this.queueGridWidget);
+            var cell = this.queueGridWidget.cell(evt.rowId, evt.columnId);
+            var line = cell.data();
+            hash("env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line);
         }
 
     });
