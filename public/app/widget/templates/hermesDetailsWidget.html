@@ -4,6 +4,12 @@
     <script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
     <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
     <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
+    <script type="dojo/require">IndirectSelect: "gridx/modules/IndirectSelect"</script>
+    <script type="dojo/require">RowHeader: "gridx/modules/RowHeader"</script>
+    <script type="dojo/require">ExtendedSelectRow: "gridx/modules/extendedSelect/Row"</script>
+
+
+
 
 
     <span style="font-weight: bold">Size:</span>
@@ -38,8 +44,8 @@
     <div style="margin-top: 3px">
         <div data-dojo-type="dijit/MenuBar">
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">Refresh</div>
-            <!--div data-dojo-type="dijit/MenuBarItem">Delete</div>
-            <div data-dojo-type="dijit/MenuBarItem">Purge</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">Delete</div>
+            <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
         </div>
 
@@ -60,7 +66,10 @@
                                 modules: [
                                             Sort,
                                             Filter,
-                                            QuickFilter
+                                            QuickFilter,
+                                            IndirectSelect,
+                                            RowHeader,
+                                            ExtendedSelectRow
                                          ],
                               structure: [
                                             {field: 'position', name: '#'},

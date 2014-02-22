@@ -28,4 +28,9 @@ public class ApplicationMock extends Controller {
         return Assets.at("/public/json", "messages.json");
     }
 
+    public static  Result delete(String environnement, String broker, String queue, String messages) {
+        System.out.println(messages);
+        return ok("youpi");
+    }
+
 }

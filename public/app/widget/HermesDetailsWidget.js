@@ -72,6 +72,24 @@ define([
 
                 }
             );
+        },
+
+        _onDeleteClick: function() {
+            var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
+
+            var widget = this;
+            var reloadMessages = this._reloadMessages;
+            request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/"+rowsToDelete, {"method" : "DELETE"}).then(
+                function (data) {
+                    alert(data);
+                    widget._reloadMessages();
+
+                },
+                function (error) {
+                    console.log(error);
+
+                }
+            );
         }
     });
 

@@ -6,6 +6,8 @@
 # Home page
 GET        /services/environnements                                                              controllers.ApplicationMock.environnements
 GET        /services/environnements/:environnement/brokers/:broker/queues                        controllers.ApplicationMock.broker(environnement, broker)
+DELETE        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/:messages        controllers.ApplicationMock.delete(environnement, broker, queue,messages)
+
 GET        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages        controllers.ApplicationMock.messages(environnement, broker, queue)
 GET        /services/environnements/:environnement/brokers/:broker/queues/:queue                 controllers.ApplicationMock.queue(environnement, broker, queue)
 
