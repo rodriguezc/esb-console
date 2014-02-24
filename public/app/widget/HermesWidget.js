@@ -114,10 +114,15 @@ define([
         },
 
         _onRowClick: function (evt) {
-            console.log(this.queueGridWidget);
             var cell = this.queueGridWidget.cell(evt.rowId, evt.columnId);
             var line = cell.data();
-            hash("env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line);
+            var newHash = "env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line;
+            if(decodeURI(hash()) == newHash) {
+                topic.publish("hermes/queueSelected", this.env, this.page, this.broker, line);
+
+            } else {
+                hash(newHash);
+            }
         }
 
     });

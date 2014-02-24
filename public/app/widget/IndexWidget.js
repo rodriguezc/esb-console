@@ -67,9 +67,13 @@ define([
                                         label: broker,
                                         onClick: function() {
 
-                                            hash("env="+environnement.name+"&page=Hermes like&broker="+broker);
+                                            var newHash = "env="+environnement.name+"&page=Hermes like&broker="+broker;
+                                            if(decodeURI(hash()) == newHash) {
+                                                   topic.publish("menu/pageSelected", environnement.name, pageGranted, broker);
 
-                                            //    topic.publish("menu/pageSelected", environnement.name, pageGranted, broker);
+                                            } else {
+                                                hash("env="+environnement.name+"&page=Hermes like&broker="+broker);
+                                            }
                                         }
                                     }));
                                 });

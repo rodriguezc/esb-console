@@ -30,12 +30,14 @@
             indexWidget.placeAt("bodyContent");
 
             topic.subscribe("/dojo/hashchange", function(changedHash){
-                var hashObj = ioQuery.queryToObject(changedHash);  // get
+                var hashObj = ioQuery.queryToObject(changedHash);
                 var env = hashObj.env;
                 var page = hashObj.page;
                 var broker = hashObj.broker;
                 var queue = hashObj.queue;
-                topic.publish("menu/pageSelected", env, page, broker);
+                if(page != null) {
+                    topic.publish("menu/pageSelected", env, page, broker);
+                }
 
                 if(queue != null) {
                     topic.publish("hermes/queueSelected", env, page, broker, queue);
