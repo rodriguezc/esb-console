@@ -7,9 +7,25 @@
     <script type="dojo/require">IndirectSelect: "gridx/modules/IndirectSelect"</script>
     <script type="dojo/require">RowHeader: "gridx/modules/RowHeader"</script>
     <script type="dojo/require">ExtendedSelectRow: "gridx/modules/extendedSelect/Row"</script>
+    <script type="dojo/require">on: "dojo/on"</script>
 
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="importDialog" data-dojo-id="importDialog" title="Import messages" style="width:400px;height: 250px">
 
+        <form method="post"
+              action="/services/environnements/${env}/brokers/${broker}/queues/${queueName}/messages/import"
+              enctype="multipart/form-data"
+             >
 
+            <input name="uploadedfile" multiple="true" type="file" data-dojo-type="dojox/form/Uploader"
+                                                                   data-dojo-props="baseWidgetId: this, onComplete: this._onFileUploadComplete"
+                   label="Select Some Files" id="${id}_uploader" />
+            <input type="submit" label="Upload" data-dojo-type="dijit.form.Button" />
+        </form>
+        <div style="width: 100%;height:165px;overflow: auto">
+            <div data-dojo-type="dojox/form/uploader/FileList" uploaderId="${id}_uploader"></div>
+
+        </div>
+    </div>
 
 
     <span style="font-weight: bold">Size:</span>
@@ -41,10 +57,14 @@
     <span style="font-weight: bold">Average enqueue time ms:</span>
     <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'averageEnqueueTime')"></span>
 
+
     <div style="margin-top: 3px">
         <div data-dojo-type="dijit/MenuBar">
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">Refresh</div>
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">Delete</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPurgeClick">Purge</div>
+            <div data-dojo-type="dijit/MenuBarItem"  onclick="importDialog.show();">Import messages</div>
+
             <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
         </div>

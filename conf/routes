@@ -4,12 +4,14 @@
 
 # Home page
 # Home page
-GET        /services/environnements                                                              controllers.ApplicationMock.environnements
-GET        /services/environnements/:environnement/brokers/:broker/queues                        controllers.ApplicationMock.broker(environnement, broker)
+GET           /services/environnements                                                                        controllers.ApplicationMock.environnements
+GET           /services/environnements/:environnement/brokers/:broker/queues                                  controllers.ApplicationMock.broker(environnement, broker)
+POST          /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/import           controllers.ApplicationMock.importFile(environnement, broker, queue)
+DELETE        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/all              controllers.ApplicationMock.purge(environnement, broker, queue)
 DELETE        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/:messages        controllers.ApplicationMock.delete(environnement, broker, queue,messages)
 
-GET        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages        controllers.ApplicationMock.messages(environnement, broker, queue)
-GET        /services/environnements/:environnement/brokers/:broker/queues/:queue                 controllers.ApplicationMock.queue(environnement, broker, queue)
+GET           /services/environnements/:environnement/brokers/:broker/queues/:queue/messages                  controllers.ApplicationMock.messages(environnement, broker, queue)
+GET           /services/environnements/:environnement/brokers/:broker/queues/:queue                           controllers.ApplicationMock.queue(environnement, broker, queue)
 
-GET        /                                                                                     controllers.Assets.at(path="/public", file="index.html")
-GET        /*file                                                                                controllers.Assets.at(path="/public", file)
+GET           /                                                                                               controllers.Assets.at(path="/public", file="index.html")
+GET           /*file                                                                                          controllers.Assets.at(path="/public", file)

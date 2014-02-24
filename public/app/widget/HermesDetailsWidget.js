@@ -22,6 +22,14 @@ define([
 
 
 
+            this.importDialog.connect(this.importDialog, "hide", function() {
+                alert('ici');
+                this.destroyRecursive();
+                return false;
+            });
+            alert('connected');
+
+
 
         },
 
@@ -30,9 +38,6 @@ define([
             var messagesGridWidget = this.messagesGridWidget;
             request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
                 function (text) {
-                    console.log("valeuur=");
-
-                    console.log(text);
                     messagesGridWidget.model.clearCache();
                     var store = new Store({data: text});
                     messagesGridWidget.model.setStore(store);
@@ -48,13 +53,8 @@ define([
 
 
         _onRefreshClick : function() {
-
             var widget = this;
-
-            this._reloadMessages();
-
-
-
+            widget._reloadMessages();
             //rafraichir les stats jmx
             request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
                 function (data) {
@@ -90,6 +90,25 @@ define([
 
                 }
             );
+        },
+        _onPurgeClick: function() {
+
+            var widget = this;
+
+            request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
+                function (data) {
+                    alert(data);
+                    widget._reloadMessages();
+
+                },
+                function (error) {
+                    console.log(error);
+
+                }
+            );
+        },
+        _onFileUploadComplete: function( data) {
+            this.baseWidgetId._onRefreshClick();
         }
     });
 
