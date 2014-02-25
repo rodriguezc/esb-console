@@ -12,13 +12,13 @@ this.own(on(this.domNode,"keydown",_2.hitch(this,"_onKeyDown")));
 this.inherited(arguments);
 },layout:function(){
 var is=this.node.style,os=this.domNode.style;
-os.display="none";
+//os.display="none";
 var _e=_6.getBox(this.ownerDocument);
 os.top=_e.t+"px";
 os.left=_e.l+"px";
 is.width=_e.w+"px";
 is.height=_e.h+"px";
-os.display="block";
+//os.display="block";
 },show:function(){
 this.domNode.style.display="block";
 this.open=true;
@@ -31,7 +31,10 @@ this.bgIframe.destroy();
 delete this.bgIframe;
 this.domNode.style.display="none";
 while(this._modalConnects.length){
-(this._modalConnects.pop()).remove();
+ var popped = this._modalConnects.pop();
+ if(popped != null && popped != undefined) {
+     popped.remove();
+ }
 }
 this.open=false;
 },destroy:function(){
