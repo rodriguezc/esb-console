@@ -21,3 +21,10 @@ html, body {
     height: 16px;
     text-align: center;
 }
+.zoomIcon18 {
+    background-image: url("../images/Zoom-icon16.png");
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+}
