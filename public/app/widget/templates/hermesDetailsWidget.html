@@ -109,28 +109,22 @@
     </div>
     <hr style="margin-top: -10px"/>
     <div style="height: 45%">
-        <div style="float: left;width:30%;height: 100%;border-right: 1px solid darkgray;font-size: 14px">
-            <div>
-                <table style="width: 100%;margin-top: -4px">
-                  <thead>
-                    <tr>
-                        <th style="text-align: left;width: 50%">Property name</th>
-                        <th style="text-align: left;width: 50%">Value</th>
-                    </tr>
-                  </thead>
+        <fieldset style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3">
+            <legend>Properties</legend>
+                <table style="width: 100%;font-size: 14px;">
                   <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
                         <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
                         <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'value')"></span></td>
                   </tbody>
                 </table>
 
-            </div>
-        </div>
-        <div style="float: left;width:60%;padding-left: 10px">
+        </fieldset>
+        <fieldset style="float: left;width:60%;padding-left: 10px;background-color: #f1f9ff; border: 1px solid #d3d3d3;height: 100%;margin-left: 5px">
+            <legend>Content</legend>
             <div>
                 <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsContent')"></span>
             </div>
-        </div>
+        </fieldset>
 
     </div>
 
