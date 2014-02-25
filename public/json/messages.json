@@ -1,7 +1,16 @@
 [
-    {"position": 1, "type": "TextMessage", "id": "ID:1", "jmsTimestamp" : "18.11.2013 10:05"},
-    {"position": 2, "type": "TextMessage", "id": "ID:2", "jmsTimestamp" :"18.11.2013 10:06"},
-    {"position": 3, "type": "TextMessage", "id": "ID:3", "jmsTimestamp" :"18.11.2013 10:07"},
-    {"position": 4, "type": "TextMessage", "id": "ID:4", "jmsTimestamp" : "18.11.2013 10:08"}
+    {"position": 1, "type": "TextMessage", "id": "ID:1", "jmsTimestamp" : "18.11.2013 10:05", "content": "<xml><toto>message1</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 2, "type": "TextMessage", "id": "ID:2", "jmsTimestamp" :"18.11.2013 10:06", "content": "<xml><toto>message2</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 3, "type": "TextMessage", "id": "ID:3", "jmsTimestamp" :"18.11.2013 10:07", "content": "<xml><toto>message3</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 4, "type": "TextMessage", "id": "ID:4", "jmsTimestamp" : "18.11.2013 10:08", "content": "<xml><toto>message4</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 5, "type": "TextMessage", "id": "ID:5", "jmsTimestamp" : "18.11.2013 10:05", "content": "<xml><toto>message5</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 6, "type": "TextMessage", "id": "ID:6", "jmsTimestamp" :"18.11.2013 10:06", "content": "<xml><toto>message6</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 7, "type": "TextMessage", "id": "ID:7", "jmsTimestamp" :"18.11.2013 10:07", "content": "<xml><toto>message7</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 8, "type": "TextMessage", "id": "ID:8", "jmsTimestamp" : "18.11.2013 10:08", "content": "<xml><toto>message8</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 9, "type": "TextMessage", "id": "ID:9", "jmsTimestamp" : "18.11.2013 10:08", "content": "<xml><toto>message9</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 10, "type": "TextMessage", "id": "ID:10", "jmsTimestamp" : "18.11.2013 10:05", "content": "<xml><toto>message10</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 11, "type": "TextMessage", "id": "ID:11", "jmsTimestamp" :"18.11.2013 10:06", "content": "<xml><toto>message11</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 12, "type": "TextMessage", "id": "ID:12", "jmsTimestamp" :"18.11.2013 10:07", "content": "<xml><toto>message12</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 13, "type": "TextMessage", "id": "ID:13", "jmsTimestamp" : "18.11.2013 10:08", "content": "<xml><toto>message13</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]}
 ]
 

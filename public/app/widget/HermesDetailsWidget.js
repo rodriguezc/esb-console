@@ -8,10 +8,11 @@ define([
     "dojo/request",
     "dijit/Dialog",
     "dojo/_base/array",
-    "dojo/store/Memory"
+    "dojo/store/Memory",
+    "dojox/html/entities"
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -94,6 +95,15 @@ define([
         },
         _onFileUploadComplete: function( data) {
             this.baseWidgetId._onRefreshClick();
+        } ,
+        _onRowClick : function(evt) {
+            var cell = this.messagesGridWidget.cell(evt.rowId, evt.columnId);
+            var msg = cell.row.model.byId(cell.row.id).item;
+            console.log(msg);
+            this.set("detailsContent", entities.encode(msg.content));
+            this.set("detailsProperties", msg.properties);
+
+
         }
     });
 

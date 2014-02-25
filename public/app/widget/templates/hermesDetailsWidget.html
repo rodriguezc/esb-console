@@ -10,6 +10,8 @@
     <script type="dojo/require">on: "dojo/on"</script>
     <script type="dojo/require">VirtualVScroller: "gridx/modules/VirtualVScroller"</script>
 
+
+
     <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="importDialog" data-dojo-id="importDialog" title="Import messages" style="width:400px;height: 250px">
 
         <form method="post"
@@ -20,7 +22,7 @@
             <input name="uploadedfile" multiple="true" type="file" data-dojo-type="dojox/form/Uploader"
                                                                    data-dojo-props="baseWidgetId: this, onComplete: this._onFileUploadComplete"
                    label="Select Some Files" id="${id}_uploader" />
-            <input type="submit" label="Upload" data-dojo-type="dijit.form.Button" />
+            <input type="submit" label="Upload" data-dojo-type="dijit/form/Button" />
         </form>
         <div style="width: 100%;height:165px;overflow: auto">
             <div data-dojo-type="dojox/form/uploader/FileList" uploaderId="${id}_uploader"></div>
@@ -80,7 +82,9 @@
 
     <div data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
 
+    <div style="height: 40%">
     <div data-dojo-type="gridx/Grid"
+         data-dojo-attach-event="onCellClick : _onRowClick"
          data-dojo-attach-point="messagesGridWidget"
          data-dojo-props="store: store,
                              cacheClass: Cache,
@@ -102,10 +106,33 @@
 
         ]
         "style="width: 100%;height: 90%;margin-top: 1px"></div>
+    </div>
+    <hr style="margin-top: -10px"/>
+    <div style="height: 45%">
+        <div style="float: left;width:30%;height: 100%;border-right: 1px solid darkgray;font-size: 14px">
+            <div>
+                <table style="width: 100%;margin-top: -4px">
+                  <thead>
+                    <tr>
+                        <th style="text-align: left;width: 50%">Property name</th>
+                        <th style="text-align: left;width: 50%">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
+                        <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
+                        <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'value')"></span></td>
+                  </tbody>
+                </table>
 
-        <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="messageDetailsDialog" title="Consumers" style="width:400px;height: 400px">
-            Details
+            </div>
         </div>
+        <div style="float: left;width:60%;padding-left: 10px">
+            <div>
+                <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsContent')"></span>
+            </div>
+        </div>
+
+    </div>
 
 
 
