@@ -62,4 +62,11 @@ public class ApplicationMock extends Controller {
         System.out.println(arrayNode.toString());
         return ok(arrayNode.toString());
     }
+
+    public static Result paste(String environnement, String broker, String queue) {
+        String msgs=  request().body().asFormUrlEncoded().get("msgs")[0];
+        ArrayNode arrayNode = (ArrayNode)Json.parse(msgs);
+        System.out.println(msgs);
+        return ok("Pasted");
+    }
 }

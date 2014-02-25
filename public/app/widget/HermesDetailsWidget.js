@@ -125,7 +125,14 @@ define([
         _onPasteClick : function() {
             var queueName = this.queueName;
             topic.publish("clipboard/action", function(msgList) {
-                console.log(msgList.length + " a envoyer dans la queue "+queueName);
+                request.post("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages", {data: {"msgs": JSON.stringify(msgList)}}).then(
+                    function (data) {
+                        alert(data);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                );
             });
         }
     });
