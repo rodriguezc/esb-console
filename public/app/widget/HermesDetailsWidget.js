@@ -17,20 +17,7 @@ define([
         templateString: template,
         postCreate: function () {
             this.inherited(arguments);
-
             this._reloadMessages();
-
-
-
-            this.importDialog.connect(this.importDialog, "hide", function() {
-                alert('ici');
-                this.destroyRecursive();
-                return false;
-            });
-            alert('connected');
-
-
-
         },
 
 
@@ -81,7 +68,6 @@ define([
             var reloadMessages = this._reloadMessages;
             request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/"+rowsToDelete, {"method" : "DELETE"}).then(
                 function (data) {
-                    alert(data);
                     widget._reloadMessages();
 
                 },
@@ -97,7 +83,6 @@ define([
 
             request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
                 function (data) {
-                    alert(data);
                     widget._reloadMessages();
 
                 },
