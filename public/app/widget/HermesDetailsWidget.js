@@ -123,11 +123,13 @@ define([
         },
 
         _onPasteClick : function() {
-            var queueName = this.queueName;
+            var widget = this;
             topic.publish("clipboard/action", function(msgList) {
-                request.post("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages", {data: {"msgs": JSON.stringify(msgList)}}).then(
+                request.post("/services/environnements/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages", {data: {"msgs": JSON.stringify(msgList)}}).then(
                     function (data) {
                         alert(data);
+                        widget._onRefreshClick();
+
                     },
                     function (error) {
                         console.log(error);
