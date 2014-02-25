@@ -21,6 +21,10 @@ define([
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
+        clipboardMessagesCount: 0,
+
+        clipboardMessages: [],
+
         postCreate: function () {
             this.inherited(arguments);
             var pMenuBar = new MenuBar({});
@@ -170,11 +174,34 @@ define([
 
             });
 
+            var widget = this;
+            topic.subscribe("clipboard/copy", function(arrayOfNewMessages){
+                var clipboardMessages = widget.get("clipboardMessages");
+                clipboardMessages.push(arrayOfNewMessages);
+                var clipboardMessagesCount = widget.get("clipboardMessagesCount");
+                widget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
+
+
+            });
+
+            topic.subscribe("clipboard/action", function(callback){
+                var clipboardMessages = widget.get("clipboardMessages");
+                callback(clipboardMessages);
+            });
+
+
+
+
         },
 
         resize: function() {
             this.inherited(arguments);
             this.borderContainer.resize();
+        },
+
+        _onDeleteClipboard: function() {
+            this.set("clipboardMessages", []);
+            this.set("clipboardMessagesCount", 0);
         }
 
     });

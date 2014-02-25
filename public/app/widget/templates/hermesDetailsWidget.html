@@ -64,10 +64,11 @@
     <div style="margin-top: 3px">
         <div data-dojo-type="dijit/MenuBar">
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">Refresh</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyClick">Copy</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPasteClick">Paste</div>
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">Delete</div>
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPurgeClick">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem"  onclick="importDialog.show();">Import messages</div>
-
             <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
         </div>
@@ -113,7 +114,7 @@
             <legend>Properties</legend>
                 <table style="width: 100%;font-size: 14px;">
                   <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
-                        <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
+                        <td style="width: 50%"><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
                         <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'value')"></span></td>
                   </tbody>
                 </table>

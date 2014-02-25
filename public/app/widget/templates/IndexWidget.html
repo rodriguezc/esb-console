@@ -9,6 +9,15 @@
     <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'">
         <div data-dojo-attach-point="navMenuNode" style="float: left"></div>
 
+        <div style="float: left;margin-left: 40px">
+           Clipboard: <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'clipboardMessagesCount')"></span> msg
+            <button data-dojo-type="dijit/form/Button"
+                    data-dojo-props="iconClass:'dijitEditorIcon dijitEditorIconDelete', showLabel: false"
+                    type="button"
+                    data-dojo-attach-event="onClick: _onDeleteClipboard"
+                    >cut</button>
+        </div>
+
         <div style="float: right">
             <span>ESB-CONSOLE</span>
             <img src="app/widget/images/logo.png" style="height: 30px;margin-right: 10px"/>

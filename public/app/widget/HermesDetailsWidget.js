@@ -9,10 +9,11 @@ define([
     "dijit/Dialog",
     "dojo/_base/array",
     "dojo/store/Memory",
-    "dojox/html/entities"
+    "dojox/html/entities",
+    "dojo/topic"
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -104,6 +105,28 @@ define([
             this.set("detailsProperties", msg.properties);
 
 
+        },
+        _onCopyClick : function() {
+            var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
+
+            var messagesGridWidget = this.messagesGridWidget;
+
+            var msgs = [];
+
+            array.forEach(rowsToDelete, function(msgId, i){
+                var currentMsg = messagesGridWidget.model.byId(msgId).item;
+                msgs.push(currentMsg);
+                console.log(currentMsg);
+            });
+            topic.publish("clipboard/copy",msgs);
+
+        },
+
+        _onPasteClick : function() {
+            var queueName = this.queueName;
+            topic.publish("clipboard/action", function(msgList) {
+                console.log(msgList.length + " a envoyer dans la queue "+queueName);
+            });
         }
     });
 
