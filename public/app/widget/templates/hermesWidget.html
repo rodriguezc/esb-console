@@ -3,6 +3,7 @@
     <script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
     <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
     <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
+    <script type="dojo/require">VirtualVScroller: "gridx/modules/VirtualVScroller"</script>
 
     <div data-dojo-attach-point="containerWidget" class="appLayout"  data-dojo-type="dijit/layout/BorderContainer">
 
@@ -17,7 +18,8 @@
                                 modules: [
                                             Sort,
                                             Filter,
-                                            QuickFilter
+                                            QuickFilter,
+                                            VirtualVScroller
                                          ],
                               structure: [
             {field: 'id', name: 'Name'}
