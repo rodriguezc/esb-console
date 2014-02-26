@@ -177,7 +177,10 @@ define([
             var widget = this;
             topic.subscribe("clipboard/copy", function(arrayOfNewMessages){
                 var clipboardMessages = widget.get("clipboardMessages");
-                clipboardMessages.push(arrayOfNewMessages);
+                array.forEach(arrayOfNewMessages, function(msg, i){
+                    clipboardMessages.push(msg);
+
+                });
                 var clipboardMessagesCount = widget.get("clipboardMessagesCount");
                 widget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
 

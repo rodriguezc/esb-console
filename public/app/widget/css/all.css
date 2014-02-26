@@ -28,3 +28,20 @@ html, body {
     height: 18px;
     text-align: center;
 }
+
+.expandIcon18 {
+    background-image: url("../images/expand-icon.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+
+
+.contractIcon18 {
+    background-image: url("../images/contract-icon.png");
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+}

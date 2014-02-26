@@ -44,6 +44,32 @@
         </ul>
     </div>
 
+
+    <div data-dojo-type="dijit/Dialog" data-dojo-id="moveSelectionDialog" title="Move to the destination" style="width:400px">
+            <form data-dojo-type="dijit/form/Form" data-dojo-props="onSubmit : this._onMoveSelection">
+                <table>
+                    <tr>
+                        <td><label>Environment</label></td>
+                        <td><input type="text" data-dojo-type="dijit/form/TextBox" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Broker</label></td>
+                        <td><input type="text" data-dojo-type="dijit/form/TextBox" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Queue</label></td>
+                        <td><input type="text" data-dojo-type="dijit/form/TextBox" /></td>
+                    </tr>
+                </table>
+                 <input type="submit" data-dojo-type="dijit/form/Button" data-dojo-props="label: 'Move!'" />
+            </form>
+
+
+
+
+    </div>
+
+
     <button data-dojo-type="dijit/form/Button"
             data-dojo-props="iconClass:'zoomIcon', showLabel: false" type="button"
             onclick="consumersDialog.show();">
@@ -65,7 +91,20 @@
         <div data-dojo-type="dijit/MenuBar">
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">Refresh</div>
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyClick">Copy</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyCurrentClick">Copy current msg</div>
+
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPasteClick">Paste</div>
+
+            <div data-dojo-type="dijit/PopupMenuBarItem">
+                <span>Move</span>
+                <div data-dojo-type="dijit/DropDownMenu">
+                    <div data-dojo-type="dijit/MenuItem" onclick="moveSelectionDialog.show()">Selection</div>
+                    <div data-dojo-type="dijit/MenuItem">All</div>
+
+                </div>
+            </div>
+
+
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">Delete</div>
             <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPurgeClick">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem"  onclick="importDialog.show();">Import messages</div>
@@ -110,8 +149,13 @@
     </div>
     <hr style="margin-top: -10px"/>
     <div style="height: 45%">
-        <fieldset style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3">
-            <legend>Properties of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span></legend>
+        <fieldset data-dojo-attach-point="fieldsetProperties" style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3">
+            <legend >
+                <input type="button" data-dojo-props="iconClass:'expandIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onPropertiesExpand" />
+                <input type="button" data-dojo-props="iconClass:'contractIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onPropertiesContract" />
+                Properties of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span>
+
+            </legend>
                 <table style="width: 100%;font-size: 14px;">
                   <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
                         <td style="width: 50%"><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
@@ -120,8 +164,12 @@
                 </table>
 
         </fieldset>
-        <fieldset style="float: left;width:60%;padding-left: 10px;background-color: #f1f9ff; border: 1px solid #d3d3d3;height: 100%;margin-left: 5px">
-            <legend>Content of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span></legend>
+        <fieldset data-dojo-attach-point="fieldsetContent" style="float: left;width:60%;padding-left: 10px;background-color: #f1f9ff; border: 1px solid #d3d3d3;height: 100%;margin-left: 5px">
+            <legend>
+                <input type="button" data-dojo-props="iconClass:'expandIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onContentExpand" />
+                <input type="button" data-dojo-props="iconClass:'contractIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onContentContract" />
+                Content of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span>
+             </legend>
                 <textarea readonly data-dojo-type="dijit/form/Textarea" data-dojo-props="value: at(this, 'detailsContent')" style="width:100%;height: 100%" ></textarea>
         </fieldset>
 
