@@ -1,5 +1,5 @@
 [
-    {"position": 1, "type": "TextMessage", "id": "ID:1", "jmsTimestamp" : "18.11.2013 10:05", "content": "<xml><toto>message1</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
+    {"position": 1, "type": "TextMessage", "id": "ID:1", "jmsTimestamp" : "18.11.2013 10:05", "content": "<xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
     {"position": 2, "type": "TextMessage", "id": "ID:2", "jmsTimestamp" :"18.11.2013 10:06", "content": "<xml><toto>message2</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
     {"position": 3, "type": "TextMessage", "id": "ID:3", "jmsTimestamp" :"18.11.2013 10:07", "content": "<xml><toto>message3</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},
     {"position": 4, "type": "TextMessage", "id": "ID:4", "jmsTimestamp" : "18.11.2013 10:08", "content": "<xml><toto>message4</toto></xml>", "properties": [{"name":"jmsMessageId", "value":"1"},{"name":"businessId", "value":"2"}]},

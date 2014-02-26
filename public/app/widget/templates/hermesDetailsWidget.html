@@ -111,7 +111,7 @@
     <hr style="margin-top: -10px"/>
     <div style="height: 45%">
         <fieldset style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3">
-            <legend>Properties</legend>
+            <legend>Properties of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span></legend>
                 <table style="width: 100%;font-size: 14px;">
                   <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
                         <td style="width: 50%"><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
@@ -121,10 +121,8 @@
 
         </fieldset>
         <fieldset style="float: left;width:60%;padding-left: 10px;background-color: #f1f9ff; border: 1px solid #d3d3d3;height: 100%;margin-left: 5px">
-            <legend>Content</legend>
-            <div>
-                <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsContent')"></span>
-            </div>
+            <legend>Content of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span></legend>
+                <textarea readonly data-dojo-type="dijit/form/Textarea" data-dojo-props="value: at(this, 'detailsContent')" style="width:100%;height: 100%" ></textarea>
         </fieldset>
 
     </div>

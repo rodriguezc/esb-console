@@ -22,6 +22,8 @@ define([
             this._reloadMessages();
         },
 
+        detailsId: "- no row selected -",
+
 
         _reloadMessages : function() {
             var messagesGridWidget = this.messagesGridWidget;
@@ -101,8 +103,12 @@ define([
             var cell = this.messagesGridWidget.cell(evt.rowId, evt.columnId);
             var msg = cell.row.model.byId(cell.row.id).item;
             console.log(msg);
-            this.set("detailsContent", entities.encode(msg.content));
+        //    this.set("detailsContent", entities.encode(msg.content));
+            this.set("detailsContent", msg.content);
+
             this.set("detailsProperties", msg.properties);
+            this.set("detailsId", msg.id);
+
 
 
         },
