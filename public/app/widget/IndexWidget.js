@@ -14,11 +14,11 @@ define([
     "dijit/MenuItem",
     "dijit/PopupMenuItem",
     "dijit/layout/ContentPane",
-    "app/widget/HermesWidget",
+    "app/widget/JmsBrowserWidget",
     "dojo/hash",
     "dojo/dom-style"
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, HermesWidget, hash, domStyle) {
+             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, JmsBrowserWidget, hash, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -170,7 +170,7 @@ define([
                         });
                         if(pageId == "jmsBrowser") {
                             indexWidget.centerTabContainer.addChild(cp1);
-                            var hermesWidget = new HermesWidget(
+                            var jmsBrowserWidget = new JmsBrowserWidget(
                                 {
                                     "env": envId,
                                     "broker": brokerId,
@@ -178,7 +178,7 @@ define([
 
                                 }
                             );
-                            hermesWidget.placeAt(cp1);
+                            jmsBrowserWidget.placeAt(cp1);
                             indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
                         }
                     }

@@ -4,7 +4,7 @@ define([
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!./templates/hermesWidget.html",
+    "dojo/text!./templates/jmsBrowserWidget.html",
     "dojo/request",
     "dojo/_base/array",
     "dojo/topic",
