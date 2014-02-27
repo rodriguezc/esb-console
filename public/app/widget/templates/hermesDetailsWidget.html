@@ -47,18 +47,23 @@
 
     <div data-dojo-type="dijit/Dialog" data-dojo-id="moveSelectionDialog" title="Move to the destination" style="width:400px">
             <form data-dojo-type="dijit/form/Form" data-dojo-props="onSubmit : this._onMoveSelection">
+
+                <span data-dojo-id="envStore" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [{name:'INTEGRATION', id:'INTEGRATION'},{name:'VALIDATION', id:'VALIDATION'}]" />
+                <span data-dojo-id="brokerStore" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [{name:'INA', id:'INA'},{name:'INB', id:'INB'}]" />
+                <span data-dojo-id="queuesStore" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [{name:'envoyer1', id:'envoyer1'},{name:'envoyer2', id:'envoyer2'}]" />
+
                 <table>
                     <tr>
                         <td><label>Environment</label></td>
-                        <td><input type="text" data-dojo-type="dijit/form/TextBox" /></td>
+                        <td><input type="text" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:envStore" /></td>
                     </tr>
                     <tr>
                         <td><label>Broker</label></td>
-                        <td><input type="text" data-dojo-type="dijit/form/TextBox" /></td>
+                        <td><input type="text" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:brokerStore" /></td>
                     </tr>
                     <tr>
                         <td><label>Queue</label></td>
-                        <td><input type="text" data-dojo-type="dijit/form/TextBox" /></td>
+                        <td><input type="text" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:queuesStore" /></td>
                     </tr>
                 </table>
                  <input type="submit" data-dojo-type="dijit/form/Button" data-dojo-props="label: 'Move!'" />
@@ -89,25 +94,59 @@
 
     <div style="margin-top: 3px">
         <div data-dojo-type="dijit/MenuBar">
-            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">Refresh</div>
-            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyClick">Copy</div>
-            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyCurrentClick">Copy current msg</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">
+                <span class="dijitIconUndo" style="display: inline-block">&nbsp;</span>
+                <span>Refresh</span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyClick" >
+                <span class="dijitIconCopy" style="display: inline-block">&nbsp;</span>
+                    Copy
+                </span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyCurrentClick">
+                <span class="dijitIconCopy" style="display: inline-block">&nbsp;</span>
+                    Copy current msg
+                </span>
 
-            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPasteClick">Paste</div>
+            </div>
+
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPasteClick">
+                  <span><span class="dijitEditorIcon dijitEditorIconPaste" style="padding-left: 16px"></span>
+                    Paste
+                </span>
+            </div>
 
             <div data-dojo-type="dijit/PopupMenuBarItem">
-                <span>Move</span>
+                 <span>
+                <span class="dijitEditorIcon dijitEditorIconSelectAll" style="display: inline-block">&nbsp;</span>
+               Move</span>
+
                 <div data-dojo-type="dijit/DropDownMenu">
-                    <div data-dojo-type="dijit/MenuItem" onclick="moveSelectionDialog.show()">Selection</div>
+                    <div data-dojo-type="dijit/MenuItem" onclick="moveSelectionDialog.show()">
+                        Selection
+                    </div>
                     <div data-dojo-type="dijit/MenuItem">All</div>
 
                 </div>
             </div>
 
 
-            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">Delete</div>
-            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPurgeClick">Purge</div>
-            <div data-dojo-type="dijit/MenuBarItem"  onclick="importDialog.show();">Import messages</div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">
+                <span><span class="dijitEditorIcon dijitEditorIconDelete" style="padding-left: 16px"></span>
+                    Delete
+                </span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPurgeClick">
+                <span><span class="dijitEditorIcon dijitEditorIconRemoveFormat" style="padding-left: 16px"></span>
+                    Purge
+                </span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem"  onclick="importDialog.show();">
+                  <span><span class="dijitIconFolderOpen" style="padding-left: 16px"></span>
+                    Import messages
+                </span>
+
+            </div>
             <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
         </div>

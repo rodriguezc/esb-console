@@ -79,7 +79,6 @@ define([
                     request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/"+rowsToDelete, {"method" : "DELETE"}).then(
                         function (data) {
                             widget._reloadMessages();
-
                         },
                         function (error) {
                             console.log(error);

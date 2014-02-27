@@ -10,7 +10,10 @@
         <div data-dojo-attach-point="navMenuNode" style="float: left"></div>
 
         <div style="float: left;margin-left: 40px">
-           Clipboard: <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'clipboardMessagesCount')"></span> msg
+           Clipboard:
+            <span style="display: none;background-color: #ffffea;border: 1px solid black;border-radius: 4px;" data-dojo-attach-point="clipboardMessagesCountWidgetBig" data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'clipboardMessagesCount')"></span>
+            <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'clipboardMessagesCount')"></span>
+            <span data-dojo-attach-point="clipboardMessagesLabelNode">msgs</span>
             <button data-dojo-type="dijit/form/Button"
                     data-dojo-props="iconClass:'dijitEditorIcon dijitEditorIconDelete', showLabel: false"
                     type="button"

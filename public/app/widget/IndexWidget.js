@@ -15,9 +15,10 @@ define([
     "dijit/PopupMenuItem",
     "dijit/layout/ContentPane",
     "app/widget/HermesWidget",
-    "dojo/hash"
+    "dojo/hash",
+    "dojo/dom-style"
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, HermesWidget, hash) {
+             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, HermesWidget, hash, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -182,7 +183,20 @@ define([
 
                 });
                 var clipboardMessagesCount = widget.get("clipboardMessagesCount");
+
                 widget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
+
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "fixed");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize","30px");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","inline");
+
+                setTimeout(function() {
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "relative");
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize",null);
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","none");
+
+
+                }, 1000);
 
 
             });
