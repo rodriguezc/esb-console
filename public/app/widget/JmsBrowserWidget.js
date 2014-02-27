@@ -14,7 +14,7 @@ define([
     "dijit/MenuItem",
     "dijit/PopupMenuItem",
     "dijit/layout/ContentPane",
-    "app/widget/HermesDetailsWidget",
+    "app/widget/QueueDetailsWidget",
     "dojo/hash",
     "dojo/store/Memory"
 
@@ -23,7 +23,7 @@ define([
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
              request, array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem,
-             ContentPane, HermesDetailsWidget, hash,Store) {
+             ContentPane, QueueDetailsWidget, hash,Store) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         env: "DEFAULTENV",
 
@@ -46,7 +46,7 @@ define([
 
             var queueGridWidget = this.queueGridWidget;
 
-            request("/services/environnements/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
+            request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
                 function(text) {
                     queueGridWidget.model.clearCache();
                     var store = new Store({data: text});
@@ -86,15 +86,15 @@ define([
 
                         centerPaneWidget.addChild(cp1);
                         centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
-                        //JSON REQUEST -> dans HermesDetailsWidget
-                        request("/services/environnements/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
+                        //JSON REQUEST -> dans QueueDetailsWidget
+                        request("/services/environments/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
                             function (data) {
                                 data.env = env;
                                 data.broker = broker;
                                 data.queueName = queueName;
 
-                                var hermesDetailsWidget = new HermesDetailsWidget(data);
-                                hermesDetailsWidget.placeAt(cp1);
+                                var queueDetailsWidget = new QueueDetailsWidget(data);
+                                queueDetailsWidget.placeAt(cp1);
                             },
                             function (error) {
                                 console.log(error);

@@ -6,17 +6,17 @@
 # Home page
 
 GET           /services/main                                                                                  controllers.ApplicationMock.main
-GET           /services/environnements                                                                        controllers.ApplicationMock.environnements
-GET           /services/environnements/:environnement/brokers/:broker/queues                                  controllers.ApplicationMock.broker(environnement, broker)
-POST          /services/environnements/:environnement/brokers/:broker/queues/:queue/messages                  controllers.ApplicationMock.paste(environnement, broker, queue)
-POST          /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/import           controllers.ApplicationMock.importFile(environnement, broker, queue)
+GET           /services/environments                                                                          controllers.ApplicationMock.environments
+GET           /services/environments/:environment/brokers/:broker/queues                                      controllers.ApplicationMock.queues(environment, broker)
+GET           /services/environments/:environment/brokers/:broker/queues/:queue                               controllers.ApplicationMock.queue(environment, broker, queue)
+GET           /services/environments/:environment/brokers/:broker/queues/:queue/messages                      controllers.ApplicationMock.messages(environment, broker, queue)
 
+POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages                      controllers.ApplicationMock.paste(environment, broker, queue)
+POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages/import               controllers.ApplicationMock.importFile(environment, broker, queue)
 
-DELETE        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/all              controllers.ApplicationMock.purge(environnement, broker, queue)
-DELETE        /services/environnements/:environnement/brokers/:broker/queues/:queue/messages/:messages        controllers.ApplicationMock.delete(environnement, broker, queue,messages)
+DELETE        /services/environments/:environment/brokers/:broker/queues/:queue/messages/all              controllers.ApplicationMock.purge(environment, broker, queue)
+DELETE        /services/environments/:environment/brokers/:broker/queues/:queue/messages/:messages        controllers.ApplicationMock.delete(environment, broker, queue,messages)
 
-GET           /services/environnements/:environnement/brokers/:broker/queues/:queue/messages                  controllers.ApplicationMock.messages(environnement, broker, queue)
-GET           /services/environnements/:environnement/brokers/:broker/queues/:queue                           controllers.ApplicationMock.queue(environnement, broker, queue)
 
 GET           /                                                                                               controllers.Assets.at(path="/public", file="index.html")
 GET           /*file                                                                                          controllers.Assets.at(path="/public", file)

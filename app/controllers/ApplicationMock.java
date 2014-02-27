@@ -21,20 +21,18 @@ public class ApplicationMock extends Controller {
     }
 
 
-    public static Result index() {
-        return ok(index.render("Your new application is ready."));
+    public static Action<AnyContent> environments() {
+        return Assets.at("/public/json", "environments.json");
     }
 
-    public static Action<AnyContent> environnements() {
-        return Assets.at("/public/json", "environnements.json");
-    }
 
-    public static  Action<AnyContent> broker(String environnement, String broker) {
+
+    public static  Action<AnyContent> queues(String environnement, String broker) {
         return Assets.at("/public/json", "queues.json");
     }
 
     public static  Action<AnyContent> queue(String environnement, String broker, String queue) {
-        return Assets.at("/public/json", "publierTaxation.json");
+        return Assets.at("/public/json", "queue.json");
     }
 
     public static  Action<AnyContent> messages(String environnement, String broker, String queue) {
@@ -43,11 +41,11 @@ public class ApplicationMock extends Controller {
 
     public static  Result delete(String environnement, String broker, String queue, String messages) {
         System.out.println(messages);
-        return ok("youpi");
+        return ok("x messages deleted");
     }
 
     public static Result purge(String environnement, String broker, String queue) {
-        return ok("Purged");
+        return ok("x messages purged");
     }
 
     public static Result importFile(String environnement, String broker, String queue) {

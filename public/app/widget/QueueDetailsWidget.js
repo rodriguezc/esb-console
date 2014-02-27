@@ -4,7 +4,7 @@ define([
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!./templates/hermesDetailsWidget.html",
+    "dojo/text!./templates/queueDetailsWidget.html",
     "dojo/request",
     "dijit/Dialog",
     "dojo/_base/array",
@@ -28,7 +28,7 @@ define([
 
         _reloadMessages : function() {
             var messagesGridWidget = this.messagesGridWidget;
-            request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
+            request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
                 function (text) {
                     messagesGridWidget.model.clearCache();
                     var store = new Store({data: text});
@@ -48,7 +48,7 @@ define([
             var widget = this;
             widget._reloadMessages();
             //rafraichir les stats jmx
-            request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
+            request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
                 function (data) {
                     widget.set("size", data.size);
                     widget.set("consumers", data.consumers);
@@ -76,11 +76,13 @@ define([
                 if(confirm("You are about to delete "+rowsToDelete.length+" msgs from the queue "+this.queueName)) {
                     var widget = this;
                     var reloadMessages = this._reloadMessages;
-                    request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/"+rowsToDelete, {"method" : "DELETE"}).then(
+                    request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/"+rowsToDelete, {"method" : "DELETE"}).then(
                         function (data) {
+                            alert(data);
                             widget._reloadMessages();
                         },
                         function (error) {
+                            alert("error");
                             console.log(error);
 
                         }
@@ -93,8 +95,9 @@ define([
 
             if(confirm("You are about to purge the queue "+this.queueName)) {
                 var widget = this;
-                request("/services/environnements/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
+                request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
                     function (data) {
+                        alert(data);
                         widget._reloadMessages();
                     },
                     function (error) {
@@ -143,7 +146,7 @@ define([
                 }else
 
                 if(confirm("Your are about to paste "+msgList.length +" msgs to the queue "+widget.queueName)) {
-                    request.post("/services/environnements/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages", {data: {"msgs": JSON.stringify(msgList)}}).then(
+                    request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages", {data: {"msgs": JSON.stringify(msgList)}}).then(
                         function (data) {
                             alert(data);
                             widget._onRefreshClick();
