@@ -1,38 +1,10 @@
-{
-    "appUser": "Tranchida",
-    "appVersion": "1.0",
-    "appEnvironment" : "DEV",
-
-    "environnements": [
-        {
-            "name": "INTEGRATION",
-
-            "pagesGranted": [
-                "Audit", "Erreurs", "Info queues", "Composants", "Hermes like"
-
-            ],
-
-            "brokers": [
-                "INA", "INB"
-
-            ]
-
-        },
-        {
-            "name": "VALIDATION",
-            "pagesGranted": [
-                "Audit", "Erreurs", "Info queues", "Composants", "Hermes like"
-
-            ],
-            "brokers": [
-                "VAA", "VAB"
-
-            ]
-
-
-        }
-    ]
-
-
-
-}
+[
+    {
+        "id": "INTEGRATION",
+        "name": "INTEGRATION"
+    },
+    {
+        "id": "VALIDATION",
+        "name": "VALIDATION"
+    }
+]

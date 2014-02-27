@@ -22,69 +22,75 @@ define([
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
+        //model
         clipboardMessagesCount: 0,
-
         clipboardMessages: [],
+        appUser: "",
+        appVersion: "",
+        appEnvironment: "",
+        mainDataPromise : "",
 
         postCreate: function () {
             this.inherited(arguments);
+
+            var indexWidget = this;
+
             var pMenuBar = new MenuBar({});
             pMenuBar.placeAt(this.navMenuNode);
             pMenuBar.startup();
-
             var pSubMenu = new DropDownMenu({});
             pMenuBar.addChild(new PopupMenuBarItem({
-                label: "Environments",
+                label: "Start",
                 popup: pSubMenu
             }));
-
-
-
 
             this.centerTabContainer.watch("selectedChildWidget", function(name, oval, nval){
                 hash("env="+nval.env+"&page="+nval.page+"&broker="+nval.broker);
             });
 
 
+            this.mainDataPromise = request("/services/main", {handleAs: "json"});
+            this.mainDataPromise.then(
 
-            var indexWidget = this;
+                function(data) {
+                    indexWidget.set("mainData", data);
+                    indexWidget.set("appUser", data.application.user);
+                    indexWidget.set("appVersion", data.application.version);
+                    indexWidget.set("appEnvironment", data.application.environment);
 
-            request("/services/environnements", {handleAs: "json"}).then(
-                function(text) {
-                    indexWidget.set("appUser", text.appUser);
-                    indexWidget.set("appVersion", text.appVersion);
-                    indexWidget.set("appEnvironment", text.appEnvironment);
-
-
-
-                    array.forEach(text.environnements, function(environnement, i){
+                    array.forEach(data.environments, function(environment, i){
+                        var envId = environment.id;
+                        var envName = environment.name;
 
                         var dropDownMenu = new DropDownMenu({});
-                        array.forEach(environnement.pagesGranted, function(pageGranted, i){
+                        array.forEach(environment.pagesGranted, function(pageGranted, i){
+                            var pageGrantedId = pageGranted.id;
+                            var pageGrantedName = pageGranted.name;
 
-                            if(pageGranted == "Hermes like") {
 
-
+                            if(pageGrantedId == "jmsBrowser") {
                                 var dropDownMenuBrokers = new DropDownMenu({});
 
-                                array.forEach(environnement.brokers, function(broker, j){
-                                    dropDownMenuBrokers.addChild(new MenuItem({
-                                        label: broker,
-                                        onClick: function() {
+                                array.forEach(environment.brokers, function(broker, j){
+                                    var brokerId = broker.id;
+                                    var brokerName = broker.name;
 
-                                            var newHash = "env="+environnement.name+"&page=Hermes like&broker="+broker;
+                                    dropDownMenuBrokers.addChild(new MenuItem({
+                                        label: brokerName,
+                                        onClick: function() {
+                                            var newHash = "env="+envId+"&page=jmsBrowser&broker="+brokerId;
                                             if(decodeURI(hash()) == newHash) {
-                                                   topic.publish("menu/pageSelected", environnement.name, pageGranted, broker);
+                                                   topic.publish("menu/pageSelected", envId, pageGrantedId, brokerId);
 
                                             } else {
-                                                hash("env="+environnement.name+"&page=Hermes like&broker="+broker);
+                                                hash(newHash);
                                             }
                                         }
                                     }));
                                 });
 
                                 dropDownMenu.addChild(new PopupMenuItem({
-                                    label: "Hermes like",
+                                    label: pageGrantedName,
                                     popup: dropDownMenuBrokers
                                 }));
 
@@ -92,9 +98,9 @@ define([
 
                             } else {
                                 dropDownMenu.addChild(new MenuItem({
-                                    label: pageGranted,
+                                    label: pageGrantedName,
                                     onClick: function() {
-                                        topic.publish("menu/pageSelected", environnement.name, pageGranted);
+                                        topic.publish("menu/pageSelected", envId, pageGrantedId);
                                     }
                                 }));
                             }
@@ -103,7 +109,7 @@ define([
 
                         });
                         pSubMenu.addChild(new PopupMenuItem({
-                            label: environnement.name,
+                            label: envName,
                             popup: dropDownMenu
                         }));
 
@@ -111,103 +117,102 @@ define([
                     });
                 },
                 function(error) {
+                    alert("Error when loading main data");
                     console.log("An error occurred: " + error);
                 }
             );
 
 
-            var centerTabContainer = this.centerTabContainer;
+            topic.subscribe("menu/pageSelected", function(envId, pageId, brokerId){
+                //Dès que le main data est chargé
+                indexWidget.mainDataPromise.then(function() {
+                    //On récupère l'environnement sélectionné
+                    var env = array.filter(indexWidget.mainData.environments, function(env) {
+                        return env.id = envId;
+                    })[0];
 
-            topic.subscribe("menu/pageSelected", function(environnement, nom, broker){
 
-                var title = environnement +"-"+nom
+                    //On récupère la page sélectionné
+                    var page = array.filter(env.pagesGranted, function(pageGranted) {
+                        return pageGranted.id = pageId;
+                    })[0];
 
-                if(nom == "Hermes like") {
-                    title += "-"+broker;
-                }
+                    var title = env.name +"-"+page.name
 
-                var found = false;
 
-                array.forEach(centerTabContainer.getChildren(), function(item, index) {
-                    //C'est la même ligne
-                    if(item.title == title) {
-                        found = true;
-                        centerTabContainer.selectChild(item);  //Sélection du tab déjà ouvert
-                    } else {
+                    //Si la page est le browser JMS
+                    if(page.id == "jmsBrowser") {
+                        //On récupère le broker sélectionné
+                        var broker = array.filter(env.brokers, function(broker) {
+                            return broker.id = brokerId;
+                        })[0];
+                        title += "-"+broker.name;
                     }
-                });
-                if(!found) {
-                    if(nom == "Hermes like") {
+                    var found = false;
+
+
+                    array.forEach(indexWidget.centerTabContainer.getChildren(), function(item, index) {
+                        //C'est la même ligne
+                        if(item.title == title) {
+                            found = true;
+                            indexWidget.centerTabContainer.selectChild(item);  //Sélection du tab déjà ouvert
+                        } else {
+                        }
+                    });
+
+                    if(!found) {
                         var cp1 = new ContentPane({
-                            env: environnement,
-                            page: nom,
-                            broker: broker,
-                            title: environnement+"-"+nom+"-"+broker,
+                            env: envId,
+                            page: pageId,
+                            broker: brokerId,
+                            title: title,
                             closable:true
                         });
-                        centerTabContainer.addChild(cp1);
-                        var hermesWidget = new HermesWidget(
-                            {
-                                "env": environnement,
-                                "broker": broker,
-                                "page": "Hermes like"
+                        if(pageId == "jmsBrowser") {
+                            indexWidget.centerTabContainer.addChild(cp1);
+                            var hermesWidget = new HermesWidget(
+                                {
+                                    "env": envId,
+                                    "broker": brokerId,
+                                    "page": pageId
 
-                            }
-                        );
-                        hermesWidget.placeAt(cp1);
-                        centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
-
-                    } else {
-                        var cp1 = new ContentPane({
-                            env: environnement,
-                            page: nom,
-                            title: environnement+"-"+nom,
-                            closable:true,
-                            selected:true
-                        });
-                        centerTabContainer.addChild(cp1);
-                        centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
+                                }
+                            );
+                            hermesWidget.placeAt(cp1);
+                            indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
+                        }
                     }
-                }
-
-
-
+                });
 
             });
 
-            var widget = this;
             topic.subscribe("clipboard/copy", function(arrayOfNewMessages){
-                var clipboardMessages = widget.get("clipboardMessages");
+                var clipboardMessages = indexWidget.get("clipboardMessages");
                 array.forEach(arrayOfNewMessages, function(msg, i){
                     clipboardMessages.push(msg);
 
                 });
-                var clipboardMessagesCount = widget.get("clipboardMessagesCount");
+                var clipboardMessagesCount = indexWidget.get("clipboardMessagesCount");
 
-                widget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
+                indexWidget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
 
-                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "fixed");
-                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize","30px");
-                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","inline");
+                domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "position", "fixed");
+                domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "fontSize","30px");
+                domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "display","inline");
 
                 setTimeout(function() {
-                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "relative");
-                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize",null);
-                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","none");
-
-
+                    domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "position", "relative");
+                    domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "fontSize",null);
+                    domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "display","none");
                 }, 1000);
 
 
             });
 
             topic.subscribe("clipboard/action", function(callback){
-                var clipboardMessages = widget.get("clipboardMessages");
+                var clipboardMessages = indexWidget.get("clipboardMessages");
                 callback(clipboardMessages);
             });
-
-
-
 
         },
 

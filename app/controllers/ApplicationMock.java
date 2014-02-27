@@ -15,6 +15,12 @@ import java.util.List;
 
 public class ApplicationMock extends Controller {
 
+
+    public static Action<AnyContent> main() {
+        return Assets.at("/public/json", "main.json");
+    }
+
+
     public static Result index() {
         return ok(index.render("Your new application is ready."));
     }
@@ -69,4 +75,6 @@ public class ApplicationMock extends Controller {
         System.out.println(msgs);
         return ok("Pasted");
     }
+
+
 }
