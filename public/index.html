@@ -36,7 +36,9 @@
                 }
 
                 if(queue != null) {
-                    topic.publish("hermes/queueSelected", env, page, broker, queue);
+                    indexWidget.mainDataPromise.then(function() {
+                        topic.publish("hermes/queueSelected", env, page, broker, queue);
+                    });
                 }
 
 
