@@ -128,13 +128,15 @@ define([
                 indexWidget.mainDataPromise.then(function() {
                     //On récupère l'environnement sélectionné
                     var env = array.filter(indexWidget.mainData.environments, function(env) {
-                        return env.id = envId;
+                        return (env.id == envId);
                     })[0];
+
+                    console.log(env);
 
 
                     //On récupère la page sélectionné
                     var page = array.filter(env.pagesGranted, function(pageGranted) {
-                        return pageGranted.id = pageId;
+                        return (pageGranted.id == pageId);
                     })[0];
 
                     var title = env.name +"-"+page.name
@@ -144,7 +146,7 @@ define([
                     if(page.id == "jmsBrowser") {
                         //On récupère le broker sélectionné
                         var broker = array.filter(env.brokers, function(broker) {
-                            return broker.id = brokerId;
+                            return (broker.id == brokerId);
                         })[0];
                         title += "-"+broker.name;
                     }
