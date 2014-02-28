@@ -171,6 +171,7 @@ define([
         },
         _onMoveSelection : function() {
 
+
             alert("Move selection");
         },
 
@@ -223,7 +224,50 @@ define([
                 domStyle.set(this.fieldsetProperties, "display", "block");
                 this.set("detailsState", "default");
             }
+        },
+
+        _onOpenMoveSelection : function() {
+            var envStore = this.envStore;
+            request("/services/environments", {handleAs: "json"}).then(
+                function(text) {
+                    envStore.data = text;
+                },
+                function(error) {
+                    alert("error");
+                }
+            );
+            this.moveSelectionDialog.show();
+        } ,
+
+        _onSelectEnv : function(env) {
+            var brokersStore = this.brokersStore;
+            this.filteringSelectBrokerWidget.attr("value", null);
+            this.filteringSelectQueueWidget.attr("value", null);
+            request("/services/environments/"+env+"/brokers", {handleAs: "json"}).then(
+                function(text) {
+                    brokersStore.data = text;
+                },
+                function(error) {
+                    alert("error");
+                }
+            );
+        },
+
+        _onSelectBroker : function(broker) {
+            var env = this.filteringSelectEnvWidget.value;
+            this.filteringSelectQueueWidget.attr("value", null);
+            var brokersStore = this.brokersStore;
+            request("/services/environments/"+env+"/brokers/broker/queues", {handleAs: "json"}).then(
+                function(text) {
+                    queuesStore.data = text;
+                },
+                function(error) {
+                    alert("error");
+                }
+            );
         }
+
+
     });
 
 });

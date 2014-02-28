@@ -1,0 +1,10 @@
+[
+    {
+        "id" : "INA",
+        "name": "broker INA"
+    },
+    {
+        "id" : "INB",
+        "name": "broker INB"
+    }
+]

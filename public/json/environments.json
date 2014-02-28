@@ -1,10 +1,14 @@
 [
     {
-        "id": "INTEGRATION",
+        "id": "IN",
         "name": "INTEGRATION"
     },
     {
-        "id": "VALIDATION",
+        "id": "VA",
         "name": "VALIDATION"
+    } ,
+    {
+        "id": "PP",
+        "name": "PREPROD"
     }
 ]

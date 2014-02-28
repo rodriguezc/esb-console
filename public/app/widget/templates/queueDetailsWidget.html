@@ -45,25 +45,28 @@
     </div>
 
 
-    <div data-dojo-type="dijit/Dialog" data-dojo-id="moveSelectionDialog" title="Move to the destination" style="width:400px">
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="moveSelectionDialog" title="Move to the destination" style="width:400px">
             <form data-dojo-type="dijit/form/Form" data-dojo-props="onSubmit : this._onMoveSelection">
 
-                <span data-dojo-id="envStore" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [{name:'INTEGRATION', id:'INTEGRATION'},{name:'VALIDATION', id:'VALIDATION'}]" />
-                <span data-dojo-id="brokerStore" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [{name:'INA', id:'INA'},{name:'INB', id:'INB'}]" />
-                <span data-dojo-id="queuesStore" data-dojo-type="dojo/store/Memory" data-dojo-props="data: [{name:'envoyer1', id:'envoyer1'},{name:'envoyer2', id:'envoyer2'}]" />
+                <span data-dojo-id="envStore" data-dojo-attach-point="envStore" data-dojo-type="dojo/store/Memory" />
+                <span data-dojo-id="brokersStore" data-dojo-attach-point="brokersStore" data-dojo-type="dojo/store/Memory"  />
+                <span data-dojo-id="queuesStore" data-dojo-attach-point="queuesStore" data-dojo-type="dojo/store/Memory" />
 
                 <table>
                     <tr>
                         <td><label>Environment</label></td>
-                        <td><input type="text" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:envStore" /></td>
+                        <td><input type="text" data-dojo-attach-point="filteringSelectEnvWidget" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:envStore"
+                                   data-dojo-attach-event="onChange:_onSelectEnv" /></td>
                     </tr>
                     <tr>
                         <td><label>Broker</label></td>
-                        <td><input type="text" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:brokerStore" /></td>
+                        <td><input type="text" data-dojo-attach-point="filteringSelectBrokerWidget"  data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:brokersStore"
+                                   data-dojo-attach-event="onChange:_onSelectBroker"
+                                /></td>
                     </tr>
                     <tr>
                         <td><label>Queue</label></td>
-                        <td><input type="text" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:queuesStore" /></td>
+                        <td><input type="text" data-dojo-attach-point="filteringSelectQueueWidget" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:queuesStore" /></td>
                     </tr>
                 </table>
                  <input type="submit" data-dojo-type="dijit/form/Button" data-dojo-props="label: 'Move!'" />
@@ -122,7 +125,7 @@
                Move</span>
 
                 <div data-dojo-type="dijit/DropDownMenu">
-                    <div data-dojo-type="dijit/MenuItem" onclick="moveSelectionDialog.show()">
+                    <div data-dojo-type="dijit/MenuItem" data-dojo-attach-event="onClick: _onOpenMoveSelection">
                         Selection
                     </div>
                     <div data-dojo-type="dijit/MenuItem">All</div>

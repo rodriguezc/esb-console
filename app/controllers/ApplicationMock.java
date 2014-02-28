@@ -27,28 +27,28 @@ public class ApplicationMock extends Controller {
 
 
 
-    public static  Action<AnyContent> queues(String environnement, String broker) {
+    public static  Action<AnyContent> queues(String environment, String broker) {
         return Assets.at("/public/json", "queues.json");
     }
 
-    public static  Action<AnyContent> queue(String environnement, String broker, String queue) {
+    public static  Action<AnyContent> queue(String environment, String broker, String queue) {
         return Assets.at("/public/json", "queue.json");
     }
 
-    public static  Action<AnyContent> messages(String environnement, String broker, String queue) {
+    public static  Action<AnyContent> messages(String environment, String broker, String queue) {
         return Assets.at("/public/json", "messages.json");
     }
 
-    public static  Result delete(String environnement, String broker, String queue, String messages) {
+    public static  Result delete(String environment, String broker, String queue, String messages) {
         System.out.println(messages);
         return ok("x messages deleted");
     }
 
-    public static Result purge(String environnement, String broker, String queue) {
+    public static Result purge(String environment, String broker, String queue) {
         return ok("x messages purged");
     }
 
-    public static Result importFile(String environnement, String broker, String queue) {
+    public static Result importFile(String environment, String broker, String queue) {
         List<Http.MultipartFormData.FilePart> files = request().body().asMultipartFormData().getFiles();
 
         //https://github.com/dojo/dojox/blob/master/form/tests/UploadFile.php.disabled pour plus d'infos sur ce qu'il faut retourner
@@ -67,7 +67,7 @@ public class ApplicationMock extends Controller {
         return ok(arrayNode.toString());
     }
 
-    public static Result paste(String environnement, String broker, String queue) {
+    public static Result paste(String environment, String broker, String queue) {
         String msgs=  request().body().asFormUrlEncoded().get("msgs")[0];
         ArrayNode arrayNode = (ArrayNode)Json.parse(msgs);
         System.out.println(msgs);
@@ -75,4 +75,7 @@ public class ApplicationMock extends Controller {
     }
 
 
+    public static Action<AnyContent> brokers(String environment) {
+        return Assets.at("/public/json", "brokers.json");
+    }
 }
