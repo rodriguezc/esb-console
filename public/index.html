@@ -36,7 +36,7 @@
                 }
 
                 if(queue != null) {
-                    indexWidget.mainDataPromise.then(function() {
+                    indexWidget.mainDataPromise.then(function(){
                         topic.publish("hermes/queueSelected", env, page, broker, queue);
                     });
                 }
