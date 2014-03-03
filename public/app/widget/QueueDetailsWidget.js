@@ -10,11 +10,12 @@ define([
     "dojo/_base/array",
     "dojo/store/Memory",
     "dojox/html/entities",
-    "dojo/topic","dojo/dom-style"
+    "dojo/topic","dojo/dom-style",
+    "dojo/dom-form"
 
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle, domForm) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -169,14 +170,9 @@ define([
                 topic.publish("clipboard/copy",msgs);
             }
         },
-        _onMoveSelection : function() {
 
-
-            alert("Move selection");
-        },
 
         detailsState : "default",
-
         _onPropertiesExpand : function() {
             if(this.detailsState =="default") {
                 domStyle.set(this.fieldsetProperties, "width", "90%");
@@ -226,7 +222,17 @@ define([
             }
         },
 
+        _onOpenMoveAll: function() {
+            this.moveType ="all";
+            this._onOpenMove();
+        } ,
+
         _onOpenMoveSelection : function() {
+            this.moveType ="selection";
+            this._onOpenMove();
+        } ,
+
+        _onOpenMove: function() {
             var envStore = this.envStore;
             request("/services/environments", {handleAs: "json"}).then(
                 function(text) {
@@ -238,6 +244,57 @@ define([
             );
             this.moveSelectionDialog.show();
         } ,
+
+        _onMove : function(evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            var widget = this;
+            if(this.moveType == "selection") {
+                var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
+                if(rowsToDelete.length ==0) {
+                    alert("no row selected");
+                } else {
+                    if(confirm("you are about to move "+rowsToDelete.length+" messages")) {
+                        var formJson = domForm.toObject(this.moveForm);
+                        var postData = {};
+                        postData.destination = formJson;
+                        postData.msgs = rowsToDelete;
+                        var postDataStr = JSON.stringify(postData);
+
+                        request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/selection", {data: {"move": postDataStr}}).then(
+                            function(text) {
+                                widget._onRefreshClick();
+                                alert(text);
+
+                            },
+                            function(error) {
+                                alert("error");
+                            }
+                        );
+                    }
+                }
+            } else {
+                if(confirm("you are about to move all messages")) {
+                    var formJson = domForm.toObject(this.moveForm);
+                    var postData = {};
+                    postData.destination = formJson;
+                    var postDataStr = JSON.stringify(postData);
+                    request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all", {data: {"move": postDataStr}}).then(
+                        function(text) {
+                            widget._onRefreshClick();
+                            alert(text);
+                        },
+                        function(error) {
+                            alert("error");
+                        }
+                    );
+                }
+            }
+
+
+        },
+
 
         _onSelectEnv : function(env) {
             var brokersStore = this.brokersStore;

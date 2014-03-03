@@ -14,6 +14,9 @@ GET           /services/environments/:environment/brokers/:broker/queues/:queue/
 
 POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages                  controllers.ApplicationMock.paste(environment, broker, queue)
 POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages/import           controllers.ApplicationMock.importFile(environment, broker, queue)
+POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages/move/selection   controllers.ApplicationMock.moveSelection(environment, broker, queue)
+POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages/move/all   controllers.ApplicationMock.moveAll(environment, broker, queue)
+
 
 DELETE        /services/environments/:environment/brokers/:broker/queues/:queue/messages/all              controllers.ApplicationMock.purge(environment, broker, queue)
 DELETE        /services/environments/:environment/brokers/:broker/queues/:queue/messages/:messages        controllers.ApplicationMock.delete(environment, broker, queue,messages)

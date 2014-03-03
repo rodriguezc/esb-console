@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
@@ -73,6 +74,35 @@ public class ApplicationMock extends Controller {
         System.out.println(msgs);
         return ok("Pasted");
     }
+
+    public static Result moveSelection(String environment, String broker, String queue) {
+        String moveInfos=  request().body().asFormUrlEncoded().get("move")[0];
+        ObjectNode objectNode = (ObjectNode)Json.parse(moveInfos);
+
+        String destEnv = objectNode.get("destination").get("env").asText();
+        String destBroker = objectNode.get("destination").get("broker").asText();
+        String destQueue = objectNode.get("destination").get("queue").asText();
+        ArrayNode messages = (ArrayNode) objectNode.get("msgs");
+        for(JsonNode node : messages)  {
+            String msgId = node.asText();
+            System.out.println(msgId);
+        }
+        System.out.println(destEnv+" - "+destBroker+" "+destQueue+" "+messages);
+        return ok("Selection moved");
+    }
+
+    public static Result moveAll(String environment, String broker, String queue) {
+        String moveInfos=  request().body().asFormUrlEncoded().get("move")[0];
+        ObjectNode objectNode = (ObjectNode)Json.parse(moveInfos);
+
+        String destEnv = objectNode.get("destination").get("env").asText();
+        String destBroker = objectNode.get("destination").get("broker").asText();
+        String destQueue = objectNode.get("destination").get("queue").asText();
+
+        System.out.println(destEnv+" - "+destBroker+" "+destQueue);
+        return ok("All moved");
+    }
+
 
 
     public static Action<AnyContent> brokers(String environment) {
