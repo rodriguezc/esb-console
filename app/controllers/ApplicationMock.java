@@ -40,9 +40,9 @@ public class ApplicationMock extends Controller {
         return Assets.at("/public/json", "messages.json");
     }
 
-    public static  Result delete(String environment, String broker, String queue, String messages) {
-        System.out.println(messages);
-        return ok("x messages deleted");
+    public static  Result delete(String environment, String broker, String queue) {
+        ArrayNode msgsIdJson= (ArrayNode)request().body().asJson();
+        return ok(msgsIdJson.size()+" messages deleted");
     }
 
     public static Result purge(String environment, String broker, String queue) {
@@ -69,16 +69,13 @@ public class ApplicationMock extends Controller {
     }
 
     public static Result paste(String environment, String broker, String queue) {
-        String msgs=  request().body().asFormUrlEncoded().get("msgs")[0];
-        ArrayNode arrayNode = (ArrayNode)Json.parse(msgs);
+        ArrayNode msgs = (ArrayNode) request().body().asJson();
         System.out.println(msgs);
-        return ok("Pasted");
+        return ok(msgs.size()+" Pasted");
     }
 
     public static Result moveSelection(String environment, String broker, String queue) {
-        String moveInfos=  request().body().asFormUrlEncoded().get("move")[0];
-        ObjectNode objectNode = (ObjectNode)Json.parse(moveInfos);
-
+        JsonNode objectNode =  request().body().asJson();
         String destEnv = objectNode.get("destination").get("env").asText();
         String destBroker = objectNode.get("destination").get("broker").asText();
         String destQueue = objectNode.get("destination").get("queue").asText();
@@ -88,19 +85,17 @@ public class ApplicationMock extends Controller {
             System.out.println(msgId);
         }
         System.out.println(destEnv+" - "+destBroker+" "+destQueue+" "+messages);
-        return ok("Selection moved");
+        return ok(messages.size()+ " selection moved");
     }
 
     public static Result moveAll(String environment, String broker, String queue) {
-        String moveInfos=  request().body().asFormUrlEncoded().get("move")[0];
-        ObjectNode objectNode = (ObjectNode)Json.parse(moveInfos);
-
+        JsonNode objectNode =  request().body().asJson();
         String destEnv = objectNode.get("destination").get("env").asText();
         String destBroker = objectNode.get("destination").get("broker").asText();
         String destQueue = objectNode.get("destination").get("queue").asText();
 
         System.out.println(destEnv+" - "+destBroker+" "+destQueue);
-        return ok("All moved");
+        return ok("All moved to the queue "+destEnv+" - "+destBroker+" "+destQueue);
     }
 
 

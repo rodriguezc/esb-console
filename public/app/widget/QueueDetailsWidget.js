@@ -77,15 +77,17 @@ define([
                 if(confirm("You are about to delete "+rowsToDelete.length+" msgs from the queue "+this.queueName)) {
                     var widget = this;
                     var reloadMessages = this._reloadMessages;
-                    request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/"+rowsToDelete, {"method" : "DELETE"}).then(
+
+
+                    request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages/delete", {
+                        headers: {"Content-Type": "application/json"}, data: JSON.stringify(rowsToDelete)}).then(
                         function (data) {
                             alert(data);
-                            widget._reloadMessages();
+                            widget._onRefreshClick();
+
                         },
                         function (error) {
-                            alert("error");
                             console.log(error);
-
                         }
                     );
                 }
@@ -147,7 +149,10 @@ define([
                 }else
 
                 if(confirm("Your are about to paste "+msgList.length +" msgs to the queue "+widget.queueName)) {
-                    request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages", {data: {"msgs": JSON.stringify(msgList)}}).then(
+                    request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages",
+                        {
+                            headers: {"Content-Type": "application/json"},
+                            data: JSON.stringify(msgList)}).then(
                         function (data) {
                             alert(data);
                             widget._onRefreshClick();
@@ -262,7 +267,9 @@ define([
                         postData.msgs = rowsToDelete;
                         var postDataStr = JSON.stringify(postData);
 
-                        request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/selection", {data: {"move": postDataStr}}).then(
+                        request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/selection", {
+                            headers: {"Content-Type": "application/json"},
+                            data: postDataStr}).then(
                             function(text) {
                                 widget._onRefreshClick();
                                 alert(text);
@@ -280,7 +287,10 @@ define([
                     var postData = {};
                     postData.destination = formJson;
                     var postDataStr = JSON.stringify(postData);
-                    request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all", {data: {"move": postDataStr}}).then(
+                    request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all",
+                        {
+                        headers: {"Content-Type": "application/json"},
+                        data: postDataStr}).then(
                         function(text) {
                             widget._onRefreshClick();
                             alert(text);
