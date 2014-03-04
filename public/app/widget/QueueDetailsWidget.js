@@ -22,6 +22,21 @@ define([
         postCreate: function () {
             this.inherited(arguments);
             this._reloadMessages();
+
+            var widget = this;
+
+            this.queueRefreshHandle= topic.subscribe("hermes/queueRefresh", function(env, broker, queueName){
+
+                if (widget.env == env && widget.broker == broker && widget.queueName == queueName) {
+                    widget._onRefreshClick();
+                }
+
+            });
+        },
+
+        destroy: function() {
+            this.inherited(arguments);
+            this.queueRefreshHandle.remove();
         },
 
         detailsId: "- no row selected -",
@@ -272,6 +287,7 @@ define([
                             data: postDataStr}).then(
                             function(text) {
                                 widget._onRefreshClick();
+                                topic.publish("hermes/queueRefresh", postData.destination.env, postData.destination.broker, postData.destination.queue);
                                 alert(text);
 
                             },
@@ -279,6 +295,7 @@ define([
                                 alert("error");
                             }
                         );
+
                     }
                 }
             } else {
