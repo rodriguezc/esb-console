@@ -321,17 +321,20 @@ define([
         },
 
         _onSelectBroker : function(broker) {
-            var env = this.filteringSelectEnvWidget.value;
-            this.filteringSelectQueueWidget.attr("value", null);
-            var brokersStore = this.brokersStore;
-            request("/services/environments/"+env+"/brokers/broker/queues", {handleAs: "json"}).then(
-                function(text) {
-                    queuesStore.data = text;
-                },
-                function(error) {
-                    alert("error");
-                }
-            );
+            //condition because of attr(value, null) when changing env
+            if(broker != null && "" != broker) {
+                var env = this.filteringSelectEnvWidget.value;
+                this.filteringSelectQueueWidget.attr("value", null);
+                var brokersStore = this.brokersStore;
+                request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
+                    function(text) {
+                        queuesStore.data = text;
+                    },
+                    function(error) {
+                        alert("error");
+                    }
+                );
+            }
         }
 
 
