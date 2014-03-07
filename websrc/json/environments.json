@@ -1,0 +1,14 @@
+[
+    {
+        "id": "IN",
+        "name": "INTEGRATION"
+    },
+    {
+        "id": "VA",
+        "name": "VALIDATION"
+    } ,
+    {
+        "id": "PP",
+        "name": "PREPROD"
+    }
+]
