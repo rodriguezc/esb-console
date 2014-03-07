@@ -123,14 +123,16 @@ define([
         },
 
         _onRowClick: function (evt) {
-            var cell = this.queueGridWidget.cell(evt.rowId, evt.columnId);
-            var line = cell.data();
-            var newHash = "env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line;
-            if(decodeURI(hash()) == newHash) {
-                topic.publish("hermes/queueSelected", this.env, this.page, this.broker, line);
+            if(evt.detail == 2) {
+                var cell = this.queueGridWidget.cell(evt.rowId, evt.columnId);
+                var line = cell.data();
+                var newHash = "env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line;
+                if(decodeURI(hash()) == newHash) {
+                    topic.publish("hermes/queueSelected", this.env, this.page, this.broker, line);
 
-            } else {
-                hash(newHash);
+                } else {
+                    hash(newHash);
+                }
             }
         }
 

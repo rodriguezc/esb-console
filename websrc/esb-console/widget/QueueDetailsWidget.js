@@ -129,16 +129,15 @@ define([
             this.baseWidgetId._onRefreshClick();
         } ,
         _onRowClick : function(evt) {
-            var cell = this.messagesGridWidget.cell(evt.rowId, evt.columnId);
-            var msg = cell.row.model.byId(cell.row.id).item;
-        //    this.set("detailsContent", entities.encode(msg.content));
-            this.set("detailsContent", msg.content);
+            if(evt.detail == 2) {
+                var cell = this.messagesGridWidget.cell(evt.rowId, evt.columnId);
+                var msg = cell.row.model.byId(cell.row.id).item;
+            //    this.set("detailsContent", entities.encode(msg.content));
+                this.set("detailsContent", msg.content);
 
-            this.set("detailsProperties", msg.properties);
-            this.set("detailsId", msg.id);
-
-
-
+                this.set("detailsProperties", msg.properties);
+                this.set("detailsId", msg.id);
+            }
         },
         _onCopyClick : function() {
             var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
