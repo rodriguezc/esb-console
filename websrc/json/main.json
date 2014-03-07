@@ -13,6 +13,10 @@
 
             "pagesGranted": [
                 {
+                    "id" :"bundles",
+                    "name" :"Bundles"
+                },
+                {
                     "id" :"queuesStats",
                     "name" :"Queues stats"
                 },
@@ -39,6 +43,10 @@
             "name": "VALIDATION",
             "pagesGranted": [
                 {
+                    "id" :"bundles",
+                    "name" :"Bundles"
+                },
+                {
                     "id" :"queuesStats",
                     "name" :"Queues stats"
                 },
@@ -49,10 +57,6 @@
             ],
 
             "brokers": [
-                {
-                    "id" :"queuesStats",
-                    "name" :"Queues stats"
-                },
                 {
                     "id" : "VAA",
                     "name": "broker VAA"

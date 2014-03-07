@@ -16,10 +16,11 @@ define([
     "dijit/layout/ContentPane",
     "esb-console/widget/JmsBrowserWidget",
     "esb-console/widget/QueuesStatsWidget",
+    "esb-console/widget/BundlesWidget",
     "dojo/hash",
     "dojo/dom-style"
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, JmsBrowserWidget, QueuesStatsWidget, hash, domStyle) {
+             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, JmsBrowserWidget, QueuesStatsWidget, BundlesWidget, hash, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -197,6 +198,17 @@ define([
                                 }
                             );
                             queuesStatsWidget.placeAt(cp1);
+                            indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
+                        }
+
+                        else if(pageId == "bundles") {
+                            indexWidget.centerTabContainer.addChild(cp1);
+                            var bundlesWidget = new BundlesWidget(
+                                {
+                                    "env": envId
+                                }
+                            );
+                            bundlesWidget.placeAt(cp1);
                             indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
                         }
                     }

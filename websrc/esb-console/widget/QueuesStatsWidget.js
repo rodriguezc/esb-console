@@ -69,7 +69,7 @@ define([
                         structure.push({field: existingBrokersId[i]+'_dequeue', name: 'dequeue', brokerId: existingBrokersId[i]});
                     }
 
-                    structure.push({field: "status", name: "status"});
+                    structure.push({field: "status", name: "status (OK,KO,WARN)"});
 
                     var grid = new Grid({
                         cacheClass: Cache,
@@ -82,7 +82,7 @@ define([
                         ],
                         store: store,
                         structure: structure,
-                        headerGroups: headerGroups
+                        headerGroups: headerGroups,
                     });
 
                     grid.onCellClick = function(evt) {
@@ -113,9 +113,12 @@ define([
                             }
                         }
                     }
-
                     grid.placeAt(widget.gridNode);
                     grid.startup();
+
+                    setTimeout(function() {
+                        grid.setColumns([{field: 'name', name: 'name'}]);
+                    },3000);
 
                 },
                 function(error){

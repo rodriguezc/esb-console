@@ -1,0 +1,32 @@
+<div style="width: 100%; height: 100%;">
+
+    <script type="dojo/require">Filter: "gridx/modules/Filter"</script>
+    <script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
+    <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
+    <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
+    <script type="dojo/require">VirtualVScroller: "gridx/modules/VirtualVScroller"</script>
+
+    <div data-dojo-attach-point="gridStoreWidget" data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
+
+    <div data-dojo-type="gridx/Grid"
+         data-dojo-attach-point="gridWidget"
+         data-dojo-props="store: store,
+                             cacheClass: Cache,
+                                modules: [
+                                            Sort,
+                                            Filter,
+                                            QuickFilter,
+                                            VirtualVScroller
+                                         ],
+                              structure: [
+                                            {field: 'name', name: 'name'},
+                                            {field: 'symbolicName', name: 'symbolic name'},
+                                            {field: 'version', name: 'version'},
+                                            {field: 'serverName', name: 'server'},
+                                            {field: 'bundleId', name: 'bundle id'},
+                                            {field: 'state', name: 'state'},
+                                            {field: 'lastModification', name: 'last modification'}
+        ]
+        " style="width: 100%;height: 100%"></div>
+
+</div>

@@ -1,0 +1,306 @@
+[
+    {
+        "id" : "ina_100_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_100_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_101_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_101_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_102_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_102_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "ina_103_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_103_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_104_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_104_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_105_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_105_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_106_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_106_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_107_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_107_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_108_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_108_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_109_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_109_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_110_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_110_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_111_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_111_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_112_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_112_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+    {
+        "id" : "ina_113_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "ina",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    },
+
+    {
+        "id" : "inb_113_symbolicname0",
+        "name": "mybundle1",
+        "symbolicName": "ch.mybundle1",
+        "version": "1.0",
+        "serverName": "inb",
+        "bundleId": 100,
+        "state": "ACTIVE",
+        "lastModification": "2014.01.01 10:13:19.811"
+    }
+
+
+
+
+
+
+
+
+
+]
