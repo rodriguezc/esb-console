@@ -13,7 +13,11 @@
 
             "pagesGranted": [
                 {
-                    "id" :"jmsBrowser",
+                    "id" :"queuesStats",
+                    "name" :"Queues stats"
+                },
+                {
+                  "id" :"jmsBrowser",
                   "name" :"JMS Browser"
                 }
 
@@ -35,12 +39,20 @@
             "name": "VALIDATION",
             "pagesGranted": [
                 {
+                    "id" :"queuesStats",
+                    "name" :"Queues stats"
+                },
+                {
                     "id" :"jmsBrowser",
                     "name" :"JMS Browser"
                 }
             ],
 
             "brokers": [
+                {
+                    "id" :"queuesStats",
+                    "name" :"Queues stats"
+                },
                 {
                     "id" : "VAA",
                     "name": "broker VAA"

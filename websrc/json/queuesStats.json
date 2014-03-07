@@ -1,0 +1,155 @@
+[
+    {
+        "id" : "queue10",
+        "name": "queue10",
+        "size" : 100,
+        "status": "OK",
+        "brokers" : [
+            {
+                "id": "INA",
+                "name": "INA",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            },
+            {
+                "id": "INB",
+                "name": "INB",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            }
+        ]
+    },
+
+    {
+        "id" : "queue11",
+        "name": "queue11",
+        "size" : 120,
+        "status": "KO",
+
+        "brokers" : [
+            {
+                "id": "INB",
+                "name": "INB",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            }
+        ]
+    },
+    {
+        "id" : "queue12",
+        "name": "queue12",
+        "size" : 120,
+        "status": "KO",
+
+        "brokers" : [
+            {
+                "id": "INB",
+                "name": "INB",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            }
+        ]
+    },
+    {
+        "id" : "queue13",
+        "name": "queue13",
+        "size" : 120,
+        "status": "KO",
+
+        "brokers" : [
+            {
+                "id": "INB",
+                "name": "INB",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            }
+        ]
+    },
+    {
+        "id" : "queue14",
+        "name": "queue14",
+        "size" : 120,
+        "status": "KO",
+
+        "brokers" : [
+            {
+                "id": "INB",
+                "name": "INB",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            }
+        ]
+    },
+    {
+        "id" : "queue15",
+        "name": "queue15",
+        "size" : 120,
+        "status": "KO",
+
+        "brokers" : [
+            {
+                "id": "INB",
+                "name": "INB",
+                "stats":   {
+                    "size": 20,
+                    "consumers": [{"name": "christophe"},{"name": "giampaolo"}],
+                    "consumersSize": 2,
+                    "dequeue": 6,
+                    "enqueue": 2,
+                    "inflight": 1,
+                    "averageEnqueueTime": 100,
+                    "memoryLimit": 1048576
+                }
+            }
+        ]
+    }
+
+]

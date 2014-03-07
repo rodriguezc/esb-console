@@ -15,10 +15,11 @@ define([
     "dijit/PopupMenuItem",
     "dijit/layout/ContentPane",
     "esb-console/widget/JmsBrowserWidget",
+    "esb-console/widget/QueuesStatsWidget",
     "dojo/hash",
     "dojo/dom-style"
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, JmsBrowserWidget, hash, domStyle) {
+             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, JmsBrowserWidget, QueuesStatsWidget, hash, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -45,7 +46,11 @@ define([
             }));
 
             this.centerTabContainer.watch("selectedChildWidget", function(name, oval, nval){
-                hash("env="+nval.env+"&page="+nval.page+"&broker="+nval.broker);
+                var newHash = "env="+nval.env+"&page="+nval.page;
+                if(nval.broker !=null && nval.broker != undefined) {
+                    newHash += "&broker="+nval.broker;
+                }
+                hash(newHash);
             });
 
 
@@ -181,6 +186,17 @@ define([
                                 }
                             );
                             jmsBrowserWidget.placeAt(cp1);
+                            indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
+                        }
+
+                        else if(pageId == "queuesStats") {
+                            indexWidget.centerTabContainer.addChild(cp1);
+                            var queuesStatsWidget = new QueuesStatsWidget(
+                                {
+                                    "env": envId
+                                }
+                            );
+                            queuesStatsWidget.placeAt(cp1);
                             indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
                         }
                     }

@@ -45,3 +45,8 @@ html, body {
     height: 18px;
     text-align: center;
 }
+
+.gridxGroupHeader .gridxSortNode {
+    text-align:center;
+
+}

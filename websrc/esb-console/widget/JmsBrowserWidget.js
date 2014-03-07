@@ -46,7 +46,10 @@ define([
 
             var queueGridWidget = this.queueGridWidget;
 
-            request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
+
+            this.queuesLoadedPromise= request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"});
+
+            this.queuesLoadedPromise.then(
                 function(text) {
                     queueGridWidget.model.clearCache();
                     var store = new Store({data: text});
@@ -66,43 +69,49 @@ define([
                 hash("env="+env+"&page="+page+"&broker="+broker+"&queue="+nval.queue);
             });
 
+            var widget = this;
+
             this.queueSelectedHandle= topic.subscribe("hermes/queueSelected", function(envP, pageP, brokerP, queueName){
-                if(env == envP && page == pageP && broker == brokerP) {
-                    var found = false;
-                    array.forEach(centerPaneWidget.getChildren(), function (item, index) {
-                        //C'est la même ligne
-                        if (item.title == queueName) {
-                            found = true;
-                            centerPaneWidget.selectChild(item);  //Sélection du tab déjà ouvert
-                        } else {
-                        }
-                    });
-                    if (!found) {
-                        var cp1 = new ContentPane({
-                            queue: queueName,
-                            title: queueName,
-                            closable: true
-                        });
-
-                        centerPaneWidget.addChild(cp1);
-                        centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
-                        //JSON REQUEST -> dans QueueDetailsWidget
-                        request("/services/environments/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
-                            function (data) {
-                                data.env = env;
-                                data.broker = broker;
-                                data.queueName = queueName;
-
-                                var queueDetailsWidget = new QueueDetailsWidget(data);
-                                queueDetailsWidget.placeAt(cp1);
-                            },
-                            function (error) {
-                                console.log(error);
-
+                widget.queuesLoadedPromise.then(function() {
+                    if(env == envP && page == pageP && broker == brokerP) {
+                        var found = false;
+                        array.forEach(centerPaneWidget.getChildren(), function (item, index) {
+                            //C'est la même ligne
+                            if (item.title == queueName) {
+                                found = true;
+                                centerPaneWidget.selectChild(item);  //Sélection du tab déjà ouvert
+                            } else {
                             }
-                        );
+                        });
+                        if (!found) {
+                            var cp1 = new ContentPane({
+                                queue: queueName,
+                                title: queueName,
+                                closable: true
+                            });
+
+                            centerPaneWidget.addChild(cp1);
+                            centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
+                            //JSON REQUEST -> dans QueueDetailsWidget
+                            request("/services/environments/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
+                                function (data) {
+                                    data.env = env;
+                                    data.broker = broker;
+                                    data.queueName = queueName;
+
+                                    var queueDetailsWidget = new QueueDetailsWidget(data);
+                                    queueDetailsWidget.placeAt(cp1);
+                                },
+                                function (error) {
+                                    console.log(error);
+
+                                }
+                            );
+                        }
                     }
-                }
+                });
+
+
             });
 
 

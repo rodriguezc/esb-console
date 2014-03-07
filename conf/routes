@@ -8,6 +8,7 @@
 GET           /services/main                                                                              controllers.ApplicationMock.main
 GET           /services/environments                                                                      controllers.ApplicationMock.environments
 GET           /services/environments/:environment/brokers                                                 controllers.ApplicationMock.brokers(environment)
+GET           /services/environments/:environment/queuesstats                                             controllers.ApplicationMock.queuesStats(environment)
 GET           /services/environments/:environment/brokers/:broker/queues                                  controllers.ApplicationMock.queues(environment, broker)
 GET           /services/environments/:environment/brokers/:broker/queues/:queue                           controllers.ApplicationMock.queue(environment, broker, queue)
 GET           /services/environments/:environment/brokers/:broker/queues/:queue/messages                  controllers.ApplicationMock.messages(environment, broker, queue)
