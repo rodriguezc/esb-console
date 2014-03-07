@@ -22,5 +22,8 @@ DELETE         /services/environments/:environment/brokers/:broker/queues/:queue
 POST         /services/environments/:environment/brokers/:broker/queues/:queue/messages/delete            controllers.ApplicationMock.delete(environment, broker, queue)
 
 
-GET           /                                                                                           controllers.Assets.at(path="/public", file="index.html")
-GET           /*file                                                                                      controllers.Assets.at(path="/public", file)
+#GET           /                                                                                           controllers.Assets.at(path="/public", file="index.html")
+#GET           /*file                                                                                      controllers.Assets.at(path="/public", file)
+
+GET           /                                                                                           controllers.Assets.at(path="/websrc", file="index-dev.html")
+GET           /*file                                                                                      controllers.Assets.at(path="/websrc", file)

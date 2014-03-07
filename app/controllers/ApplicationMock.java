@@ -18,26 +18,26 @@ public class ApplicationMock extends Controller {
 
 
     public static Action<AnyContent> main() {
-        return Assets.at("/public/json", "main.json");
+        return Assets.at("/websrc/json", "main.json");
     }
 
 
     public static Action<AnyContent> environments() {
-        return Assets.at("/public/json", "environments.json");
+        return Assets.at("/websrc/json", "environments.json");
     }
 
 
 
     public static  Action<AnyContent> queues(String environment, String broker) {
-        return Assets.at("/public/json", "queues.json");
+        return Assets.at("/websrc/json", "queues.json");
     }
 
     public static  Action<AnyContent> queue(String environment, String broker, String queue) {
-        return Assets.at("/public/json", "queue.json");
+        return Assets.at("/websrc/json", "queue.json");
     }
 
     public static  Action<AnyContent> messages(String environment, String broker, String queue) {
-        return Assets.at("/public/json", "messages.json");
+        return Assets.at("/websrc/json", "messages.json");
     }
 
     public static  Result delete(String environment, String broker, String queue) {
@@ -101,6 +101,6 @@ public class ApplicationMock extends Controller {
 
 
     public static Action<AnyContent> brokers(String environment) {
-        return Assets.at("/public/json", "brokers.json");
+        return Assets.at("/websrc/json", "brokers.json");
     }
 }
