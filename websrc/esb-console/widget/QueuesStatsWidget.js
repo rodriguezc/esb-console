@@ -115,11 +115,6 @@ define([
                     }
                     grid.placeAt(widget.gridNode);
                     grid.startup();
-
-                    setTimeout(function() {
-                        grid.setColumns([{field: 'name', name: 'name'}]);
-                    },3000);
-
                 },
                 function(error){
                     alert("error");
