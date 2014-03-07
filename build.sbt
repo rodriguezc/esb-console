@@ -9,3 +9,5 @@ playJavaSettings
 libraryDependencies += "commons-io" % "commons-io" % "2.4"
 
 libraryDependencies += "org.apache.activemq" % "activemq-all" % "5.9.0"
+
+playAssetsDirectories <+= baseDirectory / "websrc"
