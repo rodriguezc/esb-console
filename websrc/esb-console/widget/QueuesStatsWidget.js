@@ -99,7 +99,6 @@ define([
                             //Click over Global column or //Click over last column
                             if(posColumn < 3 || posColumn == structure.length) {
                                 array.forEach(line.brokers, function (broker, index) {
-                                    alert("env="+widget.env+"&page=jmsBrowser&broker="+broker.id+"&queue="+queueName);
                                     hashUtils.changeHashParamByParam("env="+widget.env+"&page=jmsBrowser&broker="+broker.id+"&queue="+queueName);
                                 });
                             }
