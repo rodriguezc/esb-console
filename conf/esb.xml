@@ -1,0 +1,31 @@
+<esb:esb xmlns:esb="http://www.vd.ch/esb">
+  <!--1 or more repetitions:-->
+  <environnement name="string" label="string">
+    <!--1 or more repetitions:-->
+    <activemq node="string">
+      <jmxUrl>string</jmxUrl>
+      <jmxUser>string</jmxUser>
+      <jmxPassword>string</jmxPassword>
+      <jmsUrl>string</jmsUrl>
+      <jmsUser>string</jmsUser>
+      <jmsPassword>string</jmsPassword>
+    </activemq>
+    <!--1 or more repetitions:-->
+    <serviceMix node="string">
+      <jmxUrl>string</jmxUrl>
+      <jmxUser>string</jmxUser>
+      <jmxPassword>string</jmxPassword>
+    </serviceMix>
+    <auditDataSource>
+      <url>string</url>
+      <user>string</user>
+      <password>string</password>
+    </auditDataSource>
+    <cmptDataSource>
+      <url>string</url>
+      <user>string</user>
+      <password>string</password>
+    </cmptDataSource>
+    <raft>string</raft>
+  </environnement>
+</esb:esb>
