@@ -1,0 +1,220 @@
+<div style="width: 100%; height: 100%;">
+    <script type="dojo/require">at: "dojox/mvc/at"</script>
+    <script type="dojo/require">Filter: "gridx/modules/Filter"</script>
+    <script type="dojo/require">Cache: "gridx/core/model/cache/Sync"</script>
+    <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
+    <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
+    <script type="dojo/require">IndirectSelect: "gridx/modules/IndirectSelect"</script>
+    <script type="dojo/require">RowHeader: "gridx/modules/RowHeader"</script>
+    <script type="dojo/require">ExtendedSelectRow: "gridx/modules/extendedSelect/Row"</script>
+    <script type="dojo/require">on: "dojo/on"</script>
+    <script type="dojo/require">VirtualVScroller: "gridx/modules/VirtualVScroller"</script>
+
+
+
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="importDialog" data-dojo-id="importDialog" title="Import messages" style="width:400px;height: 250px">
+
+        <form method="post"
+              action="/services/environments/${env}/brokers/${broker}/queues/${queueName}/messages/import"
+              enctype="multipart/form-data"
+             >
+
+            <input name="uploadedfile" multiple="true" type="file" data-dojo-type="dojox/form/Uploader"
+                                                                   data-dojo-props="baseWidgetId: this, onComplete: this._onFileUploadComplete"
+                   label="Select Some Files" id="${id}_uploader" />
+            <input type="submit" label="Upload" data-dojo-type="dijit/form/Button" />
+        </form>
+        <div style="width: 100%;height:165px;overflow: auto">
+            <div data-dojo-type="dojox/form/uploader/FileList" uploaderId="${id}_uploader"></div>
+
+        </div>
+    </div>
+
+
+    <span style="font-weight: bold">Size:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'size')"></span>
+    <span style="font-weight: bold">Consumers:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'consumersSize')"></span>
+
+    <div data-dojo-type="dijit/Dialog" data-dojo-id="consumersDialog" title="Consumers" style="width:400px">
+        <ul data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'consumers')" >
+            <li>
+                <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span>
+            </li>
+        </ul>
+    </div>
+
+
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="moveSelectionDialog" title="Move to the destination" style="width:400px">
+            <form data-dojo-attach-point="moveForm"  data-dojo-attach-event="submit : _onMove">
+                <span data-dojo-id="envStore" data-dojo-attach-point="envStore" data-dojo-type="dojo/store/Memory" />
+                <span data-dojo-id="brokersStore" data-dojo-attach-point="brokersStore" data-dojo-type="dojo/store/Memory"  />
+                <span data-dojo-id="queuesStore" data-dojo-attach-point="queuesStore" data-dojo-type="dojo/store/Memory" />
+                <table>
+                    <tr>
+                        <td><label>Environment</label></td>
+                        <td><input name="env" type="text" data-dojo-attach-point="filteringSelectEnvWidget" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:envStore"
+                                   data-dojo-attach-event="onChange:_onSelectEnv" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Broker</label></td>
+                        <td><input name="broker" type="text" data-dojo-attach-point="filteringSelectBrokerWidget"  data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="store:brokersStore"
+                                   data-dojo-attach-event="onChange:_onSelectBroker"
+                                /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Queue</label></td>
+                        <td><input  name="queue" type="text" data-dojo-attach-point="filteringSelectQueueWidget" data-dojo-type="dijit/form/ComboBox" data-dojo-props="store:queuesStore" /></td>
+                    </tr>
+                </table>
+                 <input type="submit" data-dojo-type="dijit/form/Button" data-dojo-props="label: 'Move!'" />
+            </form>
+    </div>
+
+
+    <button data-dojo-type="dijit/form/Button"
+            data-dojo-props="iconClass:'zoomIcon', showLabel: false" type="button"
+            onclick="consumersDialog.show();">
+    </button>
+
+
+
+    <span style="font-weight: bold">Dequeue:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'dequeue')"></span>
+    <span style="font-weight: bold">Enqueue:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'enqueue')"></span>
+    <span style="font-weight: bold">InFlight:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'inflight')"></span>
+    <span style="font-weight: bold">Average enqueue time ms:</span>
+    <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'averageEnqueueTime')"></span>
+
+
+    <div style="margin-top: 3px">
+        <div data-dojo-type="dijit/MenuBar">
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onRefreshClick">
+                <span class="dijitIconUndo" style="display: inline-block">&nbsp;</span>
+                <span>Refresh</span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyClick" >
+                <span class="dijitIconCopy" style="display: inline-block">&nbsp;</span>
+                    Copy
+                </span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onCopyCurrentClick">
+                <span class="dijitIconCopy" style="display: inline-block">&nbsp;</span>
+                    Copy current msg
+                </span>
+
+            </div>
+
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPasteClick">
+                  <span><span class="dijitEditorIcon dijitEditorIconPaste" style="padding-left: 16px"></span>
+                    Paste
+                </span>
+            </div>
+
+            <div data-dojo-type="dijit/PopupMenuBarItem">
+                 <span>
+                <span class="dijitEditorIcon dijitEditorIconSelectAll" style="display: inline-block">&nbsp;</span>
+               Move</span>
+
+                <div data-dojo-type="dijit/DropDownMenu">
+                    <div data-dojo-type="dijit/MenuItem" data-dojo-attach-event="onClick: _onOpenMoveSelection">
+                        Selection
+                    </div>
+                    <div data-dojo-type="dijit/MenuItem" data-dojo-attach-event="onClick: _onOpenMoveAll">All</div>
+
+                </div>
+            </div>
+
+
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onDeleteClick">
+                <span><span class="dijitEditorIcon dijitEditorIconDelete" style="padding-left: 16px"></span>
+                    Delete
+                </span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: _onPurgeClick">
+                <span><span class="dijitEditorIcon dijitEditorIconRemoveFormat" style="padding-left: 16px"></span>
+                    Purge
+                </span>
+            </div>
+            <div data-dojo-type="dijit/MenuBarItem"  onclick="importDialog.show();">
+                  <span><span class="dijitIconFolderOpen" style="padding-left: 16px"></span>
+                    Import messages
+                </span>
+
+            </div>
+            <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
+            <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
+        </div>
+
+             <span data-dojo-id="messagesStore" data-dojo-type="dojo/store/JsonRest"
+                   data-dojo-props="target: '/services/environnements/${env}/brokers/${broker}/queues/${queueName}/messages'">
+             </span>
+           <span data-dojo-id="messagesOStore" data-dojo-type="dojo/data/ObjectStore"
+                 data-dojo-props="objectStore: messagesStore">
+             </span>
+    </div>
+
+    <div data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
+
+    <div style="height: 40%">
+    <div data-dojo-type="gridx/Grid"
+         data-dojo-attach-event="onCellClick : _onRowClick"
+         data-dojo-attach-point="messagesGridWidget"
+         data-dojo-props="store: store,
+                             cacheClass: Cache,
+                                modules: [
+                                            Sort,
+                                            Filter,
+                                            QuickFilter,
+                                            IndirectSelect,
+                                            RowHeader,
+                                            ExtendedSelectRow,
+                                            VirtualVScroller
+                                         ],
+                              structure: [
+                                            {field: 'position', name: '#',  width:'30px'},
+                                            {field: 'type', name: 'Type',  width:'200px'},
+                                            {field: 'id', name: 'jmsMessageId'},
+                                            {field: 'jmsTimestamp', name: 'jmsTimestamp'}
+
+
+        ]
+        "style="width: 100%;height: 90%;margin-top: 1px"></div>
+    </div>
+    <hr style="margin-top: -10px"/>
+    <div style="height: 45%">
+        <fieldset data-dojo-attach-point="fieldsetProperties" style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3">
+            <legend >
+                <input type="button" data-dojo-props="iconClass:'expandIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onPropertiesExpand" />
+                <input type="button" data-dojo-props="iconClass:'contractIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onPropertiesContract" />
+                Properties of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span>
+
+            </legend>
+                <div style="overflow-y: auto;height: 100%">
+                <table style="width: 100%;font-size: 14px;">
+                  <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
+                        <td style="width: 50%"><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
+                        <td><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'value')"></span></td>
+                  </tbody>
+                </table>
+                </div>
+
+        </fieldset>
+        <fieldset data-dojo-attach-point="fieldsetContent" style="float: left;width:60%;padding-left: 10px;background-color: #f1f9ff; border: 1px solid #d3d3d3;height: 100%;margin-left: 5px">
+            <legend>
+                <input type="button" data-dojo-props="iconClass:'expandIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onContentExpand" />
+                <input type="button" data-dojo-props="iconClass:'contractIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onContentContract" />
+                Content of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span>
+             </legend>
+                <div style="overflow-y: auto;height: 100%">
+                    <textarea readonly data-dojo-type="dijit/form/Textarea" data-dojo-props="value: at(this, 'detailsContent')" style="width:100%;height: 100%" ></textarea>
+                </div>
+        </fieldset>
+
+    </div>
+
+
+
+</div>
