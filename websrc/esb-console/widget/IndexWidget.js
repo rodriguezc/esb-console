@@ -5,22 +5,26 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./templates/IndexWidget.html",
-    "dojo/request",
-    "dojo/_base/array",
-    "dojo/topic",
     "dijit/MenuBar",
     "dijit/DropDownMenu",
     "dijit/PopupMenuBarItem",
-    "dijit/MenuItem",
     "dijit/PopupMenuItem",
+    "dijit/MenuItem",
     "dijit/layout/ContentPane",
-    "esb-console/widget/JmsBrowserWidget",
-    "esb-console/widget/QueuesStatsWidget",
-    "esb-console/widget/BundlesWidget",
     "dojo/hash",
+    "dojo/topic",
+    "dojo/io-query",
+    "dojo/_base/array",
+    "dojo/request",
+    "esb-console/widget/BundlesWidget",
+    "esb-console/widget/QueuesStatsWidget",
+    "esb-console/widget/JmsBrowserWidget",
     "dojo/dom-style"
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-             array, topic, MenuBar, DropDownMenu,PopupMenuBarItem,MenuItem, PopupMenuItem, ContentPane, JmsBrowserWidget, QueuesStatsWidget, BundlesWidget, hash, domStyle) {
+
+
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
+             MenuBar, DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery,
+             array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -30,12 +34,10 @@ define([
         appUser: "",
         appVersion: "",
         appEnvironment: "",
-        mainDataPromise : "",
 
         postCreate: function () {
             this.inherited(arguments);
 
-            var indexWidget = this;
 
             var pMenuBar = new MenuBar({});
             pMenuBar.placeAt(this.navMenuNode);
@@ -46,51 +48,37 @@ define([
                 popup: pSubMenu
             }));
 
-            this.centerTabContainer.watch("selectedChildWidget", function(name, oval, nval){
-                var newHash = "env="+nval.env+"&page="+nval.page;
-                if(nval.broker !=null && nval.broker != undefined) {
-                    newHash += "&broker="+nval.broker;
-                }
-                hash(newHash);
-            });
+            var widget = this;
 
+            request("/services/main", {handleAs: "json"}).then(
+                function (data) {
+                    widget.set("mainData", data);
+                    widget.set("appUser", data.application.user);
+                    widget.set("appVersion", data.application.version);
+                    widget.set("appEnvironment", data.application.environment);
 
-            this.mainDataPromise = request("/services/main", {handleAs: "json"});
-            this.mainDataPromise.then(
-
-                function(data) {
-                    indexWidget.set("mainData", data);
-                    indexWidget.set("appUser", data.application.user);
-                    indexWidget.set("appVersion", data.application.version);
-                    indexWidget.set("appEnvironment", data.application.environment);
-
-                    array.forEach(data.environments, function(environment, i){
+                    array.forEach(data.environments, function (environment, i) {
                         var envId = environment.id;
                         var envName = environment.name;
 
                         var dropDownMenu = new DropDownMenu({});
-                        array.forEach(environment.pagesGranted, function(pageGranted, i){
+                        array.forEach(environment.pagesGranted, function (pageGranted, i) {
                             var pageGrantedId = pageGranted.id;
                             var pageGrantedName = pageGranted.name;
 
 
-                            if(pageGrantedId == "jmsBrowser") {
+                            if (pageGrantedId == "jmsBrowser") {
                                 var dropDownMenuBrokers = new DropDownMenu({});
 
-                                array.forEach(environment.brokers, function(broker, j){
+                                array.forEach(environment.brokers, function (broker, j) {
                                     var brokerId = broker.id;
                                     var brokerName = broker.name;
 
                                     dropDownMenuBrokers.addChild(new MenuItem({
                                         label: brokerName,
-                                        onClick: function() {
-                                            var newHash = "env="+envId+"&page=jmsBrowser&broker="+brokerId;
-                                            if(decodeURI(hash()) == newHash) {
-                                                   topic.publish("menu/pageSelected", envId, pageGrantedId, brokerId);
-
-                                            } else {
-                                                hash(newHash);
-                                            }
+                                        onClick: function () {
+                                            var newHash = "env=" + envId + "&page=jmsBrowser&broker=" + brokerId;
+                                            hash(newHash);
                                         }
                                     }));
                                 });
@@ -101,17 +89,15 @@ define([
                                 }));
 
 
-
                             } else {
                                 dropDownMenu.addChild(new MenuItem({
                                     label: pageGrantedName,
-                                    onClick: function() {
-                                        topic.publish("menu/pageSelected", envId, pageGrantedId);
+                                    onClick: function () {
+                                        var newHash = "env=" + envId + "&page="+pageGrantedId;
+                                        hash(newHash);
                                     }
                                 }));
                             }
-
-
 
                         });
                         pSubMenu.addChild(new PopupMenuItem({
@@ -122,138 +108,98 @@ define([
 
                     });
                 },
-                function(error) {
-                    alert("Error when loading main data");
-                    console.log("An error occurred: " + error);
+                function (error) {
+                    alert("error");
                 }
             );
 
-
-            topic.subscribe("menu/pageSelected", function(envId, pageId, brokerId){
-                //Dès que le main data est chargé
-                indexWidget.mainDataPromise.then(function() {
-                    //On récupère l'environnement sélectionné
-                    var env = array.filter(indexWidget.mainData.environments, function(env) {
-                        return (env.id == envId);
-                    })[0];
-
-                    console.log(env);
-
-
-                    //On récupère la page sélectionné
-                    var page = array.filter(env.pagesGranted, function(pageGranted) {
-                        return (pageGranted.id == pageId);
-                    })[0];
-
-                    var title = env.name +"-"+page.name
-
-
-                    //Si la page est le browser JMS
-                    if(page.id == "jmsBrowser") {
-                        //On récupère le broker sélectionné
-                        var broker = array.filter(env.brokers, function(broker) {
-                            return (broker.id == brokerId);
-                        })[0];
-                        title += "-"+broker.name;
-                    }
-                    var found = false;
-
-
-                    array.forEach(indexWidget.centerTabContainer.getChildren(), function(item, index) {
-                        //C'est la même ligne
-                        if(item.title == title) {
-                            found = true;
-                            indexWidget.centerTabContainer.selectChild(item);  //Sélection du tab déjà ouvert
-                        } else {
-                        }
-                    });
-
-                    if(!found) {
-                        var cp1 = new ContentPane({
-                            env: envId,
-                            page: pageId,
-                            broker: brokerId,
-                            title: title,
-                            closable:true
-                        });
-                        if(pageId == "jmsBrowser") {
-                            indexWidget.centerTabContainer.addChild(cp1);
-                            var jmsBrowserWidget = new JmsBrowserWidget(
-                                {
-                                    "env": envId,
-                                    "broker": brokerId,
-                                    "page": pageId
-
-                                }
-                            );
-                            jmsBrowserWidget.placeAt(cp1);
-                            indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
-                        }
-
-                        else if(pageId == "queuesStats") {
-                            indexWidget.centerTabContainer.addChild(cp1);
-                            var queuesStatsWidget = new QueuesStatsWidget(
-                                {
-                                    "env": envId
-                                }
-                            );
-                            queuesStatsWidget.placeAt(cp1);
-                            indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
-                        }
-
-                        else if(pageId == "bundles") {
-                            indexWidget.centerTabContainer.addChild(cp1);
-                            var bundlesWidget = new BundlesWidget(
-                                {
-                                    "env": envId
-                                }
-                            );
-                            bundlesWidget.placeAt(cp1);
-                            indexWidget.centerTabContainer.selectChild(cp1);  //Sélection du tab déjà ouvert
-                        }
-                    }
-                });
-
-            });
-
             topic.subscribe("clipboard/copy", function(arrayOfNewMessages){
-                var clipboardMessages = indexWidget.get("clipboardMessages");
+                var clipboardMessages = widget.get("clipboardMessages");
                 array.forEach(arrayOfNewMessages, function(msg, i){
                     clipboardMessages.push(msg);
 
                 });
-                var clipboardMessagesCount = indexWidget.get("clipboardMessagesCount");
+                var clipboardMessagesCount = widget.get("clipboardMessagesCount");
 
-                indexWidget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
+                widget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
 
-                domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "position", "fixed");
-                domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "fontSize","30px");
-                domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "display","inline");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "fixed");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize","30px");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","inline");
 
                 setTimeout(function() {
-                    domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "position", "relative");
-                    domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "fontSize",null);
-                    domStyle.set(indexWidget.clipboardMessagesCountWidgetBig.domNode, "display","none");
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "relative");
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize",null);
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","none");
                 }, 1000);
 
 
             });
 
             topic.subscribe("clipboard/action", function(callback){
-                var clipboardMessages = indexWidget.get("clipboardMessages");
+                var clipboardMessages = widget.get("clipboardMessages");
                 callback(clipboardMessages);
             });
-
-        },
-
-        resize: function() {
-            this.inherited(arguments);
-            this.borderContainer.resize();
         },
 
         _onDeleteClipboard: function() {
             this.set("clipboardMessages", []);
             this.set("clipboardMessagesCount", 0);
+        },
+
+        _onViewClipboard : function() {
+            alert("not implemented");
+        },
+
+
+        resize: function () {
+            this.inherited(arguments);
+            this.borderContainer.resize();
+        },
+
+        generateTabContent: function (hashObj) {
+            if (hashObj.env != undefined && hashObj.page != undefined) {
+                if ("bundles" == hashObj.page) {
+                    var bundlesWidget = new BundlesWidget(
+                        {
+                            "env": hashObj.env
+                        }
+                    );
+                    var tabContent = {
+                        "title": hashObj.env + "- Bundles",
+                        "widget": bundlesWidget
+                    }
+                    return tabContent;
+
+                } else if ("queuesStats" == hashObj.page) {
+                    var queuesStatsWidget = new QueuesStatsWidget(
+                        {
+                            "env": hashObj.env
+                        }
+                    );
+                    var tabContent = {
+                        "title": hashObj.env + "- Queues stats",
+                        "widget": queuesStatsWidget
+                    }
+                    return tabContent;
+                }  else if ("jmsBrowser" == hashObj.page) {
+                    if (hashObj.broker != null) {
+                        var jmsBrowserWidget = new JmsBrowserWidget(
+                            {
+                                "env":  hashObj.env,
+                                "broker":  hashObj.broker
+                            }
+                        );
+
+                        var tabContent = {
+                            "title": hashObj.env + "- JMS Browser - "+hashObj.broker,
+                            "widget": jmsBrowserWidget
+                        }
+                        return tabContent;
+                    }
+
+                }
+            }
         }
 
     });

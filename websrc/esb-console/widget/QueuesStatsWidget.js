@@ -4,7 +4,7 @@ define([
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!./templates/queuesStatsWidget.html",
+    "dojo/text!./templates/QueuesStatsWidget.html",
     "dojo/request",
     "dojo/_base/array",
     "dojo/topic",
@@ -16,13 +16,11 @@ define([
     "gridx/modules/SingleSort",
     "gridx/modules/filter/QuickFilter",
     "gridx/modules/VirtualVScroller",
-    "gridx/modules/GroupHeader"
-
-
-
+    "gridx/modules/GroupHeader",
+    "esb-console/utils/hashUtils"
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             request, array, topic, hash, Grid, Store, Cache, Filter, Sort, QuickFilter, VirtualVScroller,GroupHeader) {
+             request, array, topic, hash, Grid, Store, Cache, Filter, Sort, QuickFilter, VirtualVScroller,GroupHeader, hashUtils) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         env: "DEFAULTENV",
 
@@ -82,8 +80,11 @@ define([
                         ],
                         store: store,
                         structure: structure,
-                        headerGroups: headerGroups,
+                        headerGroups: headerGroups
                     });
+
+                    widget.gridWidget = grid;
+
 
                     grid.onCellClick = function(evt) {
 
@@ -98,18 +99,15 @@ define([
                             //Click over Global column or //Click over last column
                             if(posColumn < 3 || posColumn == structure.length) {
                                 array.forEach(line.brokers, function (broker, index) {
-                                    topic.publish("menu/pageSelected", widget.env, "jmsBrowser", broker.id);
-                                    topic.publish("hermes/queueSelected", widget.env, "jmsBrowser", broker.id, queueName);
-
+                                    alert("env="+widget.env+"&page=jmsBrowser&broker="+broker.id+"&queue="+queueName);
+                                    hashUtils.changeHashParamByParam("env="+widget.env+"&page=jmsBrowser&broker="+broker.id+"&queue="+queueName);
                                 });
                             }
                             //Click over a broker column
                             else {
                                 console.log("broker column");
                                 var brokerId = structure[posColumn-1].brokerId;
-                                topic.publish("menu/pageSelected", widget.env, "jmsBrowser",brokerId);
-                                topic.publish("hermes/queueSelected", widget.env, "jmsBrowser", brokerId, queueName);
-
+                                hashUtils.changeHashParamByParam("env="+widget.env+"&page=jmsBrowser&broker="+brokerId+"&queue="+queueName);
                             }
                         }
                     }
@@ -122,7 +120,15 @@ define([
 
             );
 
+        },
+
+        resize: function () {
+            this.inherited(arguments);
+            if(this.gridWidget != undefined) {
+                this.gridWidget.resize();
+            }
         }
+
     });
 
 });

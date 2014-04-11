@@ -6,7 +6,7 @@ var profile = (function(){
                 "esb-console/esb-console.profile":1,
                 "esb-console/package.json":1
             };
-            return (mid in list) || /(css|png|jpg|jpeg|gif|tiff)$/.test(filename);
+            return (mid in list) || /(png|jpg|jpeg|gif|tiff)$/.test(filename);
         };
 
     return {

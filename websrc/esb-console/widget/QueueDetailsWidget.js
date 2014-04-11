@@ -4,7 +4,7 @@ define([
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!./templates/queueDetailsWidget.html",
+    "dojo/text!./templates/QueueDetailsWidget.html",
     "dojo/request",
     "dijit/Dialog",
     "dojo/_base/array",
@@ -21,22 +21,16 @@ define([
         templateString: template,
         postCreate: function () {
             this.inherited(arguments);
-            this._reloadMessages();
+            this._onRefreshClick();
+        },
 
-            var widget = this;
-
-            this.queueRefreshHandle= topic.subscribe("hermes/queueRefresh", function(env, broker, queueName){
-
-                if (widget.env == env && widget.broker == broker && widget.queueName == queueName) {
-                    widget._onRefreshClick();
-                }
-
-            });
+        resize: function () {
+            this.inherited(arguments);  //Obligatoire si on ne veut pas des effets de bord
+            this.messagesGridWidget.resize();      //WORKAROUND
         },
 
         destroy: function() {
             this.inherited(arguments);
-            this.queueRefreshHandle.remove();
         },
 
         detailsId: "- no row selected -",

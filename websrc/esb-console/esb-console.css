@@ -6,23 +6,19 @@ html, body {
     padding: 0;
 }
 
-.appLayout {
+.esbConsoleLayout {
     height: 100%;
 }
 
-#leftCol {
-    width: 14em;
-}
-
 .zoomIcon {
-    background-image: url("../images/Zoom-icon16.png");
+    background-image: url("images/Zoom-icon16.png");
     background-repeat: no-repeat;
     width: 16px;
     height: 16px;
     text-align: center;
 }
 .zoomIcon18 {
-    background-image: url("../images/Zoom-icon16.png");
+    background-image: url("images/Zoom-icon16.png");
     background-repeat: no-repeat;
     width: 18px;
     height: 18px;
@@ -30,7 +26,7 @@ html, body {
 }
 
 .expandIcon18 {
-    background-image: url("../images/expand-icon.png");
+    background-image: url("images/expand-icon.png");
     background-repeat: no-repeat;
     width: 16px;
     height: 16px;
@@ -39,7 +35,7 @@ html, body {
 
 
 .contractIcon18 {
-    background-image: url("../images/contract-icon.png");
+    background-image: url("images/contract-icon.png");
     background-repeat: no-repeat;
     width: 18px;
     height: 18px;

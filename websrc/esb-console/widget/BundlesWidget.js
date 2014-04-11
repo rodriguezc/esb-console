@@ -4,7 +4,7 @@ define([
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!./templates/bundlesWidget.html",
+    "dojo/text!./templates/BundlesWidget.html",
     "dojo/request",
     "dojo/_base/array",
     "dojo/topic",
@@ -40,7 +40,13 @@ define([
                     alert("error");
                 }
             );
+        },
+
+        resize: function () {
+            this.inherited(arguments);
+            this.gridWidget.resize();
         }
+
     });
 
 });

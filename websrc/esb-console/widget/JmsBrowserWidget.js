@@ -4,7 +4,7 @@ define([
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!./templates/jmsBrowserWidget.html",
+    "dojo/text!./templates/JmsBrowserWidget.html",
     "dojo/request",
     "dojo/_base/array",
     "dojo/topic",
@@ -14,17 +14,17 @@ define([
     "dijit/MenuItem",
     "dijit/PopupMenuItem",
     "dijit/layout/ContentPane",
-    "esb-console/widget/QueueDetailsWidget",
     "dojo/hash",
-    "dojo/store/Memory"
+    "dojo/store/Memory",
+    "esb-console/widget/QueueDetailsWidget"
 
 
-
-
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             request, array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem,
-             ContentPane, QueueDetailsWidget, hash,Store) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
+             array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem, ContentPane, hash, Store,
+             QueueDetailsWidget
+            ) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
+
         env: "DEFAULTENV",
 
 
@@ -32,87 +32,32 @@ define([
         templateString: template,
 
 
-        destroy: function() {
+        destroy: function () {
             this.inherited(arguments);
-            this.queueSelectedHandle.remove();
         },
 
-        postCreate: function() {
+        postCreate: function () {
             this.inherited(arguments);
             var env = this.env;
-            var page = this.page;
-            var broker= this.broker;
-            var centerPaneWidget = this.centerPaneWidget;
-
+            var broker = this.broker;
             var queueGridWidget = this.queueGridWidget;
 
-
-            this.queuesLoadedPromise= request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"});
-
-            this.queuesLoadedPromise.then(
-                function(text) {
+            request("/services/environments/" + env + "/brokers/" + broker + "/queues", {handleAs: "json"}).then(
+                function (text) {
                     queueGridWidget.model.clearCache();
                     var store = new Store({data: text});
                     queueGridWidget.model.setStore(store);
                     queueGridWidget.body.refresh();
                     queueGridWidget.column(0).sort(false);
-
-
                 },
-                function(error) {
+                function (error) {
                     alert("error");
                     console.log(queueGridWidget);
                 }
             );
 
-            this.centerPaneWidget.watch("selectedChildWidget", function(name, oval, nval){
-                hash("env="+env+"&page="+page+"&broker="+broker+"&queue="+nval.queue);
-            });
-
             var widget = this;
 
-            this.queueSelectedHandle= topic.subscribe("hermes/queueSelected", function(envP, pageP, brokerP, queueName){
-                widget.queuesLoadedPromise.then(function() {
-                    if(env == envP && page == pageP && broker == brokerP) {
-                        var found = false;
-                        array.forEach(centerPaneWidget.getChildren(), function (item, index) {
-                            //C'est la même ligne
-                            if (item.title == queueName) {
-                                found = true;
-                                centerPaneWidget.selectChild(item);  //Sélection du tab déjà ouvert
-                            } else {
-                            }
-                        });
-                        if (!found) {
-                            var cp1 = new ContentPane({
-                                queue: queueName,
-                                title: queueName,
-                                closable: true
-                            });
-
-                            centerPaneWidget.addChild(cp1);
-                            centerPaneWidget.selectChild(cp1);  //Sélection du nouveau tab
-                            //JSON REQUEST -> dans QueueDetailsWidget
-                            request("/services/environments/" + env + "/brokers/" + broker + "/queues/" + queueName, {"handleAs": "json"}).then(
-                                function (data) {
-                                    data.env = env;
-                                    data.broker = broker;
-                                    data.queueName = queueName;
-
-                                    var queueDetailsWidget = new QueueDetailsWidget(data);
-                                    queueDetailsWidget.placeAt(cp1);
-                                },
-                                function (error) {
-                                    console.log(error);
-
-                                }
-                            );
-                        }
-                    }
-                });
-
-
-            });
 
 
         },
@@ -123,19 +68,29 @@ define([
         },
 
         _onRowClick: function (evt) {
-            if(evt.detail == 2) {
+            if (evt.detail == 2) {
                 var cell = this.queueGridWidget.cell(evt.rowId, evt.columnId);
                 var line = cell.data();
-                var newHash = "env="+ this.env +"&page="+this.page+"&broker="+this.broker+"&queue="+line;
-                if(decodeURI(hash()) == newHash) {
-                    topic.publish("hermes/queueSelected", this.env, this.page, this.broker, line);
+                var newHash = "env=" + this.env + "&page=jmsBrowser&broker=" + this.broker + "&queue=" + line;
+                hash(newHash);
+            }
+        },
 
-                } else {
-                    hash(newHash);
+        generateTabContent: function (hashObj) {
+            if (hashObj.env != undefined && hashObj.page != undefined && hashObj.broker != undefined && hashObj.queue != undefined) {
+                var data = {};
+                data.env = hashObj.env;
+                data.broker = hashObj.broker;
+                data.queueName = hashObj.queue;
+                var queueDetailsWidget = new QueueDetailsWidget(data);
+
+                var tabContent = {
+                    "title": hashObj.queue,
+                    "widget": queueDetailsWidget
                 }
+                return tabContent;
             }
         }
-
     });
 
 });

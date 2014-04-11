@@ -1,6 +1,6 @@
 {
     "name": "esb-console",
-    "description": "ESB CONSOLE.",
+    "description": "esb-console",
     "version": "1.0",
     "keywords": ["JavaScript", "Dojo", "Toolkit", "DojoX"],
     "maintainers": [{
@@ -8,8 +8,6 @@
     }],
     "contributors": [{
         "name": "Christophe Rodriguez"
-    },{
-        "name": "Giampaolo Tranchida"
     }],
     "licenses": [{
         "type": "GPL V3 ",
