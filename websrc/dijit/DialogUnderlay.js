@@ -85,7 +85,7 @@ define([
             // hide the background temporarily, so that the background itself isn't
             // causing scrollbars to appear (might happen when user shrinks browser
             // window and then we are called to resize)
-            //WORKAROUND os.display = "none";
+            os.display = "none";
 
             // then resize and show
             var viewport = winUtils.getBox(this.ownerDocument);
@@ -93,7 +93,7 @@ define([
             os.left = viewport.l + "px";
             is.width = viewport.w + "px";
             is.height = viewport.h + "px";
-            //WORKAROUND os.display = "block";
+            os.display = "block";
         },
 
         show: function(){
@@ -119,13 +119,7 @@ define([
             this.bgIframe.destroy();
             delete this.bgIframe;
             this.domNode.style.display = "none";
-            //Workaround -> test null and undefined
-            while(this._modalConnects.length){
-                var popped = this._modalConnects.pop();
-                if(popped != null && popped != undefined) {
-                    popped.remove();
-                }
-            }
+            while(this._modalConnects.length){ (this._modalConnects.pop()).remove(); }
             this.open = false;
         },
 
