@@ -111,4 +111,8 @@ public class ApplicationMock extends Controller {
     public static Action<AnyContent> bundles(String environment) {
         return Assets.at("/websrc/json", "bundles.json");
     }
+
+    public static Action<AnyContent> auditSearch(String environment) {
+        return Assets.at("/websrc/json", "audit.json");
+    }
 }

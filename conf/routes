@@ -23,6 +23,9 @@ POST          /services/environments/:environment/brokers/:broker/queues/:queue/
 DELETE        /services/environments/:environment/brokers/:broker/queues/:queue/messages/all                   controllers.ApplicationMock.purge(environment, broker, queue)
 POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages/delete                controllers.ApplicationMock.delete(environment, broker, queue)
 
+POST           /services/environments/:environment/audit                                                       controllers.ApplicationMock.auditSearch(environment)
+
+
 
 #GET           /                                                                                           controllers.Assets.at(path="/public", file="index.html")
 #GET           /*file                                                                                      controllers.Assets.at(path="/public", file)

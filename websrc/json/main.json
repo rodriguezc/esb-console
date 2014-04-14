@@ -13,6 +13,10 @@
 
             "pagesGranted": [
                 {
+                    "id" :"audit",
+                    "name" :"Audit"
+                },
+                {
                     "id" :"bundles",
                     "name" :"Bundles"
                 },
@@ -42,6 +46,10 @@
             "id" : "VA",
             "name": "VALIDATION",
             "pagesGranted": [
+                {
+                    "id" :"audit",
+                    "name" :"Audit"
+                },
                 {
                     "id" :"bundles",
                     "name" :"Bundles"

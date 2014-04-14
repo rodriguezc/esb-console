@@ -1,0 +1,101 @@
+[
+    {
+
+        "id": "d8b8ec88-a80c-4413-b189-504939a2c420",
+        "content": "<xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml><xml>\n<toto>\n\nmessage1\n\n</toto>\n</xml>",
+
+        "businessId": "8",
+        "processInstanceId": "06756789",
+        "application": "crazyapp",
+        "domain": "world",
+        "context": "play",
+        "businessUser": "chris",
+        "serviceDestination": "publishEvent",
+        "sendDate": "10.04.2014 11:28:31.393",
+
+        "properties": [
+            {
+                "name": "messageId",
+                "type": "text",
+                "value": "d8b8ec88-a80c-4413-b189-504939a2c420"
+            },
+            {
+                "name": "creationDate",
+                "value": "10.04.2014 11:28:31.392"
+            },
+            {
+                "name": "sendDate",
+                "type": "text",
+                "value": "10.04.2014 11:28:31.393"
+            },
+            {
+                "name": "serviceDestination",
+                "value": "publishEvent"
+            },
+            {
+                "name": "businessId",
+                "type": "12891832",
+                "value": "1"
+            },
+            {
+                "name": "processInstanceId",
+                "value": "06756789"
+            },
+            {
+                "name": "businessUser",
+                "type": "text",
+                "value": "christophe"
+            },
+            {
+                "name": "businessId",
+                "value": "8"
+            },
+            {
+                "name": "domain",
+                "type": "text",
+                "value": "world"
+            },
+            {
+                "name": "context",
+                "value": "play"
+            },
+            {
+                "name": "application",
+                "type": "text",
+                "value": "crazyapp"
+            },
+            {
+                "name": "senderApiVersion",
+                "value": "3.2.10"
+            },
+            {
+                "name": "bodySize",
+                "type": "text",
+                "value": "46"
+            },
+            {
+                "name": "esbProviderVersion",
+                "value": "5.8.0.redhat-60024"
+            },
+            {
+                "name": "esbUserId",
+                "type": "text",
+                "value": "taopp-in"
+            },
+            {
+                "name": "esbUserIdNoEnv",
+                "value": "giampaolo"
+            },
+            {
+                "name": "esbUserIp",
+                "type": "text",
+                "value": "tcp://10.10.10.1:40828"
+            }
+        ],
+
+        "ackDate": "10.04.2014 11:28:31.395",
+        "ackBy": "app-bam",
+        "ackQueue": "myapp.consumingqueue"
+    }
+
+]

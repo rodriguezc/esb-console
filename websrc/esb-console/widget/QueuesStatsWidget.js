@@ -109,7 +109,7 @@ define([
                                 hashUtils.changeHashParamByParam("env="+widget.env+"&page=jmsBrowser&broker="+brokerId+"&queue="+queueName);
                             }
                         }
-                    }
+                    };
                     grid.placeAt(widget.gridNode);
                     grid.startup();
                 },

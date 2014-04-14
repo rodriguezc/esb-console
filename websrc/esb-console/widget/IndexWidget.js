@@ -19,12 +19,14 @@ define([
     "esb-console/widget/BundlesWidget",
     "esb-console/widget/QueuesStatsWidget",
     "esb-console/widget/JmsBrowserWidget",
+    "esb-console/widget/AuditWidget",
+
     "dojo/dom-style"
 
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
              MenuBar, DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery,
-             array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, domStyle) {
+             array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -197,6 +199,20 @@ define([
                         }
                         return tabContent;
                     }
+
+                } else if ("audit" == hashObj.page) {
+                    var auditWidget = new AuditWidget(
+                        {
+                            "env":  hashObj.env
+                        }
+                    );
+
+                    var tabContent = {
+                        "title": hashObj.env + "- Audit",
+                        "widget": auditWidget
+                    }
+                    return tabContent;
+
 
                 }
             }
