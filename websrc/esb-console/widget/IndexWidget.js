@@ -20,13 +20,14 @@ define([
     "esb-console/widget/QueuesStatsWidget",
     "esb-console/widget/JmsBrowserWidget",
     "esb-console/widget/AuditWidget",
+    "esb-console/widget/DashboardWidget",
 
     "dojo/dom-style"
 
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
              MenuBar, DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery,
-             array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget, domStyle) {
+             array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget,DashboardWidget, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -159,8 +160,19 @@ define([
             this.borderContainer.resize();
         },
 
+        onOpenDashboardClick: function() {
+            hash("page=dashboard");
+        },
+
         generateTabContent: function (hashObj) {
-            if (hashObj.env != undefined && hashObj.page != undefined) {
+            if(hashObj.env == undefined && hashObj.page != null && hashObj.page == "dashboard") {
+                var dashboardWidget = new DashboardWidget();
+                var tabContent = {
+                    "title": "Dashboard",
+                    "widget": dashboardWidget
+                }
+                return tabContent;
+            } else if (hashObj.env != undefined && hashObj.page != undefined) {
                 if ("bundles" == hashObj.page) {
                     var bundlesWidget = new BundlesWidget(
                         {

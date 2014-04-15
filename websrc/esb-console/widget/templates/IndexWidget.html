@@ -17,8 +17,25 @@
             data-dojo-attach-point="borderContainer"
             >
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'">
+
+            <div data-dojo-type="dijit/Tooltip"
+                 data-dojo-props="connectId:'button2',position:['below']"
+                    >
+                Monitoring: all systems are working correctly
+            </div>
+
+
+            <img id="button2" src="esb-console/images/32/Circle_Green.png"
+                 style="float: left;margin-right: 10px;cursor: pointer" height="29"
+                 data-dojo-attach-event="click: onOpenDashboardClick"
+
+                    />
+
             <div data-dojo-attach-point="navMenuNode" style="float: left"></div>
+
+
             <div style="float: left;margin-left: 40px">
+
                 Clipboard:
                 <span style="display: none;background-color: #ffffea;border: 1px solid black;border-radius: 4px;" data-dojo-attach-point="clipboardMessagesCountWidgetBig" data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'clipboardMessagesCount')"></span>
                 <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'clipboardMessagesCount')"></span>
@@ -36,8 +53,6 @@
                 ></button>
 
             </div>
-
-
 
         </div>
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'">

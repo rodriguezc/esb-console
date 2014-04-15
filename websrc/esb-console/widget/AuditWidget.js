@@ -27,7 +27,7 @@ define([
 
                 var widget = this;
 
-                topic.subscribe("/dojo/hashchange", function (changedHash) {
+                this.hashChangeHandle=topic.subscribe("/dojo/hashchange", function (changedHash) {
 
                     var hashObj = ioQuery.queryToObject(changedHash);
                     if (widget.env == hashObj.env && "audit" == hashObj.page && hashObj.q != null && (widget.currentquery != hashObj.q || hashObj.q == "") ) {
@@ -84,6 +84,12 @@ define([
 
 
             },
+
+            destroy: function () {
+                this.inherited(arguments);
+                this.hashChangeHandle.remove();
+            },
+
             startup: function () {
                 this.inherited(arguments);
                 this.requestNode.focus();
