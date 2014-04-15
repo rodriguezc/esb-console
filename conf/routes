@@ -23,7 +23,10 @@ POST          /services/environments/:environment/brokers/:broker/queues/:queue/
 DELETE        /services/environments/:environment/brokers/:broker/queues/:queue/messages/all                   controllers.ApplicationMock.purge(environment, broker, queue)
 POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages/delete                controllers.ApplicationMock.delete(environment, broker, queue)
 
-POST           /services/environments/:environment/audit                                                       controllers.ApplicationMock.auditSearch(environment)
+POST          /services/environments/:environment/audit                                                        controllers.ApplicationMock.auditSearch(environment)
+
+
+GET           /services/monitoring/state                                                                       controllers.ApplicationMock.monitoringState()
 
 
 

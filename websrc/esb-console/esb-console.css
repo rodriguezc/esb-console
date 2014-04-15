@@ -46,3 +46,39 @@ html, body {
     text-align:center;
 
 }
+
+
+.STATE_OK {
+    background-color:#AAFF88;
+
+}
+
+
+.STATE_WARN {
+    background-color:orange;
+
+}
+
+.STATE_KO {
+    background-color:red;
+
+}
+
+.BTN_STATE_OK {
+    background-image: url("images/32/Circle_Green.png");
+    width: 32px;
+    height: 32px;
+}
+
+
+.BTN_STATE_WARN {
+    background-image: url("images/32/Circle_Orange.png");
+    width: 32px;
+    height: 32px;
+}
+
+.BTN_STATEK_KO {
+    background-image: url("images/32/Circle_Red.png");
+    width: 32px;
+    height: 32px;
+}

@@ -25,9 +25,7 @@ define([
     "dojo/dom-style"
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             MenuBar, DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery,
-             array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget,DashboardWidget, domStyle) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, MenuBar, DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery, array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget, DashboardWidget, domStyle) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -59,6 +57,18 @@ define([
                     widget.set("appUser", data.application.user);
                     widget.set("appVersion", data.application.version);
                     widget.set("appEnvironment", data.application.environment);
+
+                    widget.set("monitoringInfo", data.monitoring.info);
+
+                    if ("OK" == data.monitoring.state) {
+                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_OK.png';
+                    } else if ("WARN" == data.monitoring.state) {
+                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_ORANGE.png';
+                    }
+                    else if ("KO" == data.monitoring.state) {
+                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_Red.png';
+                    }
+
 
                     array.forEach(data.environments, function (environment, i) {
                         var envId = environment.id;
@@ -96,7 +106,7 @@ define([
                                 dropDownMenu.addChild(new MenuItem({
                                     label: pageGrantedName,
                                     onClick: function () {
-                                        var newHash = "env=" + envId + "&page="+pageGrantedId;
+                                        var newHash = "env=" + envId + "&page=" + pageGrantedId;
                                         hash(newHash);
                                     }
                                 }));
@@ -116,41 +126,78 @@ define([
                 }
             );
 
-            topic.subscribe("clipboard/copy", function(arrayOfNewMessages){
+            topic.subscribe("clipboard/copy", function (arrayOfNewMessages) {
                 var clipboardMessages = widget.get("clipboardMessages");
-                array.forEach(arrayOfNewMessages, function(msg, i){
+                array.forEach(arrayOfNewMessages, function (msg, i) {
                     clipboardMessages.push(msg);
 
                 });
                 var clipboardMessagesCount = widget.get("clipboardMessagesCount");
 
-                widget.set("clipboardMessagesCount", clipboardMessagesCount+arrayOfNewMessages.length);
+                widget.set("clipboardMessagesCount", clipboardMessagesCount + arrayOfNewMessages.length);
 
                 domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "fixed");
-                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize","30px");
-                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","inline");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize", "30px");
+                domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display", "inline");
 
-                setTimeout(function() {
+                setTimeout(function () {
                     domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "position", "relative");
-                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize",null);
-                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display","none");
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "fontSize", null);
+                    domStyle.set(widget.clipboardMessagesCountWidgetBig.domNode, "display", "none");
                 }, 1000);
 
 
             });
 
-            topic.subscribe("clipboard/action", function(callback){
+            topic.subscribe("clipboard/action", function (callback) {
                 var clipboardMessages = widget.get("clipboardMessages");
                 callback(clipboardMessages);
             });
+
+            this.asyncReloadMonitoringInfo();
+
+            this.topicHandle = topic.subscribe("/esb-console/monitoringdata", function(data){
+                widget.set("monitoringInfo", data.globalInfo);
+
+                if ("OK" == data.globalState) {
+                    widget.globalMonitorState.src = 'esb-console/images/32/Circle_Green.png';
+                } else if ("WARN" == data.globalState) {
+                    widget.globalMonitorState.src = 'esb-console/images/32/Circle_Orange.png';
+                }
+                else if ("KO" == data.globalState) {
+                    widget.globalMonitorState.src = 'esb-console/images/32/Circle_Red.png';
+                }
+            });
+
+
         },
 
-        _onDeleteClipboard: function() {
+        asyncReloadMonitoringInfo: function () {
+            var widget = this;
+            setTimeout(function(){
+                widget.reloadMonitoringInfo();
+                widget.asyncReloadMonitoringInfo();
+            }, 30000);
+        },
+
+        reloadMonitoringInfo: function () {
+            var widget = this;
+            request("/services/monitoring/state", {handleAs: "json"}).then(
+                function (data) {
+                    topic.publish("/esb-console/monitoringdata", data);
+                },
+                function (error) {
+                    alert("error");
+                });
+        },
+
+
+        _onDeleteClipboard: function () {
             this.set("clipboardMessages", []);
             this.set("clipboardMessagesCount", 0);
         },
 
-        _onViewClipboard : function() {
+        _onViewClipboard: function () {
             alert("not implemented");
         },
 
@@ -160,12 +207,12 @@ define([
             this.borderContainer.resize();
         },
 
-        onOpenDashboardClick: function() {
+        onOpenDashboardClick: function () {
             hash("page=dashboard");
         },
 
         generateTabContent: function (hashObj) {
-            if(hashObj.env == undefined && hashObj.page != null && hashObj.page == "dashboard") {
+            if (hashObj.env == undefined && hashObj.page != null && hashObj.page == "dashboard") {
                 var dashboardWidget = new DashboardWidget();
                 var tabContent = {
                     "title": "Dashboard",
@@ -196,17 +243,17 @@ define([
                         "widget": queuesStatsWidget
                     }
                     return tabContent;
-                }  else if ("jmsBrowser" == hashObj.page) {
+                } else if ("jmsBrowser" == hashObj.page) {
                     if (hashObj.broker != null) {
                         var jmsBrowserWidget = new JmsBrowserWidget(
                             {
-                                "env":  hashObj.env,
-                                "broker":  hashObj.broker
+                                "env": hashObj.env,
+                                "broker": hashObj.broker
                             }
                         );
 
                         var tabContent = {
-                            "title": hashObj.env + "- JMS Browser - "+hashObj.broker,
+                            "title": hashObj.env + "- JMS Browser - " + hashObj.broker,
                             "widget": jmsBrowserWidget
                         }
                         return tabContent;
@@ -215,7 +262,7 @@ define([
                 } else if ("audit" == hashObj.page) {
                     var auditWidget = new AuditWidget(
                         {
-                            "env":  hashObj.env
+                            "env": hashObj.env
                         }
                     );
 

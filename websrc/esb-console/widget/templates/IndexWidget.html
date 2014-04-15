@@ -19,13 +19,13 @@
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'">
 
             <div data-dojo-type="dijit/Tooltip"
-                 data-dojo-props="connectId:'button2',position:['below']"
+                 data-dojo-props="connectId:'globalMonitorState',position:['below']"
                     >
-                Monitoring: all systems are working correctly
+                <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'monitoringInfo')"></span>
             </div>
 
 
-            <img id="button2" src="esb-console/images/32/Circle_Green.png"
+            <img  data-dojo-attach-point="globalMonitorState" id="globalMonitorState" src="esb-console/images/32/Circle_Green.png"
                  style="float: left;margin-right: 10px;cursor: pointer" height="29"
                  data-dojo-attach-event="click: onOpenDashboardClick"
 

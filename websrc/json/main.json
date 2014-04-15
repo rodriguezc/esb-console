@@ -6,6 +6,11 @@
         "environment" : "DEV"
     },
 
+    "monitoring":{
+        "globalState" : "OK",
+        "info"        : "Monitoring: All systems are working correctly"
+    },
+
     "environments": [
         {
             "id" : "IN",

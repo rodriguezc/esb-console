@@ -13,6 +13,7 @@ import play.mvc.Result;
 import views.html.index;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ApplicationMock extends Controller {
 
@@ -114,5 +115,18 @@ public class ApplicationMock extends Controller {
 
     public static Action<AnyContent> auditSearch(String environment) {
         return Assets.at("/websrc/json", "audit.json");
+    }
+
+    public static AtomicBoolean switchMonitoring = new AtomicBoolean();
+
+    public static Action<AnyContent> monitoringState() {
+        if(switchMonitoring.get()) {
+            switchMonitoring.set(!switchMonitoring.get());
+            return Assets.at("/websrc/json", "monitoring2.json");
+        } else {
+            switchMonitoring.set(!switchMonitoring.get());
+            return Assets.at("/websrc/json", "monitoring.json");
+        }
+
     }
 }
