@@ -30,7 +30,7 @@ define([
                 topic.subscribe("/dojo/hashchange", function (changedHash) {
 
                     var hashObj = ioQuery.queryToObject(changedHash);
-                    if (widget.env == hashObj.env && "audit" == hashObj.page && hashObj.q != null && widget.currentquery != hashObj.q) {
+                    if (widget.env == hashObj.env && "audit" == hashObj.page && hashObj.q != null && (widget.currentquery != hashObj.q || hashObj.q == "") ) {
                         widget.currentquery = hashObj.q
 
                         if (widget.currentquery == "") {
@@ -112,7 +112,13 @@ define([
                 var widget = this;
                 if (event.ctrlKey) {
                     if (event.keyCode == 88) {
-                        hash("env=" + this.env + "&page=audit&q=");
+                        var newHash = "env=" + this.env + "&page=audit&q=";
+                        if(hash() == newHash) {
+                            topic.publish("/dojo/hashchange", newHash);
+
+                        } else {
+                            hash("env=" + this.env + "&page=audit&q=");
+                        }
                     } else
                     if (event.keyCode == 13) {
 
