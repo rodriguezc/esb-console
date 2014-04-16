@@ -53,6 +53,18 @@ define([
             );
         },
 
+        onExportClick: function() {
+            var rowsToExport = this.messagesGridWidget.select.row.getSelected();
+            var messagesGridWidget = this.messagesGridWidget;
+            var msgs = [];
+            array.forEach(rowsToExport, function (msgId, i) {
+                var currentMsg = messagesGridWidget.model.byId(msgId).item;
+                msgs.push(currentMsg);
+            });
+            this.exportTextAreaNode.value = JSON.stringify(msgs, null, 4);
+            this.exportDialog.show();
+        },
+
 
         _onRefreshClick : function() {
             var widget = this;

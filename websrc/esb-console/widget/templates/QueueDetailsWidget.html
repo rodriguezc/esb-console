@@ -11,6 +11,16 @@
 
 
 
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="exportDialog" title="Export" style="width:800px;height: 650px">
+        <textarea style="width:100%;height: 100%"
+                  data-dojo-attach-point="exportTextAreaNode"
+                  placeholder="No messages"
+                  rows="39"
+                >
+        </textarea>
+    </div>
+
+
     <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="importDialog" data-dojo-id="importDialog" title="Import messages" style="width:400px;height: 250px">
 
         <form method="post"
@@ -141,8 +151,14 @@
                   <span><span class="dijitIconFolderOpen" style="padding-left: 16px"></span>
                     Import messages
                 </span>
-
             </div>
+
+            <div data-dojo-type="dijit/MenuBarItem" data-dojo-attach-event="onClick: onExportClick" >
+                <span class="dijitIconPrint" style="display: inline-block">&nbsp;</span>
+                Export selection
+                </span>
+            </div>
+
             <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
         </div>
