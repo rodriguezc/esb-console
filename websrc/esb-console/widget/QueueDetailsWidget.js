@@ -62,6 +62,7 @@ define([
                 function (data) {
                     widget.set("size", data.size);
                     widget.set("consumers", data.consumers);
+                    widget.set("consumersSize", data.consumersSize);
                     widget.set("dequeue", data.dequeue);
                     widget.set("enqueue", data.enqueue);
                     widget.set("inflight", data.inflight);
