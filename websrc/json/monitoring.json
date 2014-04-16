@@ -1,0 +1,158 @@
+{
+    "lastUpdate": "15.04.2014 16:58",
+    "globalState" :"WARN",
+    "globalInfo" : "A system have problem",
+
+    "state": [
+        {
+            "name": "PRODUCTION",
+            "stateClass": "STATE_WARN",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche bien"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche moyen"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "-1 ms",
+                    "stateClass": "STATE_WARN",
+                    "info": "marche super"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        },
+        {
+            "name": "PREPRODUCTION",
+            "stateClass": "STATE_OK",
+            "systems": [
+                {
+                    "name": "ActiveMQ A",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche nickel"
+                },
+                {
+                    "name": "ActiveMQ B",
+                    "value": "10 ms",
+                    "stateClass": "STATE_OK",
+                    "info": "marche top"
+                }
+            ]
+        }
+    ]
+}
