@@ -10,11 +10,11 @@ define([
     "dojo/_base/array",
     "dojo/store/Memory",
     "dojox/html/entities",
-    "dojo/topic", "dojo/dom-style"
+    "dojo/topic", "dojo/dom-style","dojo/_base/event"
 
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle, event) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -24,14 +24,17 @@ define([
         },
 
         detailsState: "default",
-        _onPropertiesExpand: function () {
+        _onPropertiesExpand: function (evt) {
+            event.stop(evt);
+            alert("STOPPED");
             if (this.detailsState == "default") {
                 domStyle.set(this.fieldsetProperties, "width", "90%");
                 domStyle.set(this.fieldsetContent, "display", "none");
                 this.set("detailsState", "propertiesMax");
             }
         },
-        _onPropertiesContract: function () {
+        _onPropertiesContract: function (evt) {
+            event.stop(evt);
             if (this.detailsState == "propertiesMax") {
                 domStyle.set(this.fieldsetProperties, "width", "30%");
                 domStyle.set(this.fieldsetContent, "display", "block");
@@ -48,7 +51,8 @@ define([
             }
         },
 
-        _onContentExpand: function () {
+        _onContentExpand: function (evt) {
+            event.stop(evt);
             if (this.detailsState == "default") {
                 domStyle.set(this.fieldsetContent, "width", "90%");
                 domStyle.set(this.fieldsetProperties, "display", "none");
@@ -57,6 +61,7 @@ define([
         },
 
         _onContentContract: function (evt) {
+            event.stop(evt);
             if (this.detailsState == "propertiesMax") {
                 domStyle.set(this.fieldsetContent, "width", "60%");
                 domStyle.set(this.fieldsetProperties, "display", "block");

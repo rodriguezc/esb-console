@@ -198,7 +198,28 @@ define([
         },
 
         _onViewClipboard: function () {
-            alert("not implemented");
+            this.clipboardTextAreaNode.value =JSON.stringify(this.clipboardMessages);
+            this.clipboardDialog.show();
+        },
+
+        onUpdateClipboardContent : function() {
+
+            try {
+                var nodeValue = null;
+                if(this.clipboardTextAreaNode.value == "") {
+                    nodeValue = "[]";
+                }else {
+                    nodeValue = this.clipboardTextAreaNode.value
+                }
+                var node = JSON.parse(nodeValue);
+                this.set("clipboardMessages", node);
+                this.set("clipboardMessagesCount", node.length);
+                this.clipboardDialog.hide();
+            }
+            catch (e) {
+                alert("error: "+e);
+            }
+
         },
 
 

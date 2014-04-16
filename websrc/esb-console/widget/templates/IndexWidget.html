@@ -1,4 +1,4 @@
-<div style=" width: 100%; height: 100%">
+<div style=" width: 100%; height: 100%" xmlns="http://www.w3.org/1999/html">
 
     <script type="dojo/require">
            BorderContainer: "dijit/layout/BorderContainer",
@@ -8,6 +8,19 @@
            at: "dojox/mvc/at",
            Output: "dojox/mvc/Output"
     </script>
+
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="clipboardDialog" title="Clipboard" style="width:800px;height: 650px">
+        <textarea style="width:100%;height: 100%"
+                  data-dojo-attach-point="clipboardTextAreaNode"
+                  placeholder="No messages"
+                  rows="37"
+                  >
+          </textarea>
+        <button data-dojo-type="dijit/form/Button"
+                data-dojo-props="label: 'Update content'"
+                type="button"
+                data-dojo-attach-event="onClick: onUpdateClipboardContent"  />
+    </div>
 
 
     <div
