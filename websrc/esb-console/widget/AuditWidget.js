@@ -133,6 +133,18 @@ define([
                 }
             },
 
+            onExportClick: function() {
+                var rowsToExport = this.gridWidget.select.row.getSelected();
+                var messagesGridWidget = this.gridWidget;
+                var msgs = [];
+                array.forEach(rowsToExport, function (msgId, i) {
+                    var currentMsg = messagesGridWidget.model.byId(msgId).item;
+                    msgs.push(currentMsg);
+                });
+                this.exportTextAreaNode.value = JSON.stringify(msgs, null, 4);
+                this.exportDialog.show();
+            },
+
 
             detailProvider: function (grid, rowId, detailNode, renderred) {
                 var rowData = grid.model.byId(rowId).item;
