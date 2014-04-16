@@ -198,7 +198,7 @@ define([
         },
 
         _onViewClipboard: function () {
-            this.clipboardTextAreaNode.value =JSON.stringify(this.clipboardMessages);
+            this.clipboardTextAreaNode.value =JSON.stringify(this.clipboardMessages, null, 4);
             this.clipboardDialog.show();
         },
 
