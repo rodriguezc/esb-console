@@ -26,7 +26,6 @@ define([
         detailsState: "default",
         _onPropertiesExpand: function (evt) {
             event.stop(evt);
-            alert("STOPPED");
             if (this.detailsState == "default") {
                 domStyle.set(this.fieldsetProperties, "width", "90%");
                 domStyle.set(this.fieldsetContent, "display", "none");
