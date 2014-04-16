@@ -13,12 +13,14 @@
 
     <div style="width: 100%">
         Last update: <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'lastUpdate')"></span>
-        Info: <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'globalInfo')"></span>
-
         <button data-dojo-type="dijit/form/Button"
                 data-dojo-props="iconClass:'dijitIconUndo', showLabel: false" type="button"
                 data-dojo-attach-event="click: refresh"
-                >cut</button>
+                >refresh</button>
+
+
+        Info: <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'globalInfo')"></span>
+
 
     </div>
 
