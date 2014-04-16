@@ -16,12 +16,13 @@ define([
     "dijit/layout/ContentPane",
     "dojo/hash",
     "dojo/store/Memory",
-    "esb-console/widget/QueueDetailsWidget"
+    "esb-console/widget/QueueDetailsWidget",
+    "dojo/query"
 
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
              array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem, ContentPane, hash, Store,
-             QueueDetailsWidget
+             QueueDetailsWidget, query
             ) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
 
@@ -38,6 +39,8 @@ define([
 
         postCreate: function () {
             this.inherited(arguments);
+            var widget = this;
+
             var env = this.env;
             var broker = this.broker;
             var queueGridWidget = this.queueGridWidget;
@@ -49,6 +52,7 @@ define([
                     queueGridWidget.model.setStore(store);
                     queueGridWidget.body.refresh();
                     queueGridWidget.column(0).sort(false);
+                    widget.focusInputFilter();
                 },
                 function (error) {
                     alert("error");
@@ -56,7 +60,6 @@ define([
                 }
             );
 
-            var widget = this;
 
 
 
@@ -75,6 +78,16 @@ define([
                 hash(newHash);
             }
         },
+
+        startup: function () {
+            this.inherited(arguments);
+        },
+
+        focusInputFilter: function() {
+            var inputFilter =dojo.query("#"+this.queueGridWidget.id+ " input");
+            inputFilter[0].focus();
+        } ,
+
 
         generateTabContent: function (hashObj) {
             if (hashObj.env != undefined && hashObj.page != undefined && hashObj.broker != undefined && hashObj.queue != undefined) {
