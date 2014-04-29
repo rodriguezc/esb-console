@@ -82,3 +82,7 @@ html, body {
     width: 32px;
     height: 32px;
 }
+
+.gridx {
+    height: 100%;
+}
