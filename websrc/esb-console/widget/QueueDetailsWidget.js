@@ -254,8 +254,13 @@ define([
         } ,
 
         _onOpenMoveSelection : function() {
-            this.moveType ="selection";
-            this._onOpenMove();
+            var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
+            if(rowsToDelete.length == 0) {
+                alert("There is no message selected");
+            } else {
+                this.moveType ="selection";
+                this._onOpenMove();
+            }
         } ,
 
         _onOpenMove: function() {
