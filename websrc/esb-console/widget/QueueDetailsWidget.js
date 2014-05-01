@@ -91,11 +91,11 @@ define([
 
         _onDeleteClick: function() {
 
-           var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
+            var rowsToDelete = this.messagesGridWidget.select.row.getSelected();
 
-           if(rowsToDelete.length == 0) {
-               alert("There is no message selected");
-           }  else {
+            if(rowsToDelete.length == 0) {
+                alert("There is no message selected");
+            }  else {
                 if(confirm("You are about to delete "+rowsToDelete.length+" msgs from the queue "+this.queueName)) {
                     var widget = this;
                     var reloadMessages = this._reloadMessages;
@@ -113,7 +113,7 @@ define([
                         }
                     );
                 }
-           }
+            }
         },
         _onPurgeClick: function() {
 
@@ -139,7 +139,7 @@ define([
             if(evt.detail == 2) {
                 var cell = this.messagesGridWidget.cell(evt.rowId, evt.columnId);
                 var msg = cell.row.model.byId(cell.row.id).item;
-            //    this.set("detailsContent", entities.encode(msg.content));
+                //    this.set("detailsContent", entities.encode(msg.content));
                 this.set("detailsContent", msg.content);
 
                 this.set("detailsProperties", msg.properties);
@@ -264,10 +264,13 @@ define([
         } ,
 
         _onOpenMove: function() {
-            var envStore = this.envStore;
+            this.firstMoveOpen = true;
+            var widget = this;
             request("/services/environments", {handleAs: "json"}).then(
                 function(text) {
-                    envStore.data = text;
+                    widget.envStore.data = text;
+                    var currentEnv = widget.envStore.query({"id": widget.env});
+                    widget.filteringSelectEnvWidget.set("item", currentEnv[0]);
                 },
                 function(error) {
                     alert("error");
@@ -317,8 +320,8 @@ define([
                     var postDataStr = JSON.stringify(postData);
                     request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all",
                         {
-                        headers: {"Content-Type": "application/json"},
-                        data: postDataStr}).then(
+                            headers: {"Content-Type": "application/json"},
+                            data: postDataStr}).then(
                         function(text) {
                             widget._onRefreshClick();
                             alert(text);
@@ -335,12 +338,19 @@ define([
 
 
         _onSelectEnv : function(env) {
+
+            var widget = this;
+
             var brokersStore = this.brokersStore;
             this.filteringSelectBrokerWidget.attr("value", null);
             this.filteringSelectQueueWidget.attr("value", null);
             request("/services/environments/"+env+"/brokers", {handleAs: "json"}).then(
                 function(text) {
                     brokersStore.data = text;
+                    if(widget.firstMoveOpen) {
+                        var currentBroker = brokersStore.query({"id": widget.broker});
+                        widget.filteringSelectBrokerWidget.set("item", currentBroker[0]);
+                    }
                 },
                 function(error) {
                     alert("error");
@@ -354,9 +364,17 @@ define([
                 var env = this.filteringSelectEnvWidget.value;
                 this.filteringSelectQueueWidget.attr("value", null);
                 var brokersStore = this.brokersStore;
+                var widget = this;
                 request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
                     function(text) {
                         queuesStore.data = text;
+                        if(widget.firstMoveOpen) {
+                            var currentQueue = queuesStore.query({"id": widget.queueName});
+                            widget.filteringSelectQueueWidget.set("item", currentQueue[0]);
+                            widget.firstMoveOpen = false;
+                        }
+
+
                     },
                     function(error) {
                         alert("error");
