@@ -113,6 +113,12 @@ define([
                 topic.publish("clipboard/copy", msgs);
             },
 
+
+            onSearch: function(event) {
+                hash("env=" + this.env + "&page=audit&q=" + this.requestNode.value);
+                this.requestNode.focus();
+            },
+
             onRequestChange: function (event) {
 
                 var widget = this;
@@ -160,7 +166,23 @@ define([
                 renderred.callback();
                 return renderred;
 
+            },
+            onAddCriterion : function() {
+                var type =  this.typeCriterion.get("value");
+                var comparator =  this.comparatorCriterion.get("value");
+                var value = this.valueCriterion.get("value");
+
+                if(this.requestNode.value != null && this.requestNode.value.length > 0) {
+                    this.requestNode.value = this.requestNode.value +","+ type+":"+value;
+                } else {
+                    this.requestNode.value = this.requestNode.value + type+":"+value;
+                }
+
+
+
+
             }
+
         });
 
     });
