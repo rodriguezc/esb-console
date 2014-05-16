@@ -67,7 +67,10 @@ define([
                         structure.push({field: existingBrokersId[i]+'_dequeue', name: 'dequeue', brokerId: existingBrokersId[i]});
                     }
 
-                    structure.push({field: "status", name: "status (OK,KO,WARN)"});
+                    structure.push({field: "status", name: "status (OK,KO,WARN)", class : function(cell){
+                        return "QUEUES_STATS_STATE_"+cell.rawData();
+
+                    }});
 
                     var grid = new Grid({
                         cacheClass: Cache,

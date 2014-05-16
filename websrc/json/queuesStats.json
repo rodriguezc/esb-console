@@ -40,7 +40,7 @@
         "id" : "queue11",
         "name": "queue11",
         "size" : 120,
-        "status": "KO",
+        "status": "WARN",
 
         "brokers" : [
             {

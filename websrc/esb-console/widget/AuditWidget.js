@@ -177,10 +177,7 @@ define([
                 } else {
                     this.requestNode.value = this.requestNode.value + type+":"+value;
                 }
-
-
-
-
+                return false;
             }
 
         });

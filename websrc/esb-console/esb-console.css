@@ -86,3 +86,19 @@ html, body {
 .gridx {
     height: 100%;
 }
+
+.QUEUES_STATS_STATE_KO {
+    background-color: #F2DEDE;
+    color: #b94a48;
+}
+
+.QUEUES_STATS_STATE_OK {
+    background-color: #DFF0D8;
+    color: #468847;
+}
+
+.QUEUES_STATS_STATE_WARN{
+    background-color: #FCF8E3;
+    color: #c09853;
+}
+
