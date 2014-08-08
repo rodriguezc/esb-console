@@ -47,6 +47,7 @@ var profile = (function () {
                     "esb-console/widget/QueuesStatsWidget",
                     "esb-console/layout/HashAwareTabContainer",
                     "esb-console/utils/hashUtils",
+                    "esb-console/utils/http",
                     "esb-console/main",
                     "dojo/fx",
                     "dojo/dojo",
