@@ -11,11 +11,13 @@ define([
     "dojo/store/Memory",
     "dojox/html/entities",
     "dojo/topic","dojo/dom-style",
-    "dojo/dom-form"
+    "dojo/dom-form",
+    "esb-console/utils/http"
 
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle, domForm) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
+             Dialog, array, Store, entities, topic, domStyle, domForm, http) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -47,8 +49,7 @@ define([
 
                 },
                 function (error) {
-                    console.log(error);
-
+                    http.handleError(error);
                 }
             );
         },
@@ -83,8 +84,7 @@ define([
 
                 },
                 function (error) {
-                    console.log(error);
-
+                    http.handleError(error);
                 }
             );
         },
@@ -109,7 +109,7 @@ define([
 
                         },
                         function (error) {
-                            console.log(error);
+                            http.handleError(error);
                         }
                     );
                 }
@@ -126,8 +126,7 @@ define([
                         widget._reloadMessages();
                     },
                     function (error) {
-                        console.log(error);
-
+                        http.handleError(error);
                     }
                 );
             }
@@ -180,7 +179,7 @@ define([
 
                         },
                         function (error) {
-                            console.log(error);
+                            http.handleError(error);
                         }
                     );
                 }
@@ -273,7 +272,7 @@ define([
                     widget.filteringSelectEnvWidget.set("item", currentEnv[0]);
                 },
                 function(error) {
-                    alert("error");
+                    http.handleError(error);
                 }
             );
             this.moveSelectionDialog.show();
@@ -306,7 +305,7 @@ define([
 
                             },
                             function(error) {
-                                alert("error");
+                                http.handleError(error);
                             }
                         );
 
@@ -327,7 +326,7 @@ define([
                             alert(text);
                         },
                         function(error) {
-                            alert("error");
+                            http.handleError(error);
                         }
                     );
                 }
@@ -353,7 +352,7 @@ define([
                     }
                 },
                 function(error) {
-                    alert("error");
+                    http.handleError(error);
                 }
             );
         },
@@ -377,7 +376,7 @@ define([
 
                     },
                     function(error) {
-                        alert("error");
+                        http.handleError(error);
                     }
                 );
             }

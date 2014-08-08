@@ -17,10 +17,13 @@ define([
     "gridx/modules/filter/QuickFilter",
     "gridx/modules/VirtualVScroller",
     "gridx/modules/GroupHeader",
-    "esb-console/utils/hashUtils"
+    "esb-console/utils/hashUtils",
+    "esb-console/utils/http"
+
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             request, array, topic, hash, Grid, Store, Cache, Filter, Sort, QuickFilter, VirtualVScroller,GroupHeader, hashUtils) {
+             request, array, topic, hash, Grid, Store, Cache, Filter, Sort, QuickFilter, VirtualVScroller,
+             GroupHeader, hashUtils, http) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         env: "DEFAULTENV",
 
@@ -117,7 +120,7 @@ define([
                     grid.startup();
                 },
                 function(error){
-                    alert("error");
+                    http.handleError(error);
                 }
 
             );

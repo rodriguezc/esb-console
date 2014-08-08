@@ -17,12 +17,12 @@ define([
     "dojo/hash",
     "dojo/store/Memory",
     "esb-console/widget/QueueDetailsWidget",
-    "dojo/query"
+    "esb-console/utils/http"
 
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
              array, topic, MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, PopupMenuItem, ContentPane, hash, Store,
-             QueueDetailsWidget, query
+             QueueDetailsWidget, http
             ) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
 
@@ -55,8 +55,7 @@ define([
                     widget.focusInputFilter();
                 },
                 function (error) {
-                    alert("error");
-                    console.log(queueGridWidget);
+                    http.handleError(error);
                 }
             );
 

@@ -11,15 +11,11 @@ define([
     "dojo/hash",
     "gridx/Grid",
     "dojo/store/Memory",
-    "gridx/core/model/cache/Sync",
-    "gridx/modules/Filter",
-    "gridx/modules/SingleSort",
-    "gridx/modules/filter/QuickFilter",
-    "gridx/modules/VirtualVScroller",
-    "gridx/modules/GroupHeader"
-],
+    "esb-console/utils/http"
+
+    ],
     function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             request, array, topic, hash, Grid, Store, Cache, Filter, Sort, QuickFilter, VirtualVScroller) {
+             request, array, topic, hash, Grid, Store, http) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         env: "DEFAULTENV",
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
@@ -37,7 +33,7 @@ define([
                     widget.gridWidget.column(0).sort(false);
                 },
                 function(error){
-                    alert("error");
+                    http.handleError(error);
                 }
             );
         },

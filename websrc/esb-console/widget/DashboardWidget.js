@@ -15,9 +15,11 @@ define([
     "dojo/io-query",
     "dojo/_base/array",
     "dojo/dom-construct",
-    "dojo/request"
+    "dojo/request",
+    "esb-console/utils/http"
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, ContentPane, hash, topic, ioQuery, array, domConstruct, request) {
+             MenuBar, DropDownMenu, PopupMenuBarItem, MenuItem, ContentPane, hash, topic, ioQuery, array, domConstruct,
+             request, http) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
         postCreate: function () {
@@ -43,7 +45,7 @@ define([
                     topic.publish("/esb-console/monitoringdata", data);
                 },
                 function (error) {
-                    alert("error");
+                    http.handleError(error);
                 }
             );
         },

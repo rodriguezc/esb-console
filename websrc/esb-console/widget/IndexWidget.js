@@ -21,11 +21,12 @@ define([
     "esb-console/widget/JmsBrowserWidget",
     "esb-console/widget/AuditWidget",
     "esb-console/widget/DashboardWidget",
+    "dojo/dom-style",
+    "esb-console/utils/http"
 
-    "dojo/dom-style"
-
-
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, MenuBar, DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery, array, request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget, DashboardWidget, domStyle) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, MenuBar,
+             DropDownMenu, PopupMenuBarItem, PopupMenuItem, MenuItem, ContentPane, hash, topic, ioQuery, array,
+             request, BundlesWidget, QueuesStatsWidget, JmsBrowserWidget, AuditWidget, DashboardWidget, domStyle, http) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -122,7 +123,7 @@ define([
                     });
                 },
                 function (error) {
-                    alert("error");
+                    http.handleError(error);
                 }
             );
 
@@ -192,7 +193,7 @@ define([
                     topic.publish("/esb-console/monitoringdata", data);
                 },
                 function (error) {
-                    alert("error");
+                    http.handleError(error);
                 });
         },
 

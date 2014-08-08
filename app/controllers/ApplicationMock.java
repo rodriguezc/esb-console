@@ -22,7 +22,6 @@ public class ApplicationMock extends Controller {
         return Assets.at("/websrc/json", "main.json");
     }
 
-
     public static Action<AnyContent> environments() {
         return Assets.at("/websrc/json", "environments.json");
     }

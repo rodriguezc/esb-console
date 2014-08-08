@@ -13,9 +13,11 @@ define([
         "dojo/topic",
         "dojo/_base/array",
         "dojo/io-query",
-        "esb-console/utils/hashUtils"
+        "esb-console/utils/hashUtils",
+        "esb-console/utils/http"
     ],
-    function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, hash, Grid, Store, MessageDetailsWidget, topic, array, ioQuery,hashUtils) {
+    function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
+              hash, Grid, Store, MessageDetailsWidget, topic, array, ioQuery, hashUtils, http) {
         return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
 
 
@@ -50,7 +52,7 @@ define([
                                     //widget.gridWidget.column(7).sort(false);
                                 },
                                 function (error) {
-                                    console.log(error);
+                                    http.handleError(error);
                                 }
                             );
                         }
@@ -76,7 +78,7 @@ define([
                                 });
                             },
                             function(error) {
-                                alert("error");
+                                http.handleError(error);
                             }
                         );
                     }
