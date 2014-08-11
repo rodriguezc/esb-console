@@ -45,7 +45,7 @@ define([
 
 
                                 headers: {"Content-Type": "text/plain"},
-                                data:  widget.currentquery}).then(
+                                data:  widget.currentquery, handleAs: "json"}).then(
                                 function (data) {
                                     //        widget.gridWidget.model.clearCache();
                                     var store = new Store({data: data});
