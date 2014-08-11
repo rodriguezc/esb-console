@@ -1,3 +1,4 @@
+import com.mongodb.MongoClient;
 import config.Esb;
 import play.Configuration;
 import play.GlobalSettings;
@@ -6,6 +7,7 @@ import services.MonitorClientService;
 
 import javax.xml.bind.JAXB;
 import java.io.File;
+import java.net.UnknownHostException;
 
 /**
  * Created by xcigta on 21/02/14.

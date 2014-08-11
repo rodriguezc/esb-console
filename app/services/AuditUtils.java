@@ -1,6 +1,9 @@
 package services;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.*;
+import com.mongodb.util.JSON;
 import play.libs.Json;
 
 import javax.sql.DataSource;
@@ -14,55 +17,75 @@ import java.sql.SQLException;
  */
 public class AuditUtils {
 
-    public static ObjectNode getAuditByMessageId(DataSource ds, String messageId) throws SQLException {
 
-        Connection c = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
+    public static ArrayNode auditSearch(String env, String query) throws Exception {
 
-        try {
+        ArrayNode result = Json.newObject().arrayNode();
 
-            c = ds.getConnection();
-            c.setReadOnly(true);
+        MongoClient mongoClient = ESB.getDataSource(env);
+        DB audit = mongoClient.getDB("audit");
+        DBCollection collection = audit.getCollection("message");
 
-            pstm = c.prepareStatement("select * from message where message_id=?");
-            pstm.setString(1,messageId);
+        BasicDBObject sort = new BasicDBObject().append("sendDate", -1);
+        DBCursor cursor = collection.find((DBObject) JSON.parse(query)).sort(sort).limit(100);
+        while (cursor.hasNext()) {
 
-            rs = pstm.executeQuery();
-            if (rs.next()) {
+            BasicDBObject dbObject = (BasicDBObject) cursor.next();
+            ObjectNode row = result.addObject()
+                    .put("id", dbObject.getObjectId("_id").toString())
+                    .put("content", dbObject.getString("body"))
+                    .put("businessId", dbObject.getString("businessId"))
+                    .put("processInstanceId", dbObject.getString("processInstanceId"))
+                    .put("application", dbObject.getString("application"))
+                    .put("domain", dbObject.getString("domain"))
+                    .put("context", dbObject.getString("context"))
+                    .put("businessUser", dbObject.getString("businessUser"))
+                    .put("serviceDestination", dbObject.getString("destination"))
+                    .put("sendDate", dbObject.getString("sendDate"));
 
-                ObjectNode node = Json.newObject();
-                ObjectNode message = node.putObject("message");
-                mapRow(message, rs);
-                return node;
+            ArrayNode properties = row.putArray("properties");
 
-            } else {
+            BasicDBList headers = (BasicDBList) dbObject.get("headers");
+            for (int h=0; h<headers.size(); h++) {
 
-                return null;
+                ObjectNode property = properties.addObject();
+                BasicDBObject header = (BasicDBObject) headers.get(h);
+
+                property.put("name", header.getString("key"));
+                property.put("type", "text");
+                property.put("value", header.getString("value"));
 
             }
 
-        } finally {
-            if (rs != null) {
-                rs.close();
+            BasicDBList acks = (BasicDBList) dbObject.get("acks");
+            for (int a=0; a<acks.size(); a++) {
+
+                BasicDBObject ack = (BasicDBObject) acks.get(a);
+
+                row.put("ackDate", ack.getString("ackDate"));
+                row.put("ackBy", ack.getString("application"));
+                row.put("ackQueue", ack.getString("destination"));
+
             }
 
-            if (pstm != null) {
-                pstm.close();
-            }
+            result.add(row);
 
-            if (c != null) {
-                c.close();
-            }
         }
 
-    }
-
-    private static void mapRow(ObjectNode node, ResultSet row) throws SQLException {
-
-        node.put("messageId", row.getString("message_id"));
-
+        return result;
 
     }
+
+    private String getBody(BasicDBObject dbObject) {
+
+        boolean compressed = dbObject.getBoolean("compressed");
+        if (compressed) {
+
+        }
+
+        return null;
+
+    }
+
 
 }

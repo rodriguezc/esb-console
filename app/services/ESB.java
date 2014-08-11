@@ -1,5 +1,6 @@
 package services;
 
+import com.mongodb.MongoClient;
 import config.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -25,7 +26,7 @@ public class ESB {
 
     private static Map<String, JMXConnector> jmxConnectors = new HashMap<>();
     private static Map<String,Connection> connections = new HashMap<>();
-    private static Map<String, DataSource> dataSources = new HashMap<>();
+    private static Map<String, MongoClient> dataSources = new HashMap<>();
     public static Esb config;
 
     public static List<ActiveMQType> getBrokers(String env) {
@@ -115,21 +116,16 @@ public class ESB {
 
     }
 
-    /*
-    public static DataSource getDataSource(String env) throws SQLException {
+    public static MongoClient getDataSource(String env) throws Exception {
 
         if (!dataSources.containsKey(env)) {
 
             List<EsbType> esbTypes = ESB.config.getEnvironnement();
             for (EsbType esbType : esbTypes) {
-                if (esbType.getLabel().equals(env)) {
+                if (esbType.getName().equals(env)) {
 
-                    DataSourceType dataSourceType = esbType.getAuditDataSource();
-                    OracleConnectionPoolDataSource ds = new OracleConnectionPoolDataSource();
-                    ds.setURL(dataSourceType.getUrl());
-                    ds.setUser(dataSourceType.getUser());
-                    ds.setPassword(dataSourceType.getPassword());
-                    dataSources.put(env, ds);
+                    MongoClient mongoClient = new MongoClient(esbType.getAuditDataSource().getUrl());
+                    dataSources.put(env, mongoClient);
                 }
             }
 
@@ -137,7 +133,7 @@ public class ESB {
 
         return dataSources.get(env);
 
-    } */
+    }
 
     public static JMXConnector getJmxConnector(JmxServerType jmxServer) throws MalformedURLException, IOException {
 

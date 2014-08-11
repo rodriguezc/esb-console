@@ -14,10 +14,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.util.parsing.json.JSON;
-import services.BrokerUtils;
-import services.ContainerUtils;
-import services.ESB;
-import services.MonitorClientService;
+import services.*;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -29,6 +26,7 @@ import java.util.*;
 public class Application extends Controller {
 
     public static Result main() {
+
         ObjectNode env = Json.newObject();
         env.putObject("application").put("user", "xsicrz").put("version", "1.0").put("environment", "DEV");
         env.putObject("monitoring").put("globalState", "OK").put("Monitoring: All systems are working correctly", "1.0");
@@ -404,5 +402,11 @@ public class Application extends Controller {
         }
         return ok(node);
     }
+
+    public static Result auditSearch(String environment) throws Exception {
+
+        return ok(AuditUtils.auditSearch(environment, request().body().asText()));
+    }
+
 
 }
