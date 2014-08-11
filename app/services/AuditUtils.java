@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by xcigta on 25/02/14.
@@ -19,6 +20,8 @@ public class AuditUtils {
 
 
     public static ArrayNode auditSearch(String env, String query) throws Exception {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
         ArrayNode result = Json.newObject().arrayNode();
 
@@ -41,7 +44,7 @@ public class AuditUtils {
                     .put("context", dbObject.getString("context"))
                     .put("businessUser", dbObject.getString("businessUser"))
                     .put("serviceDestination", dbObject.getString("destination"))
-                    .put("sendDate", dbObject.getString("sendDate"));
+                    .put("sendDate", sdf.format(dbObject.getDate("sendDate")));
 
             ArrayNode properties = row.putArray("properties");
 
@@ -62,7 +65,7 @@ public class AuditUtils {
 
                 BasicDBObject ack = (BasicDBObject) acks.get(a);
 
-                row.put("ackDate", ack.getString("ackDate"));
+                row.put("ackDate", sdf.format(ack.getDate("ackDate")));
                 row.put("ackBy", ack.getString("application"));
                 row.put("ackQueue", ack.getString("destination"));
 
