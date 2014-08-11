@@ -35,7 +35,7 @@ define([
             this.inherited(arguments);
         },
 
-        detailsId: "- no row selected -",
+        detailsText: "- no row selected -",
 
 
         _reloadMessages : function() {
@@ -143,7 +143,9 @@ define([
                 this.set("detailsContent", msg.content);
 
                 this.set("detailsProperties", msg.properties);
-                this.set("detailsId", posId);
+                this.set("detailsId", msg.id);
+                this.set("detailsText", posId);
+
             }
         },
         _onCopyClick : function() {
@@ -189,7 +191,7 @@ define([
             });
         },
         _onCopyCurrentClick : function() {
-            if(this.detailsId != "- no row selected -") {
+            if(this.detailsText != "- no row selected -") {
                 var msg = this.messagesGridWidget.model.byId(this.detailsId).item;
                 var msgs = [];
                 msgs.push(msg);
