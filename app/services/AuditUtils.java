@@ -32,7 +32,7 @@ public class AuditUtils {
 
             BasicDBObject dbObject = (BasicDBObject) cursor.next();
             ObjectNode row = result.addObject()
-                    .put("id", dbObject.getObjectId("_id").toString())
+                    .put("id", dbObject.getString("_id"))
                     .put("content", dbObject.getString("body"))
                     .put("businessId", dbObject.getString("businessId"))
                     .put("processInstanceId", dbObject.getString("processInstanceId"))
@@ -67,8 +67,6 @@ public class AuditUtils {
                 row.put("ackQueue", ack.getString("destination"));
 
             }
-
-            result.add(row);
 
         }
 
