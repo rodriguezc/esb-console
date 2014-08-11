@@ -43,7 +43,9 @@ define([
 
                             request.post("/services/environments/" + widget.env + "/audit", {
 
-                                data: widget.currentquery, handleAs: "json"}).then(
+
+                                headers: {"Content-Type": "text/plain"},
+                                data:  widget.currentquery}).then(
                                 function (data) {
                                     //        widget.gridWidget.model.clearCache();
                                     var store = new Store({data: data});
