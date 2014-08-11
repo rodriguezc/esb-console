@@ -63,7 +63,7 @@ define([
 
 		load: function(args){
 			var t = this,
-				n = t.grid.mainNode;
+				n = t.arg('sourceNode', t.grid.mainNode);
 			t._source = new Source(n, {
 				isSource: false,
 				accept: t.accept,
@@ -368,6 +368,10 @@ define([
 
 		_onDropInternal: function(nodes, copy){
 			this.profile._onDropInternal(nodes, copy);
+			//
+			// Fix IE anchor not hide when drop
+			//
+			this._endDnd();
 		},
 		
 		_onDropExternal: function(source, nodes, copy){

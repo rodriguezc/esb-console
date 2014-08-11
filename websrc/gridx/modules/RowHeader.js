@@ -1,7 +1,7 @@
 define([
 	"dojo/_base/declare",
 	// "dojo/query",
-	'gridx/support/query',
+	'../support/query',
 	"dojo/_base/lang",
 	"dojo/_base/sniff",
 	"dojo/aspect",
@@ -211,7 +211,7 @@ define([
 		_onDelete: function(id){
 			var nodes = this.model.isId(id) && query('[rowid="' + this.grid._escapeId(id) + '"].gridxRowHeaderRow', this.bodyNode);
 			if(nodes && nodes.length){
-				var node = nodes[nodes.length - 1],
+				var node = nodes[nodes.length - 1], sn, rid,
 					pid = node.getAttribute('parentid'),
 					pids = {},
 					toDeleteC = 1;
@@ -231,13 +231,21 @@ define([
 			}
 		},
 		
-		_onUnrender: function(id, refresh){
-			//If this is fired in partial refresh, don't destroy the row header, save if for later use.
-			if(refresh != 'refresh'){
-				var nodes = this.model.isId(id) && query('[rowid="' + this.grid._escapeId(id) + '"].gridxRowHeaderRow', this.bodyNode);
-				if(nodes && nodes.length){
-					//remove the last node instead of the first, because when refreshing, there'll be 2 nodes with same id.
-					domConstruct.destroy(nodes[nodes.length - 1]);
+		_onUnrender: function(id, refresh, preOrPost){
+			if(!this.model.isId(id) && preOrPost){
+				if(preOrPost === 'post'){
+					this.bodyNode.lastChild && domConstruct.destroy(this.bodyNode.lastChild);
+				}else{
+					this.bodyNode.firstChild && domConstruct.destroy(this.bodyNode.firstChild);
+				}
+			}else{
+				//If this is fired in partial refresh, don't destroy the row header, save if for later use.
+				if(refresh != 'refresh'){
+					var nodes = this.model.isId(id) && query('[rowid="' + this.grid._escapeId(id) + '"].gridxRowHeaderRow', this.bodyNode);
+					if(nodes && nodes.length){
+						//remove the last node instead of the first, because when refreshing, there'll be 2 nodes with same id.
+						domConstruct.destroy(nodes[nodes.length - 1]);
+					}
 				}
 			}
 		},
@@ -248,7 +256,7 @@ define([
 			t.bodyNode.scrollTop = t.grid.bodyNode.scrollTop;
 			
 			//scrollTop to be set must not exceeds scrollTopMax
-			if(t.bodyNode.scrollHeight - t.bodyNode.clientHeigh >= t.grid.bodyNode.scrollTop){
+			if(t.bodyNode.scrollHeight - t.bodyNode.clientHeight >= t.grid.bodyNode.scrollTop){
 				t.bodyNode.scrollTop = t.grid.bodyNode.scrollTop;
 			}else{
 				setTimeout(function(){
@@ -258,20 +266,24 @@ define([
 		},
 
 		_onResize: function(){
-			var ie = has('ie');
+			var ie = has('ie')? has('ie') : has('trident')? 11 : false, 
+				bn;
+
 			for(var brn = this.grid.bodyNode.firstChild, n = this.bodyNode.firstChild;
 				brn && n;
 				brn = brn.nextSibling, n = n.nextSibling){
-					var bn = this.grid.dod ? brn : brn.firstChild;
+					bn = this.grid.dod ? brn : brn.firstChild;
 					var h = ie > 8 ? domStyle.getComputedStyle(bn).height : bn.offsetHeight + 'px';
 					n.style.height = n.firstChild.style.height = h;
 			}
+
+			bn = this.bodyNode;
 			var t = this,
 				g = t.grid,
-				bn = t.bodyNode,
 				w = bn.offsetWidth || domStyle.get(bn, 'width'),
 				ltr = g.isLeftToRight(),
 				mainBorder = domGeo.getBorderExtents(g.mainNode);
+			
 			bn.style[ltr ? 'left' : 'right'] = -(w + (ltr ? mainBorder.l : mainBorder.r)) + 'px';
 		},
 

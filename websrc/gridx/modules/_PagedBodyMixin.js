@@ -43,6 +43,8 @@ define([
 				g.hScrollerNode.scrollLeft = t.domNode.scrollLeft;
 			});
 			t.aspect(t.model, 'onSizeChange', '_onSizeChange');
+			
+			t.aspect(g, 'onHScroll', '_onHScroll');
 
 			if(t.arg('createBottom')){
 				t._bottomNode = domConstruct.create('div', {
@@ -63,6 +65,10 @@ define([
 				});
 			}
 			t._initFocus();
+		},
+		
+		_onHScroll: function(left){
+			//TODO logic when scroll in horizontal
 		},
 
 		_onSizeChange: function(size){
@@ -204,7 +210,9 @@ define([
 				t.renderStart = start;
 				t.renderCount = count;
 				n.scrollTop = 0;
-				if(has('ie')){
+				//FIX ME: has('ie')is not working under IE 11
+				//use has('trident') here to judget IE 11
+				if(has('ie') || has('trident')){
 					//In IE, setting innerHTML will completely destroy the node,
 					//But CellWidget still need it.
 					while(n.childNodes.length){
@@ -237,7 +245,9 @@ define([
 				});
 			}else if(!{top: 1, bottom: 1}[position]){
 				n.scrollTop = 0;
-				if(has('ie')){
+				//FIX ME: has('ie')is not working under IE 11
+				//use has('trident') here to judget IE 11
+				if(has('ie') || has('trident')){
 					//In IE, setting innerHTML will completely destroy the node,
 					//But CellWidget still need it.
 					while(n.childNodes.length){
@@ -328,7 +338,8 @@ define([
 						}
 						m.when(toFetch, function(){
 							var renderedRows = [],
-								scrollHeight = g.bodyNode.scrollHeight;
+								scrollHeight = g.bodyNode.scrollHeight,
+								str;
 							str = t._buildRows(renderStart, renderCount, [], renderedRows);
 							if(btnNode){
 								domConstruct.place(str, btnNode, isPost ? 'before' : 'after');

@@ -56,6 +56,15 @@ define([
 		required: ['body'],
 		
 		count: 0,
+
+		preload: function(){
+			var t = this;
+			if(t.grid.persist){
+				t.count = t.grid.persist.registerAndLoad('columnLock', function(){
+					return t.count;
+				});
+			}
+		},
 		
 		load: function(args, deferStartup){
 			this.count = this.arg('count');
@@ -68,6 +77,9 @@ define([
 					_this.connect(g.columnWidth, 'onUpdate', '_updateHeader');
 					_this.connect(g.header, 'onRender', '_updateHeader');
 					_this.connect(g.body, 'onRender', '_updateBody');
+					//potential cell upate will cause rowHeight changing
+					_this.connect(g.body, 'onAfterCell', '_updateBody');
+
 					if(g.columnResizer){
 						//make it compatible with column resizer
 						_this.connect(g.columnResizer, 'onResize', '_updateHeader');
@@ -76,6 +88,9 @@ define([
 
 					_this.connect(g, '_onResizeEnd', '_updateHeader');
 					_this.connect(g, '_onResizeEnd', '_updateBody');
+					_this.connect(g.vScroller, '_onBodyChange', '_updateBody');
+					_this.connect(g, 'resize', '_updateUI');
+					
 					if(g.header){
 						g.header.loaded.then(function(){
 							_this._updateHeader();
@@ -89,12 +104,24 @@ define([
 						_this.lock(_this.count);
 					}
 				}
+				if(g.rowLock){
+					_this.connect(g.rowLock, 'onLock', function(){
+						_this.grid.hScroller && _this.grid.hScroller._doScroll();
+					});
+					_this.connect(g.rowLock, 'onUnlock', function(rowCount){
+						var rowNodes = _this.grid.bodyNode.childNodes;
+
+						for(var i = 0; i < rowCount; i++){
+							_this._lockColumns(rowNodes[i]);
+						}
+					});
+				}
 				_this.loaded.callback();
 			});
 		},
 		
 		lock: function(/*Integer*/count){
-			if(this.grid.columnWidth && this.grid.columnWidth.arg('autoResize'))return;
+			if(this.grid.columnWidth && this.grid.columnWidth.arg('autoResize')){ return; }
 			if(count >= this.grid._columns.length){
 				console.warn('Warning: lock count is larger than columns count, do nothing.');
 				return;
@@ -110,7 +137,7 @@ define([
 		},
 		
 		unlock: function(){
-			if(this.grid.columnWidth && this.grid.columnWidth.arg('autoResize'))return;
+			if(this.grid.columnWidth && this.grid.columnWidth.arg('autoResize')){ return; }
 			domClass.remove(this.grid.domNode, 'gridxColumnLock');
 			
 			var rowNode = query('.gridxHeaderRowInner', this.grid.headerNode)[0];
@@ -141,9 +168,10 @@ define([
 			}
 			this._updateBody();
 			this._updateScroller();
-			this.grid.hScroller && this.grid.hScroller._doScroll();
 			this.grid.header.onRender();
+			this.grid.hScroller && this.grid.hScroller._doScroll();
 		},
+		
 		_lockColumns: function(rowNode){
 			// summary:
 			//	Lock columns for one row
@@ -162,7 +190,9 @@ define([
 			var h1 = domGeometry.getContentBox(r.cells[r.cells.length - 1]).h, 
 				h2 = domGeometry.getMarginBox(r.cells[r.cells.length - 1]).h;
 
-			if(has('ie') > 8){
+			//FIX ME: has('ie')is not working under IE 11
+			//use has('trident') here to judget IE 11
+			if(has('ie') > 8 || has('trident') > 4 ){
 				//in IE 9 +, sometimes computed height will contain decimal pixels like 34.4 px, 
 				//so that the locked cells will have different height with the unlocked ones.
 				//plus the height by 1 can force IE to ceil the decimal to integer like from 34.4px to 35px
@@ -205,10 +235,13 @@ define([
 			this._updateScroller();//used for column dnd to sync hscroller.
 		},
 		
-		_updateBody: function(){
+		_updateBody: function( aopFucMap ){
 			// summary:
 			//	Update the body for column lock
-			array.forEach(this.grid.bodyNode.childNodes, this._lockColumns, this);
+			if ( !aopFucMap || aopFucMap['_updateBody'] !== false ){
+				array.forEach(this.grid.bodyNode.childNodes, this._lockColumns, this);
+			}
+				
 		},
 		
 		_updateScroller: function(){

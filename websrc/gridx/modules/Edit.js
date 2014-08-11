@@ -221,6 +221,11 @@ define([
 		//		If true then the cells in this column will be editable. Default is false.
 		editable: false,
 
+		// editorIgnoresEnter: Boolean
+		//		If true then the editor will ignore ENTER keypresses. Default is false.
+		//		This makes it possible to use Textarea widgets.
+		editorIgnoresEnter: false,
+
 		canEdit: function(cell){
 			// summary:
 			//		Decide whether a cell is editable.
@@ -332,7 +337,7 @@ define([
 				
 			if(t.arg('lazySave')){
 				var _removeCellBackground = function(cell){
-					var node = cell.node();
+					var node = cell.node(),
 						cellBgNode = query('.gridxCellBg', node);
 					if(cellBgNode.length){
 						domConstruct.destroy(cellBgNode);
@@ -361,6 +366,7 @@ define([
 							var computedStyle = domStyle.getComputedStyle(node),
 								cellPadding= parseInt(domGeo.getPadBorderExtents(node, computedStyle).l, 10),
 								leftToMove = node.clientWidth - cellPadding - 5,
+								wrapper, wrapperPosition, nodePosition,
 								
 								html = [
 									"<div class='gridxCellEditedBgWrapper'>",
@@ -369,7 +375,7 @@ define([
 												"class='gridxCellEditedBg'><span>◥</span>",
 										"</div>",
 									"</div>"
-							].join('');
+								].join('');
 							
 							wrapper= domConstruct.toDom(html);
 							cellBgNode = wrapper.firstChild;
@@ -541,7 +547,7 @@ define([
 				t = this,
 				g = t.grid;
 			if(!t.isEditing(rowId, colId)){
-				var row = g.row(rowId, 1),	//1 as true
+				var row = g.row(rowId, 1),		//1 as true
 					col = g._columnsById[colId];
 				if(row && row.cell(colId, 1).isEditable()){
 					g.cellWidget.setCellDecorator(rowId, colId, 
@@ -588,7 +594,15 @@ define([
 						cw.restoreCellDecorator(rowId, colId);
 						g.body.refreshCell(row.visualIndex(), col.index).then(function(){
 							d.callback();
-							t.onCancel(g.cell(rowId, colId, 1));
+							var c = g.cell(rowId, colId, 1),
+								node = c && c.node();
+							if(node){
+								node.removeAttribute('aria-labelledby');
+								if(!node.innerHTML || node.innerHTML === '&nbsp;'){
+									node.setAttribute('aria-label', 'empty cell');
+								}
+							}
+							t.onCancel(c);
 						});
 					}
 				}
@@ -623,6 +637,12 @@ define([
 								g.body.refreshCell(cell.row.visualIndex(), cell.column.index()).then(function(){
 									d.callback(success);
 									g.resize();
+
+									var node = cell.node();
+									node.removeAttribute('aria-labelledby');
+									if(!node.innerHTML || node.innerHTML === '&nbsp;'){
+										node.setAttribute('aria-label', 'empty cell');
+									}
 									t.onApply(cell, success, e, t.arg('lazy'));
 								});
 							}
@@ -689,7 +709,7 @@ define([
 		},
 
 		getLazyData: function(rowId, colId){
-			var t = this,
+			var t = this, r,
 				f = t.grid._columnsById[colId].field;
 			
 			if(t.arg('lazy')){
@@ -756,7 +776,10 @@ define([
 					col.needCellWidget = function(cell){
 						return (!needCellWidget || needCellWidget.apply(col, arguments)) && cell.isEditable();
 					};
-					col._userDec = col.decorator;
+					// avoid infinite recursion
+					if(col.decorator != t._dummyDecorator){
+						col._userDec = col.decorator;
+					}
 					col.userDecorator = t._getDecorator(col.id);
 					col.setCellValue = getEditorValueSetter((col.editorArgs && col.editorArgs.toEditor) ||
 							lang.partial(getTypeData, col));
@@ -852,7 +875,11 @@ define([
 				if(cw && cw.btns){
 					domClass.add(cw.btns, 'gridxEditFocus');
 				}
-				g.body.onRender();
+				//
+				// Defect 12439, when combine the AlwaysEditing and ColumnLock
+				//     The _updateBody contians many rows to call _lockColumn, which is very slow
+				//
+				g.body.onRender( { '_updateBody': false } );
 			}
 		},
 
@@ -876,6 +903,15 @@ define([
 			}
 			constraints = json.toJson(constraints);
 			constraints = constraints.substring(1, constraints.length - 1);
+
+
+			/*		fix #11235		*/
+			if(props){
+				props += ',scrollOnFocus: false';
+			}else{
+				props = 'scrollOnFocus: false';
+			}
+
 			if(textDir){
 				props += [(props ? ', ' : ''),
 					'dir: "', (this.grid.isLeftToRight() ? 'ltr' : 'rtl'),
@@ -884,6 +920,7 @@ define([
 			}else if(props && constraints){
 				props += ', ';
 			}
+
 			var t = this;
 			return function(){
 				return [
@@ -1062,7 +1099,7 @@ define([
 				col = g._columnsById[e.columnId];
 			if(col.editable){
 				var editing = t.isEditing(e.rowId, e.columnId);
-				if(e.keyCode == keys.ENTER){
+				if(e.keyCode == keys.ENTER && !col.editorIgnoresEnter){
 					if(editing){
 						t.apply(e.rowId, e.columnId).then(function(success){
 							if(col.alwaysEditing){

@@ -5,12 +5,15 @@ define([
 	"dojo/_base/lang",
 	"dojo/_base/Deferred",
 	"dojo/DeferredList",
+	'dojo/store/Memory',
+	"./model/cache/Async",
 	"./model/Model",
 	"./Row",
 	"./Column",
 	"./Cell",
 	"./_Module"
-], function(require, declare, array, lang, Deferred, DeferredList, Model, Row, Column, Cell, _Module){	
+], function(require, declare, array, lang, Deferred, DeferredList, Memory,
+			Async, Model, Row, Column, Cell, _Module){
 
 /*=====
 	return declare([], {
@@ -307,16 +310,26 @@ define([
 
 	return declare([], {
 		setStore: function(store){
-			if(this.store != store){
+			if(this.store !== store){
 				this.store = store;
 				this.model.setStore(store);
+			}
+		},
+
+		setData: function(data, skipAutoParseColumn){
+			var c;
+
+			this.model.setData(data);
+			if(!skipAutoParseColumn){
+				c = this.model._parseStructure(data);
+				this.setColumns(c);
 			}
 		},
 
 		setColumns: function(columns){
 			var t = this;
 			t.structure = columns;
-			//make a shalow copy of columns here so one structure can be used in different grids.
+			//make a shallow copy of columns here so one structure can be used in different grids.
 			t._columns = array.map(columns, function(col){
 				return lang.mixin({}, col);
 			});
@@ -333,7 +346,7 @@ define([
 
 		row: function(row, isId, parentId){
 			var t = this;
-			if(typeof row == "number" && !isId){
+			if(typeof row === "number" && !isId){
 				row = t.model.indexToId(row, parentId);
 			}
 			if(t.model.byId(row)){
@@ -347,7 +360,7 @@ define([
 
 		column: function(column, isId){
 			var t = this, c, a, obj = {};
-			if(typeof column == "number" && !isId){
+			if(typeof column === "number" && !isId){
 				c = t._columns[column];
 				column = c && c.id;
 			}
@@ -399,11 +412,10 @@ define([
 
 		//Private-------------------------------------------------------------------------------------
 		_init: function(){
-			var t = this,
+			var t = this, s,
 				d = t._deferStartup = new Deferred();
 			t.modules = t.modules || [];
 			t.modelExtensions = t.modelExtensions || [];
-			t.setColumns(t.structure);
 
 			if(t.touch){
 				if(t.touchModules){
@@ -412,17 +424,29 @@ define([
 			}else if(t.desktopModules){
 				t.modules = t.modules.concat(t.desktopModules);
 			}
-			normalizeModules(t);
-			checkForced(t);
-			removeDuplicate(t);
-			checkModelExtensions(t);
-			//Create model before module creation, so that all modules can use the logic grid from very beginning.
-			t.model = new Model(t);
-			t.when = hitch(t.model, t.model.when);
-			t._create();
-			t._preload();
-			t._load(d).then(function(){
-				t.onModulesLoaded();
+
+			if(!t.store){
+				s = t._parseData(t.data);
+			}else{
+				s = t.store;
+			}
+
+			Deferred.when(s, function(){
+				t.setColumns(t.structure);
+				
+				normalizeModules(t);
+				checkForced(t);
+				removeDuplicate(t);
+				checkModelExtensions(t);
+
+				//Create model before module creation, so that all modules can use the logic grid from very beginning.
+				t.model = new Model(t);
+				t.when = hitch(t.model, t.model.when);
+				t._create();
+				t._preload();
+				t._load(d).then(function(){
+					t.onModulesLoaded();
+				});
 			});
 		},
 
@@ -472,6 +496,58 @@ define([
 				dl.push(initMod(this, deferredStartup, m));
 			}
 			return new DeferredList(dl, 0, 1);
+		},
+
+		//used when creating grid without store
+		_defaultData: [
+			{id: 1, name: 'Dojo'},
+			{id: 2, name: 'jQuery'},
+			{id: 3, name: 'ExtJS'},
+			{id: 4, name: 'YUI'}
+		],
+
+		_parseData: function(data){
+			var t = this;
+
+			if(typeof data ==='object' && data.constructor === Array){
+				this.store = new Memory({data: data});
+			}else{					//use default data
+				this.store = new Memory({
+					data: this._defaultData
+				});
+			}
+			if(!t.structure){
+				this.structure = this._parseStructure(data);
+			}
+			return 1;
+		},
+
+		_parseStructure: function(data){
+			if(!data || typeof data !== 'object'){
+				return [
+					{id: 1, name: 'id', field: 'id'},
+					{id: 2, name: 'name', field: 'name'}
+				];
+			}
+			
+			var s = {},
+				len = data.length,
+				keys, i, j, kl, key,
+				struct = [];
+
+			for(i = 0; i < len; i++){
+				keys = Object.keys(data[i]);
+				kl = keys.length;
+				for(j = 0; j < kl; j++){
+					s[keys[j]] = 1;
+				}
+			}
+
+			for(key in s){
+				struct.push({id: key, name: key, field: key});
+			}
+
+			return struct;
 		}
 	});
 });

@@ -7,6 +7,7 @@ define([
 	"dojo/dom-class",
 	"dojo/dom-geometry",
 	"dojo/query",
+	"dojo/store/Memory",
 	"dojox/html/metrics",
 	"dijit/_WidgetBase",
 	"dijit/_FocusMixin",
@@ -26,13 +27,34 @@ define([
 	"./modules/Focus",
 	"dijit/_BidiSupport",
 	"dojo/i18n!./nls/gridx",
+	"dojo/uacss",
+	"dijit/hccss",
 	"dojo/NodeList-dom",
 	"dojo/NodeList-traverse"
-], function(declare, lang, has, on, i18n, domClass, domGeometry, query, metrics,
+], function(declare, lang, has, on, i18n, domClass, domGeometry, query, Memory, metrics,
 	_WidgetBase, _FocusMixin, _TemplatedMixin, template,
-	Core, Query, _Module, Header, View, Body, VLayout, HLayout, VScroller, HScroller, ColumnWidth, Focus, _BidiSupport){
+	Core, Query, _Module, Header, View, Body, VLayout, HLayout, VScroller, HScroller, ColumnWidth, Focus, _BidiSupport, nls){
 
 	var dummyFunc = function(){};
+	var version = {
+		// summary:
+		//		Version number of the Dojo Toolkit
+		// description:
+		//		Hash about the version, including
+		//
+		//		- major: Integer: Major version. If total version is "1.2.0beta1", will be 1
+		//		- minor: Integer: Minor version. If total version is "1.2.0beta1", will be 2
+		//		- patch: Integer: Patch version. If total version is "1.2.0beta1", will be 0
+		//		- flag: String: Descriptor flag. If total version is "1.2.0beta1", will be "beta1"
+		//		- revision: Number: The Git rev from which dojo was pulled
+		major: 1,
+		minor: 3,
+		patch: 3,
+		flag: "",
+		toString: function(){
+			return this.major + "." + this.minor + "." + this.patch + this.flag;	// String
+		}
+	};
 
 	return declare('gridx.Grid', [_WidgetBase, _TemplatedMixin, _FocusMixin, Core], {
 		// summary:
@@ -43,6 +65,7 @@ define([
 		
 		templateString: template,
 
+		version: version,
 		//textDir bidi support begin
 		_setTextDirAttr: function(textDir){
 			// summary:
@@ -113,7 +136,11 @@ define([
 			if(!t.isLeftToRight()){
 				domClass.add(t.domNode, 'gridxRtl');
 			}
-			t.nls = i18n.getLocalization('gridx', 'gridx', t.lang);
+			if(t.summary){
+				t.domNode.setAttribute('summary', t.summary);
+			}
+			//in case gridx is not a root level package, it should still work
+			t.nls = i18n.getLocalization('gridx', 'gridx', t.lang) || nls;
 			t._eventFlags = {};
 			t.modules = t.coreModules.concat(t.modules || []);
 			t.modelExtensions = t.coreExtensions.concat(t.modelExtensions || []);
@@ -156,7 +183,10 @@ define([
 		//		If true, the grid's width is determined by the total width of the columns, so that there will
 		//		never be horizontal scroller bar.
 		autoWidth: false,
-
+		// summary: String
+		//
+		//
+		summary: '',
 		// touch: Boolean
 		//		Whether grid is run in touch environment
 		//		If undefined, automatically set to true on mobile devices (like ios or android)
@@ -190,7 +220,11 @@ define([
 		_onResizeEnd: function(){},
 
 		_escapeId: function(id){
-			return String(id).replace(/\\/g, "\\\\");
+			return String(id).replace(/\\/g, "\\\\").replace(/\"/g, "\\\"");
+		},
+
+		_encodeHTML: function(id){
+			return String(id).replace(/\"/g, "&quot;");
 		},
 
 		//event handling begin
@@ -214,7 +248,7 @@ define([
 				}
 			}
 		},
-	
+
 		_connectEvents: function(node, connector, scope){
 			for(var t = this,
 					m = t.model,
