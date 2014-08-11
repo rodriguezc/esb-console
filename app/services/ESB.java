@@ -2,7 +2,6 @@ package services;
 
 import config.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -10,9 +9,11 @@ import javax.jms.JMSException;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
-import java.io.IOError;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,24 @@ public class ESB {
 
     private static Map<String, JMXConnector> jmxConnectors = new HashMap<>();
     private static Map<String,Connection> connections = new HashMap<>();
+    private static Map<String, DataSource> dataSources = new HashMap<>();
     public static Esb config;
+
+    public static List<ActiveMQType> getBrokers(String env) {
+
+        if (env != null) {
+            List<EsbType> esbTypes = config.getEnvironnement();
+            for (EsbType esbType : esbTypes) {
+                if (esbType.getName().equals(env)) {
+
+                    return esbType.getActivemq();
+
+                }
+            }
+        }
+
+        return null;
+    }
 
     public static ActiveMQType getActiveMQ(String env, String node) {
 
@@ -47,31 +65,21 @@ public class ESB {
 
     }
 
-    public static ActiveMQType getActiveMQByLabel(String env, String node) {
-
-        if (env != null && node != null) {
-            List<EsbType> esbTypes = config.getEnvironnement();
-            for (EsbType esbType : esbTypes) {
-                if (esbType.getLabel().equals(env)) {
-
-                    List<ActiveMQType> activeMQTypes = esbType.getActivemq();
-                    for (ActiveMQType activeMQType : activeMQTypes) {
-                        if (activeMQType.getNode().equals(StringUtils.right(node,1))) {
-                            return activeMQType;
-                        }
-                    }
-
-                }
+    public static List<ServiceMixType> getServiceMix(String env) {
+        List<EsbType> esbTypes = config.getEnvironnement();
+        for (EsbType esbType : esbTypes) {
+            if (esbType.getName().equals(env)) {
+                return esbType.getServiceMix();
             }
         }
-        return null;
+        return new ArrayList<ServiceMixType>();
 
     }
 
 
     public static ServiceMixType getServiceMix(String env, String node) {
 
-        if (env == null && node == null) {
+        if (env != null && node != null) {
             List<EsbType> esbTypes = config.getEnvironnement();
             for (EsbType esbType : esbTypes) {
                 if (esbType.getName().equals(env)) {
@@ -106,6 +114,30 @@ public class ESB {
         return connections.get(key);
 
     }
+
+    /*
+    public static DataSource getDataSource(String env) throws SQLException {
+
+        if (!dataSources.containsKey(env)) {
+
+            List<EsbType> esbTypes = ESB.config.getEnvironnement();
+            for (EsbType esbType : esbTypes) {
+                if (esbType.getLabel().equals(env)) {
+
+                    DataSourceType dataSourceType = esbType.getAuditDataSource();
+                    OracleConnectionPoolDataSource ds = new OracleConnectionPoolDataSource();
+                    ds.setURL(dataSourceType.getUrl());
+                    ds.setUser(dataSourceType.getUser());
+                    ds.setPassword(dataSourceType.getPassword());
+                    dataSources.put(env, ds);
+                }
+            }
+
+        }
+
+        return dataSources.get(env);
+
+    } */
 
     public static JMXConnector getJmxConnector(JmxServerType jmxServer) throws MalformedURLException, IOException {
 

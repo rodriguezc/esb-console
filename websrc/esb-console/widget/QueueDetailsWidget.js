@@ -138,11 +138,12 @@ define([
             if(evt.detail == 2) {
                 var cell = this.messagesGridWidget.cell(evt.rowId, evt.columnId);
                 var msg = cell.row.model.byId(cell.row.id).item;
+                var posId =cell.row.model.byId(cell.row.id).data["1"];
                 //    this.set("detailsContent", entities.encode(msg.content));
                 this.set("detailsContent", msg.content);
 
                 this.set("detailsProperties", msg.properties);
-                this.set("detailsId", msg.id);
+                this.set("detailsId", posId);
             }
         },
         _onCopyClick : function() {

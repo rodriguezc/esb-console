@@ -59,7 +59,7 @@ html, body {
 
 }
 
-.STATE_KO {
+.STATE_KO,.STATE_ERROR {
     background-color:red;
 
 }

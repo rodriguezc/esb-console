@@ -192,6 +192,7 @@
                                             {field: 'position', name: '#',  width:'30px'},
                                             {field: 'type', name: 'Type',  width:'200px'},
                                             {field: 'id', name: 'jmsMessageId'},
+                                            {field: 'businessId', name: 'businessId'},
                                             {field: 'jmsTimestamp', name: 'jmsTimestamp'}
 
 
@@ -200,15 +201,15 @@
     </div>
     <hr style="margin-top: -10px"/>
     <div style="height: 45%">
-        <fieldset data-dojo-attach-point="fieldsetProperties" style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3">
+        <fieldset data-dojo-attach-point="fieldsetProperties" style="float: left;width:30%;height: 100%;background-color: #f1f9ff; border: 1px solid #d3d3d3;">
             <legend >
                 <input type="button" data-dojo-props="iconClass:'expandIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onPropertiesExpand" />
                 <input type="button" data-dojo-props="iconClass:'contractIcon18', showLabel: false" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onPropertiesContract" />
                 Properties of <span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at(this, 'detailsId')"></span>
 
             </legend>
-                <div style="overflow-y: auto;height: 100%">
-                <table style="width: 100%;font-size: 14px;">
+                <div style="overflow-y: auto;height: 80%;">
+                <table style="width: 100%;font-size: 14px;word-break: break-all; word-wrap: break-word;">
                   <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
                      <tr>
                         <td style="width: 50%"><span data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>

@@ -170,7 +170,7 @@ define([
                 } else if ("WARN" == data.globalState) {
                     widget.globalMonitorState.src = 'esb-console/images/32/Circle_Orange.png';
                 }
-                else if ("KO" == data.globalState) {
+                else if ("KO" == data.globalState || "ERROR" == data.globalState ) {
                     widget.globalMonitorState.src = 'esb-console/images/32/Circle_Red.png';
                 }
             });

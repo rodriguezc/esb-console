@@ -1,13 +1,9 @@
 
 package config;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -79,8 +75,8 @@ public class EsbType {
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ActiveMQType }
-     * 
-     * 
+     *
+     *
      */
     public List<ActiveMQType> getActivemq() {
         if (activemq == null) {
@@ -91,25 +87,25 @@ public class EsbType {
 
     /**
      * Gets the value of the serviceMix property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the serviceMix property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getServiceMix().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ServiceMixType }
-     * 
-     * 
+     *
+     *
      */
     public List<ServiceMixType> getServiceMix() {
         if (serviceMix == null) {
@@ -120,11 +116,11 @@ public class EsbType {
 
     /**
      * Gets the value of the auditDataSource property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link DataSourceType }
-     *     
+     *
      */
     public DataSourceType getAuditDataSource() {
         return auditDataSource;
@@ -132,11 +128,11 @@ public class EsbType {
 
     /**
      * Sets the value of the auditDataSource property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link DataSourceType }
-     *     
+     *
      */
     public void setAuditDataSource(DataSourceType value) {
         this.auditDataSource = value;
@@ -144,11 +140,11 @@ public class EsbType {
 
     /**
      * Gets the value of the cmptDataSource property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link DataSourceType }
-     *     
+     *
      */
     public DataSourceType getCmptDataSource() {
         return cmptDataSource;
@@ -156,7 +152,7 @@ public class EsbType {
 
     /**
      * Sets the value of the cmptDataSource property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link DataSourceType }
