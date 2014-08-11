@@ -40,11 +40,9 @@ define([
                             var store = new Store({data: null});
                             widget.gridWidget.model.setStore(store);
                         } else {
-
+                            widget.requestNode.value = widget.currentquery;
                             request.post("/services/environments/" + widget.env + "/audit", {
-
-
-                                headers: {"Content-Type": "text/plain"},
+                            headers: {"Content-Type": "text/plain"},
                                 data:  widget.currentquery, handleAs: "json"}).then(
                                 function (data) {
                                     //        widget.gridWidget.model.clearCache();
@@ -119,7 +117,15 @@ define([
 
 
             onSearch: function(event) {
-                hash("env=" + this.env + "&page=audit&q=" + this.requestNode.value);
+                var newHash = "env=" + this.env + "&page=audit&q=" + this.requestNode.value;
+
+                if(hash() == newHash) {
+                    this.currentquery = null;
+                    topic.publish("/dojo/hashchange", hash());
+                } else {
+                    hash(newHash);
+                }
+
                 this.requestNode.focus();
             },
 
@@ -130,6 +136,7 @@ define([
                     if (event.keyCode == 88) {
                         var newHash = "env=" + this.env + "&page=audit&q=";
                         if(hash() == newHash) {
+                            this.currentquery = null;
                             topic.publish("/dojo/hashchange", newHash);
 
                         } else {
@@ -137,8 +144,7 @@ define([
                         }
                     } else
                     if (event.keyCode == 13) {
-
-                        hash("env=" + this.env + "&page=audit&q=" + this.requestNode.value);
+                        this.onSearch();
                     }
                 }
             },
