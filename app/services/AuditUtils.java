@@ -51,7 +51,7 @@ public class AuditUtils {
                     .put("domain", dbObject.getString("domain"))
                     .put("context", dbObject.getString("context"))
                     .put("businessUser", dbObject.getString("businessUser"))
-                    .put("serviceDestination", dbObject.getString("destination"))
+                    .put("serviceDestination", dbObject.getString("serviceDestination"))
                     .put("sendDate", sdf.format(dbObject.getDate("sendDate")));
 
             ArrayNode properties = row.putArray("properties");
