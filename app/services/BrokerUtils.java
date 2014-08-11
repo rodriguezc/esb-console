@@ -18,7 +18,12 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -96,9 +101,15 @@ public class BrokerUtils {
 
     }
 
-    public static ArrayNode browse(Connection connection, String queue) throws JMSException {
+    public static ArrayNode browse(Connection connection, String queue) throws Exception {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+        ByteArrayOutputStream nice = new ByteArrayOutputStream();
 
         ArrayNode messages = Json.newObject().arrayNode();
 
@@ -150,7 +161,16 @@ public class BrokerUtils {
                 }
 
                 if (m instanceof TextMessage) {
-                    jms.put("content", ((TextMessage) m).getText());
+                    if (!queue.matches(".*INTERNAL.*")) {
+                        try {
+                            transformer.transform(new StreamSource(new StringReader(((TextMessage) m).getText())), new StreamResult(nice));
+                            jms.put("content", new String(nice.toByteArray(), "UTF-8"));
+                        } catch (TransformerException e) {
+                            jms.put("content", ((TextMessage) m).getText());
+                        }
+                    } else {
+                        jms.put("content", ((TextMessage) m).getText());
+                    }
                 }
 
 

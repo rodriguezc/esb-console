@@ -142,7 +142,7 @@ public class Application extends Controller {
             Connection connection = ESB.getConnection(ESB.getActiveMQ(environments, broker));
             return ok(BrokerUtils.browse(connection, queue));
 
-        } catch (JMSException e) {
+        } catch (Exception e) {
             Logger.error(e.getMessage(), e);
             return internalServerError(e.getMessage());
         }
