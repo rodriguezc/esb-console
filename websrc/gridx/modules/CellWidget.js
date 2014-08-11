@@ -209,7 +209,7 @@ define([
 				var t = this,
 					dn = t.domNode;
 				t.connect(dn, 'onmousedown', function(e){
-					if(e.target != dn && !t.cell.column.allowEventBubble){
+					if(e.target !== dn && !t.cell.column.allowEventBubble){
 						e.cancelBubble = true;
 					}
 				});
@@ -229,13 +229,11 @@ define([
 					cellWidget.uninitializeCellWidget(t, cell);
 				}
 				cellWidget.initializeCellWidget(t, cell);
-				if(col.getCellWidgetConnects){
-					var output = [];
-					cellWidget.collectCellWidgetConnects(t, output);
-					t._cellCnnts = array.map(output, function(cnnt){
-						return t.connect.apply(t, cnnt);
-					});
-				}
+				var output = [];
+				cellWidget.collectCellWidgetConnects(t, output);
+				t._cellCnnts = array.map(output, function(cnnt){
+					return t.connect.apply(t, cnnt);
+				});
 			},
 		
 			setValue: function(gridData, storeData, isInit){
@@ -371,21 +369,21 @@ define([
 
 		onCellWidgetCreated: function(widget, column){
 			if(column.onCellWidgetCreated){
-				column.onCellWidgetCreated(widget, column);
+				column.onCellWidgetCreated.apply(this, arguments);
 			}
 		},
 
 		initializeCellWidget: function(widget, cell){
 			var column = cell.column;
 			if(column.initializeCellWidget){
-				column.initializeCellWidget(widget, cell);
+				column.initializeCellWidget.apply(this, arguments);
 			}
 		},
 
 		uninitializeCellWidget: function(widget, cell){
 			var column = cell.column;
 			if(column.uninitializeCellWidget){
-				column.uninitializeCellWidget(widget, cell);
+				column.uninitializeCellWidget.apply(this, arguments);
 			}
 		},
 
@@ -428,7 +426,9 @@ define([
 					var cellNode = cell.contentNode();
 					if(cellNode){
 						var cellWidget = t._prepareCellWidget(cell);
-						if(has('ie')){
+						//FIX ME: has('ie')is not working under IE 11
+						//use has('trident') here to judget IE 11
+						if(has('ie') || has('trident')){
 							while(cellNode.childNodes.length){
 								cellNode.removeChild(cellNode.firstChild);
 							}
@@ -437,6 +437,8 @@ define([
 						}
 						cellWidget.placeAt(cellNode);
 						cellWidget.startup();
+						cellNode.setAttribute('aria-labelledby', cellWidget.id);
+						cellNode.removeAttribute('aria-label');
 					}
 				}
 			});
@@ -451,6 +453,8 @@ define([
 				cellNode.innerHTML = "";
 				cellWidget.placeAt(cellNode);
 				cellWidget.startup();
+				cellNode.setAttribute('aria-labelledby', cellWidget.id);
+				cellNode.removeAttribute('aria-label');
 			}
 		},
 

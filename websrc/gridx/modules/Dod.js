@@ -6,19 +6,21 @@ define([
 	"dojo/dom-geometry",
 	"dojo/_base/lang",
 	"dojo/_base/Deferred",
-	"../core/_Module",
+	"dojo/_base/array",
 	"dojo/_base/declare",
 	"dojo/_base/fx",
 	"dojo/fx",
 	"dojo/keys",
-	'gridx/support/query',
-	'dijit/a11y',
-	'dijit/registry',
 	'dojo/_base/event',
-	'dojo/_base/sniff'
-], function(kernel, domConstruct, domStyle, domClass, domGeometry, lang, 
-			Deferred, _Module, declare, baseFx, fx, keys, query, a11y, registry, event, has){
-	kernel.experimental('gridx/modules/Dod');
+	'dojo/_base/sniff',
+	"../core/_Module",
+	'../support/query',
+	'dijit/a11y',
+	'dijit/registry'
+], function(kernel, domConstruct, domStyle, domClass, domGeometry, lang,
+			Deferred, array, declare, baseFx, fx, keys, event, has,
+			_Module, query, a11y, registry){
+	// kernel.experimental('gridx/modules/Dod');
 
 /*=====
 	return declare(_Module, {
@@ -72,7 +74,8 @@ define([
 		onHide: function(row){}
 	});
 =====*/
-
+	var dummyFunc = function(){};
+	
 	return declare(_Module, {
 		name: 'dod',
 		required: ['body'],
@@ -83,20 +86,51 @@ define([
 		
 		preload: function(){
 			this.initFocus();
+
+			var g = this.grid,
+				_events = g._eventNames,
+				len = _events.length,
+				eventName;
+
+			for(var i = 0; i < len; i++){
+				eventName = 'onDod' + _events[i];
+				g[eventName] = g[eventName] || dummyFunc;
+			}
+
+			this.connect(this.grid.body, '_onMouseEvent', '_dodEventDispatcher');
 		},
 		
 		load: function(args, deferStartup){
-			this._rowMap = {};
-			this.connect(this.grid.body, 'onAfterCell', '_onAfterCell');
-			this.connect(this.grid.body, 'onAfterRow', '_onAfterRow');
-			this.connect(this.grid.bodyNode, 'onclick', '_onBodyClick');
-			this.connect(this.grid.body, 'onUnrender', '_onBodyUnrender');
-			this.connect(this.grid, 'onCellKeyDown', '_onCellKeyDown');
-			this.connect(this.grid.body, '_onRowMouseOver', '_onRowMouseOver');
-			if(this.grid.columnResizer){
-				this.connect(this.grid.columnResizer, 'onResize', '_onColumnResize');
+			var t =this, g = t.grid;
+			t._rowMap = {};
+			t.connect(t.grid.body, 'onAfterCell', '_onAfterCell');
+			t.connect(t.grid.body, 'onAfterRow', '_onAfterRow');
+			t.connect(t.grid.bodyNode, 'onclick', '_onBodyClick');
+			t.connect(t.grid.body, 'onUnrender', '_onBodyUnrender');
+			t.connect(t.grid, 'onCellKeyDown', '_onCellKeyDown');
+			t.connect(t.grid.body, '_onRowMouseOver', '_onRowMouseOver');
+
+			//in IE, renderRow will use bodyNode.innerHTML = str,
+			//this will destroy all the node and _row.dodNode's innerHTML wil be destroyed,
+			//Here, manually set dodLoaded to false to force dod to re-render the dodNode 
+			(has('ie') || has('trident')) && t.aspect(t.grid.body, 'renderRows', function(s, c, p){
+				if(p === 'top' || p === 'bottom'){ return; }
+				var i, rowInfo, _row;
+				for(i = s; i < s + c; i++){
+					rowInfo = g.view.getRowInfo({visualIndex: i});
+					_row = t._rowMap[rowInfo.rowId];
+					if(_row){
+						_row.dodLoaded = false;
+						_row.dodLoadingNode = null;
+						_row.dodNode = null;
+					}
+				}
+			}, t, 'before');
+
+			if(t.grid.columnResizer){
+				t.connect(t.grid.columnResizer, 'onResize', '_onColumnResize');
 			}
-			this.loaded.callback();
+			t.loaded.callback();
 			
 		},
 		
@@ -111,7 +145,7 @@ define([
 				this.grid.dod.toggle(this);
 			},
 			refreshDetail: function(){
-				this.grid.dod.refreshDetail(this);
+				this.grid.dod.refresh(this);
 			},
 			isDetailShown: function(){
 				return this.grid.dod.isShown(this);
@@ -119,12 +153,21 @@ define([
 		},
 		
 		show: function(row){
-			var _row = this._row(row);
-			if(_row.dodShown || _row.inAnim){return;}
+			var _row = this._row(row),
+				df = new Deferred(),
+				g = this.grid;
+
+			if(_row.dodShown || _row.inAnim){
+				df.errback('Row detail has already shown.');
+				return df;
+			}
 			
 			_row.dodShown = true;
 			
-			if(!row.node()){ return; }
+			if(!row.node()){
+				df.callback(row);
+				return df;
+			}
 
 			var expando = this._getExpando(row);
 			if(expando){expando.firstChild.innerHTML = '-';}
@@ -141,55 +184,75 @@ define([
 			}
 			domConstruct.place(_row.dodLoadingNode, node, 'last');
 			domConstruct.place(_row.dodNode, node, 'last');
+			// domConstruct.place(_row.dodNode, _row.dodLoadingNode, 'last');
+
+			
 			domStyle.set(_row.dodLoadingNode, 'width', w + 'px');
 			domStyle.set(_row.dodNode, 'width', w + 'px');
+			domStyle.set(_row.dodNode, 'visibility', 'hidden');
+			domStyle.set(_row.dodNode, 'overflow', 'hidden');
+			domStyle.set(_row.dodNode, 'height', '0px');
+
 			
 			domClass.add(node, 'gridxDodShown');
-			domStyle.set(_row.dodNode, 'display', 'none');
+			//domStyle.set(_row.dodNode, 'display', 'none');
 			
 			if(_row.dodLoaded){
-				this._detailLoadComplete(row);
-				return;
+				this._detailLoadComplete(row, df);
+				return df;
 			}else{
 				domStyle.set(_row.dodLoadingNode, 'display', 'block');
+				if(g.autoHeight){
+					g.vLayout.reLayout();
+				}
 				_row.inLoading = true;
 			}
 			
 			if(this.grid.rowHeader){
 				var rowHeaderNode = query('[rowid="' + this.grid._escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
 				//TODO: 1 is the border for claro theme, will fix
-				domStyle.set(rowHeaderNode.firstChild, 'height', domStyle.get(row.node(), 'height') + 'px');
-				domStyle.set(rowHeaderNode, 'height', domStyle.get(row.node(), 'height') + 'px');
+				var h = domStyle.get(row.node(), 'height');
+				domStyle.set(rowHeaderNode.firstChild, 'height', h + 'px');
+				domStyle.set(rowHeaderNode, 'height', h + 'px');
 			}
 			
-			var df = new Deferred(), _this = this;
+			var _df = new Deferred(),
+				_this = this;
 			if(this.arg('detailProvider')){
-				this.detailProvider(this.grid, row.id, _row.dodNode, df);
+				this.detailProvider(this.grid, row.id, _row.dodNode, _df);
 			}else{
-				df.callback();
+				_df.callback();
 			}
-			df.then(
-				lang.hitch(this, '_detailLoadComplete', row), 
-				lang.hitch(this, '_detailLoadError', row)
-			);
-
+			_df.then(lang.hitch(this, '_detailLoadComplete', row, df), lang.hitch(this, '_detailLoadError', row, df));
+			return df;
 		},
 		
 		hide: function(row){
-			var _row = this._row(row), g = this.grid, escapeId = g._escapeId;
-			if(!_row.dodShown || _row.inAnim || _row.inLoading){return;}
+			var rowHeaderNode,
+				_row = this._row(row),
+				g = this.grid,
+				escapeId = g._escapeId,
+				df = new Deferred(),
+				t = this;
+
+			if(!_row.dodShown || _row.inAnim || _row.inLoading){
+				df.errback('Row Detail has already been hidden.');
+				return df;
+			}
 			
 			if(!row.node()){
 				_row.dodShown = false;
-				return;
+				df.callback(row);
+				return df;
 			}
 			
 			domClass.remove(row.node(), 'gridxDodShown');
 			domStyle.set(_row.dodLoadingNode, 'display', 'none');
 			if(this.grid.rowHeader){
-				var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
-				domStyle.set(rowHeaderNode.firstChild, 'height', domStyle.get(row.node(), 'height') - 1 + 'px');
-				domStyle.set(rowHeaderNode, 'height', domStyle.get(row.node(), 'height') - 1 + 'px');
+				rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
+				var h = domStyle.get(row.node(), 'height');
+				domStyle.set(rowHeaderNode.firstChild, 'height', h + 'px');
+				domStyle.set(rowHeaderNode, 'height', h + 'px');
 				//TODO: 1 is the border for claro theme, will fix
 			}
 			var expando = this._getExpando(row);
@@ -203,11 +266,14 @@ define([
 					onEnd: function(){
 						_row.dodShown = false;
 						_row.inAnim = false;
+						_row.defaultShow = false;
+						t.onHide(row);
+						df.callback(row);
 						g.body.onRender();
 					}
 				}).play();
 				if(this.grid.rowHeader){
-					var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
+					rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
 					baseFx.animateProperty({ node: rowHeaderNode.firstChild, duration:this.arg('duration'),
 						properties: {
 							height: { start:rowHeaderNode.offsetHeight, end:rowHeaderNode.offsetHeight - _row.dodNode.scrollHeight, units:"px" }
@@ -217,22 +283,23 @@ define([
 						properties: {
 							height: { start:rowHeaderNode.offsetHeight, end:rowHeaderNode.offsetHeight - _row.dodNode.scrollHeight, units:"px" }
 						}
-					}).play();					
+					}).play();
 				}
 			}else{
 				_row.dodShown = false;
 				_row.inAnim = false;
 				if(this.grid.rowHeader){
-					var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
+					rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
 					rowHeaderNode.firstChild.style.height = rowHeaderNode.offsetHeight - _row.dodNode.scrollHeight + 'px';
 					rowHeaderNode.style.height = rowHeaderNode.offsetHeight - _row.dodNode.scrollHeight + 'px';
 				}
 				_row.dodNode.style.display = 'none';
 				g.body.onRender();
-				
+				_row.defaultShow = false;
+				this.onHide(row);
+				df.callback(row);
 			}
-			
-			_row.defaultShow = false;
+			return df;
 		},
 		
 		toggle: function(row){
@@ -242,9 +309,12 @@ define([
 				this.show(row);
 			}
 		},
+
 		refresh: function(row){
 			var _row = this._row(row);
+			if(!_row || !_row.dodShown || _row.inAnim || _row.inLoading) return;
 			_row.dodLoaded = false;
+			_row.dodShown = false;
 			this.show(row);
 		},
 		
@@ -269,14 +339,16 @@ define([
 				onBlur: t._onBlur,
 				connects: [
 					t.connect(t.grid, 'onCellKeyDown', '_onCellKeyDown'),
-					t.connect(t.grid, 'onRowKeyDown', '_onRowKeyDown')
+					t.connect(t.grid, 'onDodKeyDown', '_onRowKeyDown')
 				]
 			});	
 		},
 		
-		//private
+		//*****************************	private	*****************************
 		_rowMap: null,
+
 		_lastOpen: null, //only useful when autoClose is true.
+
 		_row: function(/*id|obj*/row){
 			var id = row;
 			if(typeof row === 'object'){
@@ -286,9 +358,12 @@ define([
 		},
 		
 		_onBodyClick: function(e){
-			if(!domClass.contains(e.target, 'gridxDodExpando') 
-			&& !domClass.contains(e.target, 'gridxDodExpandoText') 
-			|| this.grid.domNode != query(e.target).closest('.gridx')[0]){return;}
+			if(!domClass.contains(e.target, 'gridxDodExpando') &&
+				!domClass.contains(e.target, 'gridxDodExpandoText') ||
+				this.grid.domNode != query(e.target).closest('.gridx')[0]
+			){
+				return;
+			}
 			var node = e.target;
 			while(node && !domClass.contains(node, 'gridxRow')){
 				node = node.parentNode;
@@ -296,9 +371,7 @@ define([
 			
 			// event.stop(e);
 			var idx = node.getAttribute('rowindex');
-			
-			
-			this.toggle(this.grid.row(parseInt(idx)));
+			this.toggle(this.grid.row(parseInt(idx, 10)));
 		},
 		
 		_onRowMouseOver: function(e){
@@ -355,7 +428,7 @@ define([
 
 		_onAfterCell: function(cell){
 			//when the first cell's content is changed, update the expando
-			if(this.arg('showExpando') && cell.node().cellIndex == 0){
+			if(this.arg('showExpando') && cell.node().cellIndex === 0){
 				this._onAfterRow(cell.row);
 			}
 		},
@@ -366,25 +439,32 @@ define([
 			});
 		},
 		
-		_detailLoadComplete: function(row){
-			var _row = this._row(row), g = this.grid, escapeId = g._escapeId;
-			if(!this.isShown(row)){return;}
+		_detailLoadComplete: function(row, df){
+			var _row = this._row(row),
+				g = this.grid, 
+				escapeId = g._escapeId, rowHeaderNode;
+
+			if(!this.isShown(row)){
+				df.errorback();
+				return;
+			}
 			_row.dodLoaded = true;
-			
+
 			var gridNodes = query('.gridx', _row.dodNode);
-			if(gridNodes.length){		//flag gridInGrid to query
+			if(gridNodes.length){
+				//flag gridInGrid to query
 				query.isGridInGrid[this.grid.id] = true;
 			}
-	
-			
 			if(_row.defaultShow){
-				domStyle.set(_row.dodNode, 'display', 'block');
+				// domStyle.set(_row.dodNode, 'display', 'block');
+				_row.dodNode.style.display = 'block';
+				_row.dodNode.style.visibility = 'visible';
+				_row.dodNode.style.height = 'auto';
 				g.body.onRender();
 				if(this.grid.rowHeader){
-					var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
+					rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
 					rowHeaderNode.firstChild.style.height = row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight + 'px';
 					rowHeaderNode.style.height = row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight + 'px';
-	
 				}
 			}else{
 				if(domStyle.get(_row.dodLoadingNode, 'display') == 'block'){
@@ -404,26 +484,54 @@ define([
 					}).play();
 					
 					if(this.grid.rowHeader){
-						var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
-						baseFx.animateProperty({ node: rowHeaderNode.firstChild, duration:this.arg('duration'),
+						rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
+						baseFx.animateProperty({
+							node: rowHeaderNode.firstChild,
+							duration: this.arg('duration'),
+							onEnd: function(){
+								try{
+									var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', g.rowHeader.bodyNode)[0];
+									var h = row.node().firstChild.offsetHeight + _row.dodNode.offsetHeight;
+									rowHeaderNode.firstChild.style.height = h + 'px';
+								}catch(e){}
+							},
 							properties: {
-								height: { start:rowHeaderNode.offsetHeight, end:row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight, units:"px" }
+								height: {
+									start: rowHeaderNode.offsetHeight,
+									end: row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight,
+									units:"px"
+								}
 							}
 						}).play();
-						baseFx.animateProperty({ node: rowHeaderNode, duration:this.arg('duration'),
+						baseFx.animateProperty({
+							node: rowHeaderNode,
+							duration: this.arg('duration'),
+							onEnd: function(){
+								try{
+									var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', g.rowHeader.bodyNode)[0];
+									var h = row.node().firstChild.offsetHeight + _row.dodNode.offsetHeight;
+									rowHeaderNode.style.height = h + 'px';
+								}catch(e){}
+							},
 							properties: {
-								height: { start:rowHeaderNode.offsetHeight, end:row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight, units:"px" }
+								height: {
+									start: rowHeaderNode.offsetHeight,
+									end: row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight,
+									units:"px"
+								}
 							}
-						}).play();						
+						}).play();
 					}
 				}else{
 					_row.dodNode.style.display = 'block';
+					_row.dodNode.style.visibility = 'visible';
 					_row.dodNode.style.height = 'auto';
 					g.body.onRender();
 					if(this.grid.rowHeader){
-						var rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
-						rowHeaderNode.firstChild.style.height = row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight + 'px';
-						rowHeaderNode.style.height = row.node().firstChild.offsetHeight + _row.dodNode.scrollHeight + 'px';
+						rowHeaderNode = query('[rowid="' + escapeId(row.id) + '"].gridxRowHeaderRow', this.grid.rowHeader.bodyNode)[0];
+						var h = row.node().firstChild.offsetHeight + _row.dodNode.offsetHeight;
+						rowHeaderNode.firstChild.style.height = h + 'px';
+						rowHeaderNode.style.height = h + 'px';
 					}
 					
 				}
@@ -432,22 +540,35 @@ define([
 			_row.inLoading = false;
 			
 			//***for nested grid in grid ****
-	
 			
 			var gs = this.grid._nestedGrids = this.grid._nestedGrids? this.grid._nestedGrids : [];
 			for(var i = 0; i < gridNodes.length; i++){
 				var gig = registry.byNode(gridNodes[i]);
+				gig._outerGrid = g;
 				gs.push(gig);
 				if(!gig._refreshForDod){
 					gig._refreshForDod = true;
-					gig.resize();
+					// gig.resize();
+					// gig.vLayout.reLayout();
 					this.connect(gig.focus, 'tab', '_tab');
 					this.connect(gig.lastFocusNode, 'onfocus', '_lastNodeFocus');
 					this.connect(gig.domNode, 'onfocus', '_domNodeFocus');
+					this.connect(gig.vLayout, 'reLayout', function(){
+						if(gig._outerGrid){
+							gig._outerGrid.vLayout.reLayout();
+						}
+					});
+					this.connect(gig, 'onRowMouseOver', function(){
+						if(gig._outerGrid){
+							query('.gridxRowOver', gig._outerGrid.bodyNode).removeClass('gridxRowOver');
+						}
+					});
 					
 				}
 			}
 			g.vLayout.reLayout();
+			this.onShow(row);
+			df.callback(row);
 		},
 		
 		_detailLoadError: function(row){
@@ -464,7 +585,9 @@ define([
 		},
 		
 		_getExpando: function(row){
-			if(!this.showExpando) return null;
+			if(!this.showExpando){
+				return null;
+			}
 			var tbl = query('table', row.node())[0];
 			var cell = tbl.rows[0].cells[0];
 			return cell? cell.firstChild : null;
@@ -522,7 +645,6 @@ define([
 			t._focusRowId = rowId;
 			var navElems = t._navElems = a11y._getTabNavigable(row.node());
 			return (navElems.highest || navElems.last) && (navElems.lowest || navElems.first);
-			return false;
 			
 		},
 		_tab: function(step, evt){
@@ -534,7 +656,9 @@ define([
 				var navElems = this._navElems,
 					firstElem = navElems.lowest || navElems.first,
 					lastElem = navElems.highest || navElems.last ||firstElem,
-					target = has('ie') ? evt.srcElement : evt.target;
+					//FIX ME: has('ie')is not working under IE 11
+					//use has('trident') here to judget IE 11
+					target = (has('ie') || has('trident')) ? evt.srcElement : evt.target;
 				
 				if(target == firstElem){
 					// this._doFocus(evt, -1);
@@ -549,7 +673,7 @@ define([
 				var navElems = this._navElems,
 					firstElem = navElems.lowest || navElems.first,
 					lastElem = navElems.highest || navElems.last ||firstElem,
-					target = has('ie') ? evt.srcElement : evt.target;
+					target = (has('ie') || has('trident')) ? evt.srcElement : evt.target;
 	
 				if(target == lastElem){
 					// this._onBlur();
@@ -604,7 +728,7 @@ define([
 				var navElems = this._navElems,
 					firstElem = navElems.lowest || navElems.first,
 					lastElem = navElems.highest || navElems.last ||firstElem,
-					target = has('ie') ? evt.srcElement : evt.target;
+					target = ( has('ie') || has('trident') ) ? evt.srcElement : evt.target;
 
 				if(target == (step > 0 ? lastElem : firstElem)){
 					event.stop(evt);
@@ -618,6 +742,34 @@ define([
 		
 		_onBlur: function(evt){
 			this._navigating = false;
+		},
+
+		_dodEventDispatcher: function(eventName, e){
+			var target = e.target,
+				evtDod = 'onDod' + eventName,
+				g = this.grid;
+
+			var atrs = ['rowId', 'columnId', 'rowIndex', 'visualIndex', 'columnIndex', 'parentId', 'cellNode'];
+			array.forEach(atrs, function(atr){
+				if(atr in e){ 
+					e[atr] = undefined; 
+				}
+			});
+
+			while(target && !domClass.contains(target, 'gridxDodNode')){
+				target = target.parentNode;
+			}
+			if(target){
+				var n = target.parentNode;
+				e.rowId = n.getAttribute('rowid');
+				e.parentId = n.getAttribute('parentid');
+				e.rowIndex = parseInt(n.getAttribute('rowindex'), 10);
+				e.visualIndex = parseInt(n.getAttribute('visualindex'), 10);
+
+				if(g[evtDod]){
+					g[evtDod](e);
+				}
+			}
 		},
 
 		endFunc: function(){}

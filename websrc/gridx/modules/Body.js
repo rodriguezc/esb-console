@@ -3,7 +3,7 @@ define([
 /*====="../core/Cell",=====*/
 	"dojo/_base/declare",
 	// "dojo/query",
-	'gridx/support/query',
+	'../support/query',
 	"dojo/_base/array",
 	"dojo/_base/lang",
 	"dojo/_base/json",
@@ -158,6 +158,24 @@ define([
 			//		Usually, this event is only useful when using virtual scrolling.
 			// id: String|Number
 			//		The ID of the row that is unrendered.
+		},
+
+		onCheckCustomRow: function(row, output){
+			// summary:
+			//		Fired before creating every row, giving user a chance to customize the entire row.
+			// row: grid.core.Row
+			//		A row object representing this row
+			// output: Object
+			//		If the given row should be customized, set output[row.id] to truthy.
+		},
+
+		onBuildCustomRow: function(row, output){
+			// summary:
+			//		Fired if onCheckCustomRow decides to customize this row.
+			// row: grid.core.Row
+			//		A row object representing this row
+			// output: Object
+			//		Set output[row.id] = some html string to render the row.
 		},
 
 		onDelete: function(){
@@ -344,7 +362,9 @@ define([
 		},
 
 		getRowNode: function(args){
-			if(this.model.isId(args.rowId) && has('ie')){
+			//FIX ME: has('ie')is not working under IE 11
+			//use has('trident') here to judget IE 11
+			if(this.model.isId(args.rowId) && (has('ie') || has('trident'))){
 				return this._getRowNode(args.rowId);
 			}else{
 				var rowQuery = this._getRowNodeQuery(args);
@@ -362,7 +382,9 @@ define([
 					colId = cols[args.colIndex].id;
 				}
 				var c = " [colid='" + colId + "'].gridxCell";
-				if(t.model.isId(args.rowId) && has('ie')){
+				//FIX ME: has('ie')is not working under IE 11
+				//use has('trident') here to judget IE 11
+				if(t.model.isId(args.rowId) && (has('ie') || has('trident'))){
 					var rowNode = t._getRowNode(args.rowId);
 					return rowNode && query(c, rowNode)[0] || null;
 				}else{
@@ -574,7 +596,7 @@ define([
 				}
 				n.innerHTML = '';
 				en.innerHTML = emptyInfo;
-				en.style.zIndex = '';
+				en.style.zIndex = 1;
 				t.onEmpty();
 				t.model.free();
 			}
@@ -591,6 +613,11 @@ define([
 						if(m.isId(id)){
 							m.free(id);
 							t.onUnrender(id);
+						}else{
+							//sometimes, unrendered row has id as null(happens in vv)
+							//this will make rowHeader unsync with rows
+							//explicitly tell rowHeader to treat this tricky scenerio
+							t.onUnrender(id, undefined, 'post');
 						}
 						domConstruct.destroy(bn.lastChild);
 					}
@@ -603,6 +630,8 @@ define([
 						if(m.isId(id)){
 							m.free(id);
 							t.onUnrender(id);
+						}else{
+							t.onUnrender(id , undefined, 'pre');
 						}
 						domConstruct.destroy(bn.firstChild);
 					}
@@ -629,7 +658,7 @@ define([
 			}
 		},
 
-		onUnrender: function(/* id */){},
+		onUnrender: function(/* id, refresh, preOrPost*/){},
 
 		onDelete: function(/*id, index*/){},
 
@@ -687,7 +716,9 @@ define([
 				g = t.grid,
 				w = t.domNode.scrollWidth,
 				columns = g.columns(),
+				encode = this.grid._encodeHTML,
 				i = start;
+
 			for(; i < end; ++i){
 				var rowInfo = g.view.getRowInfo({visualIndex: i}),
 					row = g.row(rowInfo.rowId, 1);
@@ -695,9 +726,9 @@ define([
 					'" role="row" visualindex="', i);
 				if(row){
 					t.model.keep(row.id);
-					s.push('" rowid="', row.id,
+					s.push('" rowid="', encode(row.id),
 						'" rowindex="', rowInfo.rowIndex,
-						'" parentid="', rowInfo.parentId,
+						'" parentid="', encode(rowInfo.parentId),
 						'">', t._buildCells(row, i, columns),
 					'</div>');
 					renderedRows.push(row);
@@ -775,17 +806,29 @@ define([
 						styleIsFunction = col.style && lang.isFunction(col.style),
 						needCell = customClsIsFunction || styleIsFunction || (!isPadding && col.decorator),
 						cell = needCell && g.cell(row, cols && cols[i] || colId, 1);
+
+					var cellContent = t._buildCellContent(col, rowId, cell, visualIndex, isPadding, cellData),
+						testNode = domConstruct.create('div', {innerHTML: cellContent}),
+						testNodeContent = (testNode.innerText !== undefined && testNode.innerText !== null) ? 
+											testNode.innerText : testNode.textContent;
+						testNodeContent = testNodeContent.trim ? testNodeContent.trim() : testNodeContent.replace(/\s/g, ''),
+						isEmpty = testNodeContent === '&nbsp;' || !testNodeContent;
+
+					testNode = '';
+
 					sb.push('<td aria-readonly="true" role="gridcell" tabindex="-1" aria-describedby="',
 						col._domId,'" colid="', colId, '" class="gridxCell ',
-						isPadding ? 'gridxPaddingCell ' : '',
 						isFocusedRow && t._focusCellCol === i ? 'gridxCellFocus ' : '',
+						isPadding ? 'gridxPaddingCell ' : '',
 						col._class || '', ' ',
 						(customClsIsFunction ? customCls(cell) : customCls) || '', ' ',
 						cellCls[colId] ? cellCls[colId].join('') : '',
 						' " style="width:', colWidth, ';min-width:', colWidth, ';max-width:', colWidth, ';',
 						g.getTextDirStyle(colId, cellData),
 						(styleIsFunction ? col.style(cell) : col.style) || '',
-						'">', t._buildCellContent(col, rowId, cell, visualIndex, isPadding, cellData),
+						//when cell content is empty, need to add aria-labssel
+						isEmpty? '" aria-label="empty cell' : '',
+						'">', cellContent,
 					'</td>');
 				}
 			}
@@ -857,7 +900,8 @@ define([
 					e.columnId = col.id;
 					e.columnIndex = col.index;
 				}
-				if(tag == 'div' && domClass.contains(n, 'gridxRow') && n.parentNode === g.bodyNode){
+				if(tag == 'table' && domClass.contains(n, 'gridxRowTable') && n.parentNode.parentNode === g.bodyNode){
+					n = n.parentNode;
 					e.rowId = n.getAttribute('rowid');
 					e.parentId = n.getAttribute('parentid');
 					e.rowIndex = parseInt(n.getAttribute('rowindex'), 10);

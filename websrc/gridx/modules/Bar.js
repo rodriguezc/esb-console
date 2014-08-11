@@ -41,15 +41,15 @@ define([
 		// top: __BarItem[]?
 		//		An array of bar content declarations. Located above grid header.
 		//		The top bar is a big html table, and every content occupies a cell in it.
-		//		If it is a single demension array, then the top bar will contain only one row.
-		//		If it is a 2 demension array, then every sub-array represents a row.
+		//		If it is a single dimensional array, then the top bar will contain only one row.
+		//		If it is a two dimensional array, then every sub-array represents a row.
 		top: null,
 
 		// bottom: __BarItem[]?
 		//		An array of bar content declarations. Located below grid horizontal scroller.
 		//		The bottom bar is a big html table, and every content occupies a cell in it.
-		//		If it is a single demension array, then the bottom bar will contain only one row.
-		//		If it is a 2 demension array, then every sub-array represents a row.
+		//		If it is a single dimensional array, then the bottom bar will contain only one row.
+		//		If it is a two dimensional array, then every sub-array represents a row.
 		bottom: null,
 
 		// plugins: [readonly]Object
@@ -306,7 +306,8 @@ define([
 			}
 		},
 
-		_doFocus: function(node, evt, step){
+		_doFocus: function(node, evt, step, forced){
+			if(forced){ return; }
 			this.grid.focus.stopEvent(evt);
 			var elems = a11y._getTabNavigable(node),
 				n = elems[step < 0 ? 'last' : 'first'];
@@ -318,6 +319,10 @@ define([
 		},
 
 		_doBlur: function(node, evt, step){
+			var elems = a11y._getTabNavigable(node),
+				first = elems.first,
+				last = elems.last, result;
+
 			function isChild(child, parent){
 				if(!child || !parent){ return false; }
 				var n = child;
@@ -326,9 +331,19 @@ define([
 				}
 				return !!n;
 			}
-			var elems = a11y._getTabNavigable(node);
-			return evt ? (evt.target == (step < 0 ? elems.first : elems.last) 
-						|| isChild(evt.target, step < 0 ? elems.first : elems.last)) : true;
+
+			if(!evt){
+				return true;
+			}
+			if(step > 0 && !last){
+				return true;
+			}
+			if(step < 0 && !first){
+				return true;
+			}
+
+			result = (evt.target == (step < 0 ? elems.first : elems.last)) || isChild(evt.target, step < 0 ? elems.first : elems.last);
+			return result;
 		}
 	}));
 });

@@ -6,8 +6,11 @@ define([
 	"dojo/_base/Deferred",
 	"dojo/DeferredList",
 	"dojo/aspect",
-	"./cache/Sync"
-], function(require, declare, array, lang, Deferred, DeferredList, aspect, Sync){
+	'dojo/store/Memory',
+	'dojo/store/JsonRest',
+	"./cache/Sync",
+	"./cache/Async"
+], function(require, declare, array, lang, Deferred, DeferredList, aspect, Memory, JsonRest, Sync, Async){
 
 /*=====
 	return declare([], {
@@ -281,6 +284,7 @@ define([
 	return declare([], {
 		constructor: function(args){
 			var t = this,
+				g = args,
 				cacheClass = args.cacheClass || Sync;
 			cacheClass = typeof cacheClass == 'string' ? require(cacheClass) : cacheClass;
 			t.store = args.store;
@@ -316,10 +320,11 @@ define([
 			this.store = store;
 			this._cache.setStore(store);
 		},
-	
+
 		//Public-------------------------------------------------------------------
 		when: function(args, callback, scope){
 			this._oldSize = this.size();
+			// execute pending operations and then fetch data
 			this._addCmd({
 				name: '_cmdRequest',
 				scope: this,
@@ -330,7 +335,7 @@ define([
 		},
 
 		scan: function(args, callback){
-			var d = new Deferred,
+			var d = new Deferred(),
 				start = args.start || 0,
 				pageSize = args.pageSize || this._cache.pageSize || 1,
 				count = args.count,
@@ -338,35 +343,35 @@ define([
 				scope = args.whenScope || this,
 				whenFunc = args.whenFunc || scope.when;
 			var f = function(s){
-					d.progress(s / (count > 0 ? s + count : scope.size()));
-					whenFunc.call(scope, {
-						id: [],
-						range: [{
-							start: s,
-							count: pageSize
-						}]
-					}, function(){
-						var i, r, rows = [];
-						for(i = s; i < s + pageSize && i < end; ++i){
-							r = scope.byIndex(i);
-							if(r){
-								rows.push(r);
-							}else{
-								end = -1;
-								break;
-							}
-						}
-						if(callback(rows, s) || i == end){
-							end = -1;
-						}
-					}).then(function(){
-						if(end == -1){
-							d.callback();
+				d.progress(s / (count > 0 ? s + count : scope.size()));
+				whenFunc.call(scope, {
+					id: [],
+					range: [{
+						start: s,
+						count: pageSize
+					}]
+				}, function(){
+					var i, r, rows = [];
+					for(i = s; i < s + pageSize && i < end; ++i){
+						r = scope.byIndex(i);
+						if(r){
+							rows.push(r);
 						}else{
-							f(s + pageSize);
+							end = -1;
+							break;
 						}
-					});
-				};
+					}
+					if(callback(rows, s) || i == end){
+						end = -1;
+					}
+				}).then(function(){
+					if(end == -1){
+						d.callback();
+					}else{
+						f(s + pageSize);
+					}
+				});
+			};
 			f(start);
 			return d;
 		},
@@ -418,7 +423,7 @@ define([
 						}
 					};
 				if(arg === null || !args.length){
-					var d = new Deferred;
+					var d = new Deferred();
 					finish();
 					d.callback();
 					return d;
@@ -431,7 +436,7 @@ define([
 			//Execute commands one by one.
 			var t = this,
 				c = t._cache,
-				d = new Deferred,
+				d = new Deferred(),
 				cmds = t._cmdQueue,
 				finish = function(d, err){
 					t._busy = 0;

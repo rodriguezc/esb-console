@@ -8,7 +8,7 @@ define([
 	"dojo/dom-construct",
 	"dojo/dom-geometry",
 	"dojo/keys",
-	"dojo/query",
+	"../support/query",
 	"dojo/_base/sniff",
 	"../core/_Module"
 //    "dojo/NodeList-traverse"
@@ -143,7 +143,8 @@ define([
 							t._cellPos = pos;
 							//Forbid anything else to happen when we are resizing a column!
 							flags.onHeaderMouseDown = t.name;
-							return t._readyToResize = 1;//Intentional assignment
+							t._readyToResize = 1;//Intentional assignment
+							return 1;
 						}
 					}
 				})){

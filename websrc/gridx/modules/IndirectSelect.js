@@ -102,7 +102,9 @@ define([
 				partial ? dijitClass + 'Partial' : '',
 				'" aria-checked="', selected ? 'true' : partial ? 'mixed' : 'false',
 				'"><span class="gridxIndirectSelectionCheckBoxInner">',
-				selected ? '&#10003;' : partial ? '&#9646;' : '&#9744;',
+				//in high contrast mode, change to radio-liked character for single select mode
+				this._isSingle()? (selected? '&#x25C9;' : '&#x25CC;'):
+									(selected ? '&#10003;' : partial ? '&#9646;' : '&#9744;'),
 				'</span></span>'
 			].join('');
 		},
@@ -147,7 +149,11 @@ define([
 				domClass.toggle(node, dijitClass + 'PartialDisabled', partial && isUnselectable);
 				domClass.toggle(node, dijitClass + 'Disabled', !selected && !partial && isUnselectable);
 				node.setAttribute('aria-checked', selected ? 'true' : partial ? 'mixed' : 'false');
-				node.firstChild.innerHTML = selected ? '&#10003;' : partial ? '&#9646;' : '&#9744;';
+				if(this._isSingle()){
+					node.firstChild.innerHTML = selected ? '&#x25C9' : '&#x25CC';
+				}else{
+					node.firstChild.innerHTML = selected ? '&#10003;' : partial ? '&#9646;' : '&#9744;';
+				}
 			}
 		},
 
@@ -212,6 +218,7 @@ define([
 					if(node){
 						domClass.toggle(node, t._getDijitClass() + 'Checked', allSelected);
 						node.setAttribute('aria-checked', allSelected ? 'true' : 'false');
+						node.firstChild.innerHTML = allSelected ? '&#10003;' : '&#9744;';
 						t.grid.rowHeader.headerCellNode.setAttribute('aria-label',
 							allSelected ? g.nls.indirectDeselectAll : g.nls.indirectSelectAll);
 					}
@@ -230,6 +237,7 @@ define([
 					}
 					domClass.add(headerCellNode, 'gridxHeaderCellFocus');
 					headerCellNode.focus();
+					g.focus.stopEvent(evt);
 					return true;
 				},
 				blur = function(){
@@ -242,7 +250,7 @@ define([
 				focusNode: rowHeader.headerNode,
 				doFocus: focus,
 				doBlur: blur,
-				onFocus: focus,
+				// onFocus: focus,
 				onBlur: blur
 			});
 		},

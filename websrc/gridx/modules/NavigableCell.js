@@ -79,7 +79,9 @@ define([
 					elems = t._navElems,
 					firstElem = elems.lowest || elems.first,
 					lastElem = elems.last || elems.highest || firstElem,
-					target = has('ie') ? evt.srcElement : evt.target;
+					//FIX ME: has('ie')is not working under IE 11
+					//use has('trident') here to judget IE 11
+					target = has('ie') || has('trident') ? evt.srcElement : evt.target;
 				if(target == (step > 0 ? lastElem : firstElem)){
 					event.stop(evt);
 					m.when({id: t._focusRowId}, function(){
@@ -111,6 +113,12 @@ define([
 						}
 						focusNextCell(rowIndex, colIndex);
 					});
+				}else{
+					//When TAB within cell, try no to blur and call doFocus again.
+					g.focus._noBlur = 1;
+					setTimeout(function(){
+						g.focus._noBlur = 0;
+					}, 0);
 				}
 				return false;
 			}else{

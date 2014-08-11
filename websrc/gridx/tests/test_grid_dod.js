@@ -10,22 +10,24 @@ require([
 	'gridx/modules/VirtualVScroller',
 	'gridx/modules/Dod',
 	'gridx/modules/select/Row',
+	'gridx/modules/extendedSelect/Row',
 	'gridx/modules/RowHeader',
 	'gridx/modules/IndirectSelect',
 	'dojox/charting/themes/Julie',
 	'dojox/charting/Chart',
-    'dojox/charting/axis2d/Default',
-    'dojox/charting/plot2d/ClusteredBars',
-    'dojox/charting/plot2d/ClusteredColumns',
-    'dojox/charting/plot2d/Default',
-    'dojox/charting/plot2d/StackedAreas',
-    'dojox/charting/plot2d/Bubble',
-    'dojox/charting/plot2d/Candlesticks',
-    'dojox/charting/plot2d/OHLC',
-    'dojox/charting/plot2d/Pie',
+	'dojox/charting/axis2d/Default',
+	'dojox/charting/plot2d/ClusteredBars',
+	'dojox/charting/plot2d/ClusteredColumns',
+	'dojox/charting/plot2d/Default',
+	'dojox/charting/plot2d/StackedAreas',
+	'dojox/charting/plot2d/Bubble',
+	'dojox/charting/plot2d/Candlesticks',
+	'dojox/charting/plot2d/OHLC',
+	'dojox/charting/plot2d/Pie',
 	'dojo/domReady!'
 ], function(domConstruct, parser,
-	Grid, Cache, dataSource, storeFactory, TestPane, focus, VirtualVScroller, Dod, SelectRow, RowHeader, IndirectSelect, JulieTheme){
+			Grid, Cache, dataSource, storeFactory, TestPane,
+			focus, VirtualVScroller, Dod, SelectRow, extendedSelectRow, RowHeader, IndirectSelect, JulieTheme){
 	function random(start, end){
 		//include start but not end. e.g. 1-10, 1 is possible but not 10.
 		return Math.floor(Math.random()*(end-start)) + start;
@@ -48,16 +50,18 @@ require([
 	window.contentType = 'form';
 	window.detailProvider = window.asyncDetailProvider = function(grid, rowId, detailNode, renderred){
 		setContent(detailNode);
+		detailNode.innerHTML += '<br><p style="padding-left:20px;margin:0">Current Time is:</p>';
+		detailNode.innerHTML += '<br><p style="padding-left:20px;margin:0;color:blue">' + new Date().toString() +'</p>';
 		window.setTimeout(function(){
 			renderred.callback();
 		}, 2000);
 		return renderred;
-	}
+	};
 	window.syncDetailProvider = function(grid, rowId, detailNode, renderred){
 		setContent(detailNode);
 		renderred.callback();
 		return renderred;
-	}
+	};
 	function setContent(node){
 		switch(contentType){
 			case 'text':
@@ -109,7 +113,7 @@ require([
 				'		<option value="blue">Blue</option>',
 				'	</select></td>',
 				'</tr>',
-			'</table></div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'].join('');
+			'</table></div>'].join('');
 		parser.parse(node);
 	}
 	function setChartContent(node){
@@ -138,6 +142,8 @@ require([
 			modules: [
 				VirtualVScroller,
 				RowHeader,
+				'gridx/modules/IndirectSelect',
+				'gridx/modules/extendedSelect/Row',
 				{
 					moduleClass: Dod,
 					defaultShow: defaultShow,
@@ -148,11 +154,18 @@ require([
 			],
 			structure: dataSource.layouts[1]
 		});
+		dojo.connect(grid.dod, 'onShow', function(row){
+			console.log('row with id:#' + row.id + ' shows');
+		});
+		dojo.connect(grid.dod, 'onHide', function(row){
+			console.log('row with id:#' + row.id + ' hides');
+		});
 		grid.placeAt('gridContainer');
 		grid.startup();
+
 		
 		window.dod = grid.dod;
-	}
+	};
 	
 	createGrid();
 	
@@ -160,53 +173,75 @@ require([
 	var tp = new TestPane({});
 	tp.placeAt('ctrlPane');
 	
-	
-
 	window.showRow1Detail = function(){
-		dod.show(grid.row('1'));
-	}
+		dod.show(grid.row('1')).then(function(row){
+			console.log(row);
+		}, function(err){
+			console.log(err);
+		});
+	};
+
 	window.hideRow1Detail = function(){
-		dod.hide(grid.row('1'));
-	}
+		dod.hide(grid.row('1')).then(function(row){
+			console.log(row);
+		}, function(err){
+			console.log(err);
+		});
+	};
+
 	window.toggleRow2Detail = function(){
 		dod.toggle(grid.row('2'));
-	}
+	};
+
+	window.refreshRow2Detail = function(){
+		dod.refresh(grid.row('2'));
+	};
+
 	window.isRow3DetailShown = function(){
 		alert(dod.isShown(grid.row('1')));
-	}
-	
+	};
+
 	window.showRow1DetailOnRow = function(){
 		grid.row('1').showDetail();
-	}
+	};
+
 	window.hideRow1DetailOnRow = function(){
 		grid.row('1').hideDetail();
-	}
+	};
+
 	window.toggleRow2DetailOnRow = function(){
 		grid.row('2').toggleDetail();
-	}
+	};
+
 	window.isRow3DetailShownOnRow = function(){
 		alert(grid.row('1').isDetailShown());
-	}
+	};
 	
 	tp.addTestSet('DoD types', [
- 		'<label><input type="checkbox" onchange="defaultShow=this.checked"/> defaultShow</label><br/>',
- 		'<label><input type="checkbox" checked onchange="useAnimation=this.checked"/> useAnimation</label><br/>',
- 		'<label><input type="checkbox" checked onchange="showExpando = this.checked"/> showExpando</label><br/>',
- 		'<label>Content type: <select onchange="window.contentType=this.value;">',
- 		'<option value="text">text</option><option value="form" selected>form</option>',
- 		'<option value="chart" >chart</option></select></label><br/>',
- 		'<select onchange="detailProvider=window[this.value]"><option value="syncDetailProvider">sync detailProvider</option>' 
- 			+ '<option value="asyncDetailProvider" selected>async detailProvider</option></select><br/>',
- 		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick: createGrid">Re Create Grid</div>'
- 	].join(''));
+		'<label><input type="checkbox" onchange="defaultShow=this.checked"/> defaultShow</label><br/>',
+		'<label><input type="checkbox" checked onchange="useAnimation=this.checked"/> useAnimation</label><br/>',
+		'<label><input type="checkbox" checked onchange="showExpando = this.checked"/> showExpando</label><br/>',
+		'<label>Content type: <select onchange="window.contentType=this.value;">',
+		'<option value="text">text</option><option value="form" selected>form</option>',
+		'<option value="chart" >chart</option></select></label><br/>',
+		'<select onchange="detailProvider=window[this.value]"><option value="syncDetailProvider">sync detailProvider</option>' 
+			+ '<option value="asyncDetailProvider" selected>async detailProvider</option></select><br/>',
+		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick: createGrid">Re Create Grid</div>'
+	].join(''));
 
 	tp.addTestSet('Dod APIs', [
 		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick:' 
 			+ 'showRow1Detail">dod.show(grid.row(\'1\')</div><br/>',
+
 		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick:'
 			+ 'hideRow1Detail">dod.hide(grid.row(\'1\')</div><br/>',
+
 		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick:'
 			+ 'toggleRow2Detail">dod.toggle(grid.row(\'2\')</div><br/>',
+
+		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick:'
+			+ 'refreshRow2Detail">dod.refresh(grid.row(\'2\')</div><br/>',
+
 		'<div data-dojo-type="dijit.form.Button" data-dojo-props="onClick:'
 			+ 'isRow3DetailShown">dod.isShown(grid.row(\'1\')</div><br/>'
 	].join(''));

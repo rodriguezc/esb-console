@@ -111,6 +111,7 @@ public class ApplicationMock extends Controller {
     }
 
     public static Action<AnyContent> auditSearch(String environment) {
+        String txt = request().body().asText();
         return Assets.at("/websrc/json", "audit.json");
     }
 
