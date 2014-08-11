@@ -7,11 +7,19 @@ import com.mongodb.util.JSON;
 import play.libs.Json;
 
 import javax.sql.DataSource;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.zip.Inflater;
 
 /**
  * Created by xcigta on 25/02/14.
@@ -36,7 +44,7 @@ public class AuditUtils {
             BasicDBObject dbObject = (BasicDBObject) cursor.next();
             ObjectNode row = result.addObject()
                     .put("id", dbObject.getString("_id"))
-                    .put("content", dbObject.getString("body"))
+                    .put("content", getBody(dbObject))
                     .put("businessId", dbObject.getString("businessId"))
                     .put("processInstanceId", dbObject.getString("processInstanceId"))
                     .put("application", dbObject.getString("application"))
@@ -48,15 +56,33 @@ public class AuditUtils {
 
             ArrayNode properties = row.putArray("properties");
 
+
             BasicDBList headers = (BasicDBList) dbObject.get("headers");
             for (int h=0; h<headers.size(); h++) {
 
-                ObjectNode property = properties.addObject();
                 BasicDBObject header = (BasicDBObject) headers.get(h);
 
+                ObjectNode property = properties.addObject();
                 property.put("name", header.getString("key"));
                 property.put("type", "text");
                 property.put("value", header.getString("value"));
+
+            }
+
+            BasicDBList attachments = (BasicDBList) dbObject.get("attachments");
+            if (attachments != null) {
+
+                for (int t=0; t<attachments.size(); t++) {
+
+                    ObjectNode property = properties.addObject();
+                    BasicDBObject header = (BasicDBObject) attachments.get(t);
+
+                    property.put("name", "attachment[" + header.getString("name") + "]");
+                    property.put("type", "text");
+                    property.put("value", header.getString("ref"));
+
+                }
+
 
             }
 
@@ -77,14 +103,37 @@ public class AuditUtils {
 
     }
 
-    private String getBody(BasicDBObject dbObject) {
+    private static String getBody(BasicDBObject dbObject) throws Exception {
 
-        boolean compressed = dbObject.getBoolean("compressed");
+        byte[] body = (byte[]) dbObject.get("body");
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+        ByteArrayOutputStream nice = new ByteArrayOutputStream();
+
+        boolean compressed = dbObject.getBoolean("bodyCompressed");
         if (compressed) {
 
+            Inflater inflater = new Inflater();
+            inflater.setInput(body);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            while(!inflater.finished()) {
+                int byteCount = inflater.inflate(buffer);
+                out.write(buffer, 0, byteCount);
+            }
+            inflater.end();
+
+            transformer.transform(new StreamSource(new ByteArrayInputStream(out.toByteArray())), new StreamResult(nice));
+
+        } else {
+
+            transformer.transform(new StreamSource(new ByteArrayInputStream(body)), new StreamResult(nice));
         }
 
-        return null;
+        return new String(nice.toByteArray(), "UTF-8");
 
     }
 
