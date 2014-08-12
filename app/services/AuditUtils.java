@@ -163,7 +163,7 @@ public class AuditUtils {
 
                 Object value = b.get(key);
 
-                 if (StringUtils.contains(key, "Date")) {
+                 if (StringUtils.containsIgnoreCase(key, "date")) {
                     if (value instanceof BasicDBObject) {
                         BasicDBObject check = (BasicDBObject) b.get(key);
                         for (String checkKey : check.keySet()) {
