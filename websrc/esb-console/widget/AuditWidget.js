@@ -43,6 +43,15 @@ define([
                         } else {
                             widget.requestNode.value = widget.currentquery;
 
+                            try {
+                                JSON.parse(widget.requestNode.value);
+                            } catch (error) {
+                                alert("invalid request syntax: "+error);
+                                return;
+                            }
+
+
+
                             var startTime = new Date().getTime();
 
 
