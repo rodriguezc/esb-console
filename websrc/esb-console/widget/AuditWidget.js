@@ -198,7 +198,7 @@ define([
                     var val = locale.format(new Date(),{
                         "datePattern" : "yyyy-MM-dd'T'HH:mm:ss"
                     });
-                    var dateToSet = val.split(",")[0];
+                    var dateToSet = val.substring(0,19);
 
                     this.valueCriterion.set("value", dateToSet);
                 }
