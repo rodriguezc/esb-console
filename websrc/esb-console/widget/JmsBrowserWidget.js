@@ -41,31 +41,8 @@ define([
             this.inherited(arguments);
             var widget = this;
 
-            var env = this.env;
-            var broker = this.broker;
-            var queueGridWidget = this.queueGridWidget;
-
-            widget.haContentPane.addTabLoadingState();
-
-            request("/services/environments/" + env + "/brokers/" + broker + "/queues", {handleAs: "json"}).then(
-                function (text) {
-                    widget.haContentPane.removeTabLoadingState();
-                    queueGridWidget.model.clearCache();
-                    var store = new Store({data: text});
-                    queueGridWidget.model.setStore(store);
-                    queueGridWidget.body.refresh();
-                    queueGridWidget.column(0).sort(false);
-                    widget.focusInputFilter();
-                },
-                function (error) {
-                    widget.haContentPane.removeTabLoadingState();
-                    http.handleError(error);
-                }
-            );
-
-
-
-
+            widget.queueGridWidget.menu.bind(widget.contextualMenu);
+            widget._onRefresh();
         },
 
         resize: function () {
@@ -108,6 +85,33 @@ define([
                 }
                 return tabContent;
             }
+        },
+        _onRefresh : function() {
+            var widget = this;
+            var env = this.env;
+            var broker = this.broker;
+            var queueGridWidget = this.queueGridWidget;
+
+            widget.haContentPane.addTabLoadingState();
+
+
+            request("/services/environments/" + env + "/brokers/" + broker + "/queues", {handleAs: "json"}).then(
+                function (text) {
+                    widget.haContentPane.removeTabLoadingState();
+                    queueGridWidget.model.clearCache();
+                    var store = new Store({data: text});
+                    queueGridWidget.model.setStore(store);
+                    queueGridWidget.body.refresh();
+                    queueGridWidget.column(0).sort(false);
+                    widget.focusInputFilter();
+                },
+                function (error) {
+                    widget.haContentPane.removeTabLoadingState();
+                    http.handleError(error);
+                }
+            );
+
+
         }
     });
 

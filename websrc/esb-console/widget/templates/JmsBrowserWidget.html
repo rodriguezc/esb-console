@@ -4,6 +4,8 @@
     <script type="dojo/require">Sort: "gridx/modules/SingleSort"</script>
     <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
     <script type="dojo/require">VirtualVScroller: "gridx/modules/VirtualVScroller"</script>
+    <script type="dojo/require">Menu: "gridx/modules/Menu"</script>
+
 
     <div data-dojo-attach-point="containerWidget" class="esbConsoleLayout"  data-dojo-type="dijit/layout/BorderContainer">
 
@@ -11,6 +13,7 @@
             <div data-dojo-attach-point="queueGridStoreWidget" data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
 
             <div data-dojo-type="gridx/Grid"
+                 data-dojo-id="gridJmsBrowser"
                  data-dojo-attach-point="queueGridWidget"
                  data-dojo-attach-event="onCellClick : _onRowClick"
                  data-dojo-props="store: store,
@@ -19,14 +22,22 @@
                                             Sort,
                                             Filter,
                                             QuickFilter,
-                                            VirtualVScroller
+                                            VirtualVScroller,
+                                            Menu
                                          ],
                               structure: [
             {field: 'id', name: 'Name'}
         ]
         " style="width: 100%;height: 100%"></div>
 
+            <div data-dojo-attach-point="contextualMenu" data-dojo-type="dijit/Menu"  style="display: none;">
+                <div data-dojo-type="dijit/MenuItem"
+                     data-dojo-props="iconClass:'dijitIcon dijitIconUndo'"
+                     data-dojo-attach-event="onClick : _onRefresh"
+                        >Refresh</div>
+            </div>
         </div>
+
 
         <div data-dojo-attach-point="centerPaneWidget" data-dojo-type="esb-console/layout/HashAwareTabContainer"
              data-dojo-props="generateTabContent: this.generateTabContent, region: 'center', tabPosition: 'top'">
