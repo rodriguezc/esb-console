@@ -184,6 +184,14 @@ define([
                 return renderred;
 
             },
+
+
+            _onSelectType : function(env) {
+                if("sendDate" == this.typeCriterion.value) {
+                    this.valueCriterion.set("value", "1994-11-05T08:15:30-05:00");
+                }
+            },
+
             onAddCriterion : function() {
                 var type =  this.typeCriterion.get("value");
                 var comparator =  this.comparatorCriterion.get("value");

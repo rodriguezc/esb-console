@@ -25,7 +25,7 @@
     <form style="height: 10%" data-dojo-type="dijit/form/Form"data-dojo-attach-event="onSubmit:onAddCriterion">
 
         <label>Add criterion</label>
-        <select data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="typeCriterion">
+        <select data-dojo-attach-event="onChange:_onSelectType" data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="typeCriterion">
             <option value="businessId / businessCorrelationId">businessId / businessCorrelationId</option>
             <option value="messageId">messageId</option>
             <option value="sendDate">sendDate</option>
