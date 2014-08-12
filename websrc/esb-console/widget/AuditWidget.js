@@ -14,10 +14,11 @@ define([
         "dojo/_base/array",
         "dojo/io-query",
         "esb-console/utils/hashUtils",
-        "esb-console/utils/http"
+        "esb-console/utils/http",
+        "dojo/date/locale"
     ],
     function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-              hash, Grid, Store, MessageDetailsWidget, topic, array, ioQuery, hashUtils, http) {
+              hash, Grid, Store, MessageDetailsWidget, topic, array, ioQuery, hashUtils, http, locale) {
         return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
 
 
@@ -188,7 +189,13 @@ define([
 
             _onSelectType : function(env) {
                 if("sendDate" == this.typeCriterion.value) {
-                    this.valueCriterion.set("value", "1994-11-05T08:15:30-05:00");
+
+                    var val = locale.format(new Date(),{
+                        "datePattern" : "yyyy-MM-dd'T'HH:mm:ss"
+                    });
+                    var dateToSet = val.split(",")[0];
+
+                    this.valueCriterion.set("value", dateToSet);
                 }
             },
 
