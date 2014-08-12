@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.*;
 import com.mongodb.util.JSON;
+import org.apache.commons.lang3.*;
+import org.xml.sax.SAXParseException;
 import play.libs.Json;
 
 import javax.sql.DataSource;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -18,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.zip.Inflater;
 
@@ -37,8 +41,11 @@ public class AuditUtils {
         DB audit = mongoClient.getDB("audit");
         DBCollection collection = audit.getCollection("message");
 
+        BasicDBObject find = (BasicDBObject) JSON.parse(query);
+        processQuery(find);
+
         BasicDBObject sort = new BasicDBObject().append("sendDate", -1);
-        DBCursor cursor = collection.find((DBObject) JSON.parse(query)).sort(sort).limit(100);
+        DBCursor cursor = collection.find(find).sort(sort).limit(100);
         while (cursor.hasNext()) {
 
             BasicDBObject dbObject = (BasicDBObject) cursor.next();
@@ -126,16 +133,57 @@ public class AuditUtils {
             }
             inflater.end();
 
-            transformer.transform(new StreamSource(new ByteArrayInputStream(out.toByteArray())), new StreamResult(nice));
+            try {
+                transformer.transform(new StreamSource(new ByteArrayInputStream(out.toByteArray())), new StreamResult(nice));
+            } catch (TransformerException e) {
+                return new String(body, "UTF-8");
+            }
 
         } else {
 
-            transformer.transform(new StreamSource(new ByteArrayInputStream(body)), new StreamResult(nice));
+            try {
+                transformer.transform(new StreamSource(new ByteArrayInputStream(body)), new StreamResult(nice));
+            } catch (TransformerException e) {
+                return new String(body, "UTF-8");
+            }
         }
 
         return new String(nice.toByteArray(), "UTF-8");
 
     }
 
+    private static void processQuery(Object o) throws ParseException {
+
+        SimpleDateFormat isosdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        if (o instanceof BasicDBObject) {
+
+            BasicDBObject b = (BasicDBObject) o;
+            for (String key : b.keySet()) {
+
+                Object value = b.get(key);
+
+                 if (StringUtils.contains(key, "Date")) {
+                    if (value instanceof BasicDBObject) {
+                        BasicDBObject check = (BasicDBObject) b.get(key);
+                        for (String checkKey : check.keySet()) {
+                            check.put(checkKey, isosdf.parse(check.getString(checkKey)));
+                        }
+                    } else {
+                        b.put(key, isosdf.parse(b.getString(key)));
+                    }
+                } else if (value instanceof BasicDBObject || value instanceof BasicDBList) {
+                    processQuery(value);
+                }
+            }
+
+        } else if (o instanceof BasicDBList) {
+
+            BasicDBList l = (BasicDBList) o;
+            for (int i = 0; i < l.size(); i++) {
+                processQuery(l.get(i));
+            }
+        }
+    }
 
 }
