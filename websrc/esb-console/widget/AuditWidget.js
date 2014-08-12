@@ -46,12 +46,16 @@ define([
                             var startTime = new Date().getTime();
 
 
-                            widget.resultLabel.innerHTML = "Search in progress..."
+                            widget.resultLabel.innerHTML = "Search in progress...";
+
+                            widget.haContentPane.addTabLoadingState();
+
                             request.post("/services/environments/" + widget.env + "/audit", {
                             headers: {"Content-Type": "text/plain"},
                                 data:  widget.currentquery, handleAs: "json"}).then(
                                 function (data) {
                                     widget.resultLabel.innerHTML = data.length + ' records displayed. Search took ' + (new Date().getTime() - startTime)+" ms";
+                                    widget.haContentPane.removeTabLoadingState();
                                     //        widget.gridWidget.model.clearCache();
                                     var store = new Store({data: data});
                                     widget.gridWidget.model.setStore(store);
@@ -60,6 +64,7 @@ define([
                                     //widget.gridWidget.column(7).sort(false);
                                 },
                                 function (error) {
+                                    widget.haContentPane.removeTabLoadingState();
                                     http.handleError(error);
                                 }
                             );

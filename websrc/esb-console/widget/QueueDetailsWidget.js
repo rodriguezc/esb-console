@@ -40,8 +40,11 @@ define([
 
         _reloadMessages : function() {
             var messagesGridWidget = this.messagesGridWidget;
+            var widget = this;
+            widget.haContentPane.addTabLoadingState();
             request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
                 function (text) {
+                    widget.haContentPane.removeTabLoadingState();
                     messagesGridWidget.model.clearCache();
                     var store = new Store({data: text});
                     messagesGridWidget.model.setStore(store);
@@ -49,6 +52,7 @@ define([
 
                 },
                 function (error) {
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
             );
@@ -71,8 +75,11 @@ define([
             var widget = this;
             widget._reloadMessages();
             //rafraichir les stats jmx
+            widget.haContentPane.addTabLoadingState();
+
             request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
                 function (data) {
+                    widget.haContentPane.removeTabLoadingState();
                     widget.set("size", data.size);
                     widget.set("consumers", data.consumers);
                     widget.set("consumersSize", data.consumersSize);
@@ -84,6 +91,7 @@ define([
 
                 },
                 function (error) {
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
             );
@@ -100,15 +108,18 @@ define([
                     var widget = this;
                     var reloadMessages = this._reloadMessages;
 
+                    widget.haContentPane.addTabLoadingState();
 
                     request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages/delete", {
                         headers: {"Content-Type": "application/json"}, data: JSON.stringify(rowsToDelete)}).then(
                         function (data) {
+                            widget.haContentPane.removeTabLoadingState();
                             alert(data);
                             widget._onRefreshClick();
 
                         },
                         function (error) {
+                            widget.haContentPane.removeTabLoadingState();
                             http.handleError(error);
                         }
                     );
@@ -120,12 +131,15 @@ define([
 
             if(confirm("You are about to purge the queue "+this.queueName)) {
                 var widget = this;
+                widget.haContentPane.addTabLoadingState();
                 request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
                     function (data) {
+                        widget.haContentPane.removeTabLoadingState();
                         alert(data);
                         widget._reloadMessages();
                     },
                     function (error) {
+                        widget.haContentPane.removeTabLoadingState();
                         http.handleError(error);
                     }
                 );
@@ -172,16 +186,20 @@ define([
                 }else
 
                 if(confirm("Your are about to paste "+msgList.length +" msgs to the queue "+widget.queueName)) {
+
+                    widget.haContentPane.addTabLoadingState();
                     request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages",
                         {
                             headers: {"Content-Type": "application/json"},
                             data: JSON.stringify(msgList)}).then(
                         function (data) {
+                            widget.haContentPane.removeTabLoadingState();
                             alert(data);
                             widget._onRefreshClick();
 
                         },
                         function (error) {
+                            widget.haContentPane.removeTabLoadingState();
                             http.handleError(error);
                         }
                     );
@@ -268,13 +286,17 @@ define([
         _onOpenMove: function() {
             this.firstMoveOpen = true;
             var widget = this;
+            widget.haContentPane.addTabLoadingState();
+
             request("/services/environments", {handleAs: "json"}).then(
                 function(text) {
+                    widget.haContentPane.removeTabLoadingState();
                     widget.envStore.data = text;
                     var currentEnv = widget.envStore.query({"id": widget.env});
                     widget.filteringSelectEnvWidget.set("item", currentEnv[0]);
                 },
                 function(error) {
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
             );
@@ -298,16 +320,19 @@ define([
                         postData.msgs = rowsToDelete;
                         var postDataStr = JSON.stringify(postData);
 
+                        widget.haContentPane.addTabLoadingState();
                         request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/selection", {
                             headers: {"Content-Type": "application/json"},
                             data: postDataStr}).then(
                             function(text) {
+                                widget.haContentPane.removeTabLoadingState();
                                 widget._onRefreshClick();
                                 topic.publish("hermes/queueRefresh", postData.destination.env, postData.destination.broker, postData.destination.queue);
                                 alert(text);
 
                             },
                             function(error) {
+                                widget.haContentPane.removeTabLoadingState();
                                 http.handleError(error);
                             }
                         );
@@ -320,15 +345,18 @@ define([
                     var postData = {};
                     postData.destination = formJson;
                     var postDataStr = JSON.stringify(postData);
+                    widget.haContentPane.addTabLoadingState();
                     request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all",
                         {
                             headers: {"Content-Type": "application/json"},
                             data: postDataStr}).then(
                         function(text) {
+                            widget.haContentPane.removeTabLoadingState();
                             widget._onRefreshClick();
                             alert(text);
                         },
                         function(error) {
+                            widget.haContentPane.removeTabLoadingState();
                             http.handleError(error);
                         }
                     );
@@ -346,8 +374,10 @@ define([
             var brokersStore = this.brokersStore;
             this.filteringSelectBrokerWidget.attr("value", null);
             this.filteringSelectQueueWidget.attr("value", null);
+            widget.haContentPane.addTabLoadingState();
             request("/services/environments/"+env+"/brokers", {handleAs: "json"}).then(
                 function(text) {
+                    widget.haContentPane.removeTabLoadingState();
                     brokersStore.data = text;
                     if(widget.firstMoveOpen) {
                         var currentBroker = brokersStore.query({"id": widget.broker});
@@ -355,6 +385,7 @@ define([
                     }
                 },
                 function(error) {
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
             );
@@ -367,8 +398,10 @@ define([
                 this.filteringSelectQueueWidget.attr("value", null);
                 var brokersStore = this.brokersStore;
                 var widget = this;
+                widget.haContentPane.addTabLoadingState();
                 request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
                     function(text) {
+                        widget.haContentPane.removeTabLoadingState();
                         queuesStore.data = text;
                         if(widget.firstMoveOpen) {
                             var currentQueue = queuesStore.query({"id": widget.queueName});
@@ -379,6 +412,7 @@ define([
 
                     },
                     function(error) {
+                        widget.haContentPane.removeTabLoadingState();
                         http.handleError(error);
                     }
                 );

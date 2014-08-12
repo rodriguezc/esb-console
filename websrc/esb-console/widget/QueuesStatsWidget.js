@@ -33,8 +33,11 @@ define([
             this.inherited(arguments);
             var widget = this;
 
+            widget.haContentPane.addTabLoadingState();
+
             request("/services/environments/"+this.env+"/queuesstats", {handleAs: "json"}).then(
                 function(data){
+                    widget.haContentPane.removeTabLoadingState();
                     var store = new Store({data: data});
                     var structure =  [
                                             {field: 'name', name: 'name'},
@@ -120,6 +123,7 @@ define([
                     grid.startup();
                 },
                 function(error){
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
 

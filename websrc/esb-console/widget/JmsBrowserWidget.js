@@ -45,8 +45,11 @@ define([
             var broker = this.broker;
             var queueGridWidget = this.queueGridWidget;
 
+            widget.haContentPane.addTabLoadingState();
+
             request("/services/environments/" + env + "/brokers/" + broker + "/queues", {handleAs: "json"}).then(
                 function (text) {
+                    widget.haContentPane.removeTabLoadingState();
                     queueGridWidget.model.clearCache();
                     var store = new Store({data: text});
                     queueGridWidget.model.setStore(store);
@@ -55,6 +58,7 @@ define([
                     widget.focusInputFilter();
                 },
                 function (error) {
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
             );
@@ -88,12 +92,14 @@ define([
         } ,
 
 
-        generateTabContent: function (hashObj) {
+        generateTabContent: function (hashObj, cp1) {
             if (hashObj.env != undefined && hashObj.page != undefined && hashObj.broker != undefined && hashObj.queue != undefined) {
                 var data = {};
                 data.env = hashObj.env;
                 data.broker = hashObj.broker;
                 data.queueName = hashObj.queue;
+                data.haContentPane = cp1;
+
                 var queueDetailsWidget = new QueueDetailsWidget(data);
 
                 var tabContent = {

@@ -24,6 +24,8 @@ define([
             this.inherited(arguments);
             var widget = this;
 
+            widget.haContentPane.addTabLoadingState();
+
             request("/services/environments/"+this.env+"/bundles", {handleAs: "json"}).then(
                 function(data){
                     var store = new Store({data: data});
@@ -31,8 +33,10 @@ define([
                     widget.gridWidget.model.setStore(store);
                     widget.gridWidget.body.refresh();
                     widget.gridWidget.column(0).sort(false);
+                    widget.haContentPane.removeTabLoadingState();
                 },
                 function(error){
+                    widget.haContentPane.removeTabLoadingState();
                     http.handleError(error);
                 }
             );

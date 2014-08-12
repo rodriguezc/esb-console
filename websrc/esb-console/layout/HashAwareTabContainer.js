@@ -39,21 +39,39 @@ define(["dojo/_base/declare", "dijit/layout/TabContainer", "dojo/hash", "dojo/to
 
                         if (!found) {
                             var hashObj = ioQuery.queryToObject(changedHash);
-                            var content = widget.generateTabContent(hashObj);
+
+                            var cp1 = new ContentPane({
+                                navHash: changedHash,
+                                closable: true,
+                                onClose: function () {
+                                    //Closing the last widget
+                                    if (widget.getChildren().length == 1) {
+                                        hash(widget.baseHash);
+                                    }
+                                    return true;
+                                },
+                                addTabLoadingState: function () {
+                                    this.set("title", "<img src='esb-console/images/ajax-loader.gif'/>" + cp1.title);
+                                },
+
+                                removeTabLoadingState: function () {
+                                    cp1.set("title", cp1.origTitle);
+                                }
+
+                            });
+
+                            var content = widget.generateTabContent(hashObj, cp1);
 
                             if (content != null) {
-                                var cp1 = new ContentPane({
-                                    navHash: changedHash,
-                                    title: content.title,
-                                    closable: true,
-                                    onClose: function () {
-                                        //Closing the last widget
-                                        if (widget.getChildren().length == 1) {
-                                            hash(widget.baseHash);
-                                        }
-                                        return true;
-                                    }
-                                });
+
+                                if(content.loadOnCreate == false) {
+                                    cp1.set("origTitle", content.title);
+                                    cp1.set("title", content.title);
+                                } else {
+                                    cp1.set("origTitle", content.title);
+                                    cp1.set("title", cp1.get("title")+content.title);
+                                }
+
                                 //TODO: Cause error on IE8
                                 widget.addChild(cp1);
                                 content.widget.placeAt(cp1);
@@ -64,6 +82,8 @@ define(["dojo/_base/declare", "dijit/layout/TabContainer", "dojo/hash", "dojo/to
 
                 });
             },
+
+
             destroy: function () {
                 this.inherited(arguments);
                 this.hashChangeHandle.remove();

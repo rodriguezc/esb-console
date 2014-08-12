@@ -238,7 +238,7 @@ define([
             hash("page=dashboard");
         },
 
-        generateTabContent: function (hashObj) {
+        generateTabContent: function (hashObj, cp1) {
             if (hashObj.env == undefined && hashObj.page != null && hashObj.page == "dashboard") {
                 var dashboardWidget = new DashboardWidget();
                 var tabContent = {
@@ -250,7 +250,8 @@ define([
                 if ("bundles" == hashObj.page) {
                     var bundlesWidget = new BundlesWidget(
                         {
-                            "env": hashObj.env
+                            "env": hashObj.env,
+                            "haContentPane": cp1
                         }
                     );
                     var tabContent = {
@@ -262,7 +263,8 @@ define([
                 } else if ("queuesStats" == hashObj.page) {
                     var queuesStatsWidget = new QueuesStatsWidget(
                         {
-                            "env": hashObj.env
+                            "env": hashObj.env,
+                            "haContentPane": cp1
                         }
                     );
                     var tabContent = {
@@ -275,7 +277,8 @@ define([
                         var jmsBrowserWidget = new JmsBrowserWidget(
                             {
                                 "env": hashObj.env,
-                                "broker": hashObj.broker
+                                "broker": hashObj.broker,
+                                "haContentPane": cp1
                             }
                         );
 
@@ -289,13 +292,14 @@ define([
                 } else if ("audit" == hashObj.page) {
                     var auditWidget = new AuditWidget(
                         {
-                            "env": hashObj.env
+                            "env": hashObj.env,
+                            "haContentPane": cp1
                         }
                     );
-
                     var tabContent = {
                         "title": hashObj.env + "- Audit",
-                        "widget": auditWidget
+                        "widget": auditWidget,
+                        "loadOnCreate" : false
                     }
                     return tabContent;
 
