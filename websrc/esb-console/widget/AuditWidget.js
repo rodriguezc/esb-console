@@ -41,13 +41,20 @@ define([
                             widget.gridWidget.model.setStore(store);
                         } else {
                             widget.requestNode.value = widget.currentquery;
+
+                            var startTime = new Date().getTime();
+
+
+                            widget.resultLabel.innerHTML = "Search in progress..."
                             request.post("/services/environments/" + widget.env + "/audit", {
                             headers: {"Content-Type": "text/plain"},
                                 data:  widget.currentquery, handleAs: "json"}).then(
                                 function (data) {
+                                    widget.resultLabel.innerHTML = data.length + ' records displayed. Search took ' + (new Date().getTime() - startTime)+" ms";
                                     //        widget.gridWidget.model.clearCache();
                                     var store = new Store({data: data});
                                     widget.gridWidget.model.setStore(store);
+
                                     //widget.gridWidget.body.refresh();
                                     //widget.gridWidget.column(7).sort(false);
                                 },
@@ -182,11 +189,119 @@ define([
                 var comparator =  this.comparatorCriterion.get("value");
                 var value = this.valueCriterion.get("value");
 
-                if(this.requestNode.value != null && this.requestNode.value.length > 0) {
-                    this.requestNode.value = this.requestNode.value +","+ type+":"+value;
-                } else {
-                    this.requestNode.value = this.requestNode.value + type+":"+value;
+
+
+                if(this.requestNode.value == null || this.requestNode.value.length == 0) {
+                    this.requestNode.value = "{}";
                 }
+
+                try {
+                    var node = JSON.parse( this.requestNode.value);
+                }catch(err) {
+                    var node = {};
+                }
+
+                if(node.$and == null) {
+                    node = {};
+                    node.$and = [];
+                }
+
+
+                if(comparator == '=') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$or = [];
+                        criterion.$or.push({"businessId" : value});
+                        criterion.$or.push({"businessCorrelationId" : value});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] = value;
+                        node.$and.push(criterion);
+                    }
+
+                } else if(comparator == '!=') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$and = [];
+                        criterion.$and.push({"businessId" : {$ne: value}});
+                        criterion.$and.push({"businessCorrelationId" : {$ne: value}});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] ={"$ne": value};
+                        node.$and.push(criterion);
+                    }
+                } else if(comparator == '>') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$and = [];
+                        criterion.$and.push({"businessId" : {"$gt": value}});
+                        criterion.$and.push({"businessCorrelationId" : {"$gt": value}});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] ={"$gt": value};
+                        node.$and.push(criterion);
+                    }
+
+                } else if(comparator == '>=') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$and = [];
+                        criterion.$and.push({"businessId" : {"$gte": value}});
+                        criterion.$and.push({"businessCorrelationId" : {"$gte": value}});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] ={"$gte": value};
+                        node.$and.push(criterion);
+                    }
+
+                }
+
+                else if(comparator == '<') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$and = [];
+                        criterion.$and.push({"businessId" : {"$lt": value}});
+                        criterion.$and.push({"businessCorrelationId" : {"$lt": value}});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] ={"$lt": value};
+                        node.$and.push(criterion);
+                    }
+                }   else if(comparator == '<=') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$and = [];
+                        criterion.$and.push({"businessId" : {"$lte": value}});
+                        criterion.$and.push({"businessCorrelationId" : {"$lte": value}});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] ={"$lte": value};
+                        node.$and.push(criterion);
+                    }
+                }
+                else if(comparator == 'like') {
+                    if("businessId / businessCorrelationId" == type) {
+                        var criterion = {};
+                        criterion.$or= [];
+                        criterion.$or.push({"businessId" : {"$regex": "^"+value+".*"}});
+                        criterion.$or.push({"businessCorrelationId" : {"$regex": "^"+value+".*"}});
+                        node.$and.push(criterion);
+                    } else {
+                        var criterion = {};
+                        criterion[type] ={"$regex":  "^"+value+".*"};
+                        node.$and.push(criterion);
+                    }
+                }
+
+                this.requestNode.value = JSON.stringify(node);
+                this.requestNode.focus();
+
                 return false;
             }
 
