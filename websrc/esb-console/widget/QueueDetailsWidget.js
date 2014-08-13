@@ -88,6 +88,7 @@ define([
                     widget.set("inflight", data.inflight);
                     widget.set("averageEnqueueTime", data.averageEnqueueTime);
                     widget.set("memoryLimit", data.memoryLimit);
+                    widget.memLimitInput.attr("value", data.memoryLimit);
 
                 },
                 function (error) {
@@ -417,7 +418,33 @@ define([
                     }
                 );
             }
+        },
+        _onUpdateMemoryLimit : function(evt) {
+            var widget = this;
+
+            if(evt.keyCode == 13) {
+                var newMemoryLimit = widget.memLimitInput.attr("value");
+                if(confirm("You are about to update memory limit to "+newMemoryLimit+" for the queue "+widget.queueName)) {
+                    var widget = this;
+                    widget.haContentPane.addTabLoadingState();
+                    request("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/memoryLimit/"+newMemoryLimit, {"method" : "POST"}).then(
+                        function (data) {
+                            widget.haContentPane.removeTabLoadingState();
+                            alert(data);
+                            widget._reloadMessages();
+                        },
+                        function (error) {
+                            widget.haContentPane.removeTabLoadingState();
+                            http.handleError(error);
+                        }
+                    );
+                }
+
+
+
+            }
         }
+
 
 
     });

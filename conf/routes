@@ -12,6 +12,12 @@ GET           /services/environments/:environment/queuesstats                   
 GET           /services/environments/:environment/bundles                                                      controllers.Application.bundles(environment)
 GET           /services/environments/:environment/brokers/:broker/queues                                       controllers.Application.queues(environment, broker)
 GET           /services/environments/:environment/brokers/:broker/queues/:queue                                controllers.Application.queue(environment, broker, queue)
+DELETE        /services/environments/:environment/brokers/:broker/queues/:queue                                controllers.Application.deleteQueue(environment, broker, queue)
+PUT           /services/environments/:environment/brokers/:broker/queues/:queue                                controllers.Application.addQueue(environment, broker, queue)
+
+POST           /services/environments/:environment/brokers/:broker/queues/:queue/memoryLimit/:memoryLimit      controllers.Application.updateMemoryLimit(environment, broker, queue,memoryLimit)
+
+
 GET           /services/environments/:environment/brokers/:broker/queues/:queue/messages                       controllers.Application.messages(environment, broker, queue)
 
 POST          /services/environments/:environment/brokers/:broker/queues/:queue/messages                       controllers.Application.paste(environment, broker, queue)

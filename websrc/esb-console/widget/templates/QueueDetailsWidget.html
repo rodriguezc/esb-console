@@ -159,6 +159,15 @@
                 </span>
             </div>
 
+            <input data-dojo-props="label: 'test'" style="width: 90px" type="text"
+                   data-dojo-type="dijit/form/TextBox"
+                   data-dojo-attach-point="memLimitInput"
+                   data-dojo-attach-event="onKeyUp : _onUpdateMemoryLimit"
+                    />
+            <label>Mem. limit</label>
+
+
+
             <!--div data-dojo-type="dijit/MenuBarItem">Purge</div>
             <div data-dojo-type="dijit/MenuBarItem">Move all</div-->
         </div>

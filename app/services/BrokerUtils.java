@@ -55,6 +55,14 @@ public class BrokerUtils {
 
     }
 
+    public static BrokerViewMBean getBrokerViewMBean(ActiveMQType activeMQ) throws Exception {
+        JMXConnector connector = ESB.getJmxConnector(activeMQ);
+        MBeanServerConnection connection = connector.getMBeanServerConnection();
+        ObjectName brokerObjectName = BrokerUtils.getDefaultBroker(connection);
+        BrokerViewMBean brokerViewMBean = JMX.newMBeanProxy(connection, brokerObjectName, BrokerViewMBean.class);
+        return brokerViewMBean;
+    }
+
     public static ObjectNode getQueue(ActiveMQType activeMQ, String queue) throws MalformedObjectNameException, IOException {
 
         ObjectNode queueNode = null;
@@ -100,6 +108,9 @@ public class BrokerUtils {
         return JMX.newMBeanProxy(connection, new ObjectName(on), QueueViewMBean.class);
 
     }
+
+
+
 
     public static ArrayNode browse(Connection connection, String queue) throws Exception {
 
@@ -462,6 +473,13 @@ public class BrokerUtils {
 
     }
 
+    public static String updateMemoryLimit(ActiveMQType activeMQ, String queue, long limit) throws Exception {
+        QueueViewMBean queueMBean = getQueueViewMBean(activeMQ, queue);
+        queueMBean.setMemoryLimit(limit);
+        return "Memory limit updated to "+limit;
+    }
+
+
     public static String move(ActiveMQType sourceBroker, String sourceQueue, ActiveMQType targetBroker, String targetQueue, ArrayNode messages) throws JMSException {
 
         assert sourceQueue != null && targetQueue != null : "queue can not be null";
@@ -581,6 +599,17 @@ public class BrokerUtils {
         return count + " message(s) moved.";
     }
 
+    public static String deleteQueue(ActiveMQType activeMQ, String queue) throws Exception {
+        BrokerViewMBean brokerViewMBean = getBrokerViewMBean(activeMQ);
+        brokerViewMBean.removeQueue(queue);
+        return "Queue "+ queue +" deleted";
+    }
+
+    public static String addQueue(ActiveMQType activeMQ, String queue) throws Exception {
+        BrokerViewMBean brokerViewMBean = getBrokerViewMBean(activeMQ);
+        brokerViewMBean.addQueue(queue);
+        return "Queue "+ queue +" added";
+    }
 }
 
 

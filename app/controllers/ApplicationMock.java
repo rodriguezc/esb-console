@@ -127,4 +127,17 @@ public class ApplicationMock extends Controller {
         }
 
     }
+
+    public static Result deleteQueue(String environment, String broker, String queue) {
+        return ok("Queue xxx deleted");
+    }
+
+    public static Result addQueue(String environment, String broker, String queue) {
+        return ok("Queue xxx added");
+    }
+
+    public static Result updateMemoryLimit(String environment, String broker, String queue, String limit) {
+        return ok("Memory limit updated");
+    }
+
 }

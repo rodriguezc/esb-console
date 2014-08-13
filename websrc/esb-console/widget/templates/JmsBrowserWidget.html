@@ -7,6 +7,16 @@
     <script type="dojo/require">Menu: "gridx/modules/Menu"</script>
 
 
+    <div data-dojo-type="dijit/Dialog" data-dojo-id="addDialog" data-dojo-attach-point="addDialog" title="Add queue" style="width:350px;height: 80px">
+
+        <form data-dojo-type="dijit/form/Form" data-dojo-attach-event="onSubmit:_onAdd">
+             <input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-attach-point="addQueueInput" />
+             <input type="submit" label="Add" data-dojo-type="dijit/form/Button" />
+        </form>
+    </div>
+
+
+
     <div data-dojo-attach-point="containerWidget" class="esbConsoleLayout"  data-dojo-type="dijit/layout/BorderContainer">
 
         <div style="width: 300px" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left', splitter: true">
@@ -35,7 +45,20 @@
                      data-dojo-props="iconClass:'dijitIcon dijitIconUndo'"
                      data-dojo-attach-event="onClick : _onRefresh"
                         >Refresh</div>
+
+                <div data-dojo-type="dijit/MenuItem"
+                     data-dojo-props="iconClass:'dijitIcon dijitIconNewTask'"
+                     onclick="addDialog.show();"
+                        >Add</div>
+
+
+                <div data-dojo-type="dijit/MenuItem"
+                     data-dojo-props="iconClass:'dijitEditorIcon dijitEditorIconDelete'"
+                     data-dojo-attach-event="onClick : _onDelete"
+                        >Delete</div>
             </div>
+
+
         </div>
 
 

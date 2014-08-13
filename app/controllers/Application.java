@@ -372,8 +372,10 @@ public class Application extends Controller {
                 system.put("name", sourceSys.get("nom").asText());
 
                 ObjectNode sysStatut = (ObjectNode) sourceSys.get("statut");
-                ObjectNode gauge = (ObjectNode) sysStatut.get("gauge");
-                system.put("value", gauge.get("value").asText() +"/"+gauge.get("maxValue").asText()+gauge.get("uniteMesure").asText());
+                if(sysStatut.get("gauge") instanceof ObjectNode) {
+                    ObjectNode gauge = (ObjectNode) sysStatut.get("gauge");
+                    system.put("value", gauge.get("value").asText() + "/" + gauge.get("maxValue").asText() + gauge.get("uniteMesure").asText());
+                }
                 String systemStatus = sysStatut.get("statut").asText();
                 system.put("stateClass", "STATE_"+ systemStatus);
                 String message = sysStatut.get("message").asText();
@@ -409,4 +411,49 @@ public class Application extends Controller {
     }
 
 
+    public static Result deleteQueue(String environment, String broker, String queue) {
+        try {
+            ActiveMQType activeMQ = ESB.getActiveMQ(environment, broker);
+            if (activeMQ != null) {
+
+                return ok(BrokerUtils.deleteQueue(activeMQ, queue));
+            } else {
+                return notFound();
+            }
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
+        }
+   }
+
+
+   public static Result addQueue(String environment, String broker, String queue) {
+        try {
+            ActiveMQType activeMQ = ESB.getActiveMQ(environment, broker);
+            if (activeMQ != null) {
+
+                return ok(BrokerUtils.addQueue(activeMQ, queue));
+            } else {
+                return notFound();
+            }
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
+        }
+    }
+
+    public static Result updateMemoryLimit(String environment, String broker, String queue, String limit) {
+        try {
+            ActiveMQType activeMQ = ESB.getActiveMQ(environment, broker);
+            if (activeMQ != null) {
+
+                return ok(BrokerUtils.updateMemoryLimit(activeMQ,queue, Long.parseLong(limit)));
+            } else {
+                return notFound();
+            }
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
+        }
+    }
 }
