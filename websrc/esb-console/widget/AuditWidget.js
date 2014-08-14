@@ -33,9 +33,34 @@ define([
                 this.hashChangeHandle=topic.subscribe("/dojo/hashchange", function (changedHash) {
 
                     var hashObj = ioQuery.queryToObject(changedHash);
+
+
+
+
+
                     if (widget.env == hashObj.env && "audit" == hashObj.page && hashObj.q != null && ((widget.currentquery != hashObj.q || widget.currentlimit != hashObj.limit) || hashObj.q == "") ) {
+
+                        var found = false;
+                        for(var i = 0; i < widget.limitNode.options.length; i++) {
+                            if(widget.limitNode.options[i].value == hashObj.limit) {
+                                found = true;
+                            }
+                        }
+                        if(!found) {
+                            alert("Limite non autorisée: "+hashObj.limit+". Nouvelle valeur: "+widget.limitNode.options[0].value);
+                            hashObj.limit =  widget.limitNode.options[0].value;
+                            widget.limitNode.attr("value", widget.limitNode.options[0].value);
+                        }
+
+
+
+
+
                         widget.currentquery = hashObj.q;
                         widget.currentlimit= hashObj.limit;
+
+
+
 
 
 

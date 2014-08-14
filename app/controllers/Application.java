@@ -406,11 +406,7 @@ public class Application extends Controller {
     }
 
     public static Result auditSearch(String environment) throws Exception {
-
         int limit = Integer.valueOf(request().headers().get("limit")[0]);
-
-
-
         return ok(AuditUtils.auditSearch(environment, request().body().asText(), limit));
     }
 

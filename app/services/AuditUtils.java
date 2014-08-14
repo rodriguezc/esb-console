@@ -65,16 +65,19 @@ public class AuditUtils {
 
 
             BasicDBList headers = (BasicDBList) dbObject.get("headers");
-            for (int h=0; h<headers.size(); h++) {
+            if(headers != null) {
+                for (int h = 0; h < headers.size(); h++) {
 
-                BasicDBObject header = (BasicDBObject) headers.get(h);
+                    BasicDBObject header = (BasicDBObject) headers.get(h);
 
-                ObjectNode property = properties.addObject();
-                property.put("name", header.getString("key"));
-                property.put("type", "text");
-                property.put("value", header.getString("value"));
+                    ObjectNode property = properties.addObject();
+                    property.put("name", header.getString("key"));
+                    property.put("type", "text");
+                    property.put("value", header.getString("value"));
 
+                }
             }
+
 
             BasicDBList attachments = (BasicDBList) dbObject.get("attachments");
             if (attachments != null) {
