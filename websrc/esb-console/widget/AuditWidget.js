@@ -48,8 +48,11 @@ define([
                         }
                         if(!found) {
                             alert("Unauthorized limit: "+hashObj.limit+". New value: "+widget.limitNode.options[0].value);
-                            hashObj.limit =  widget.limitNode.options[0].value;
-                            widget.limitNode.attr("value", widget.limitNode.options[0].value);
+                            var newHash = "env=" + hashObj.env + "&page=audit&limit="+widget.limitNode.options[0].value+"&q=" + hashObj.q;
+                            widget.currentquery = null;
+                            widget.currentlimit = null;
+                            hash(newHash);
+                            return;
                         }
 
 
