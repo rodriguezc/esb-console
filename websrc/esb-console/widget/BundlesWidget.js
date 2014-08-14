@@ -11,11 +11,13 @@ define([
     "dojo/hash",
     "gridx/Grid",
     "dojo/store/Memory",
-    "esb-console/utils/http"
+    "esb-console/utils/http",
+    "esb-console/widget/BundleDetailsWidget"
+
 
     ],
     function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-             request, array, topic, hash, Grid, Store, http) {
+             request, array, topic, hash, Grid, Store, http, BundleDetailsWidget) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         env: "DEFAULTENV",
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
@@ -23,6 +25,8 @@ define([
         postCreate: function() {
             this.inherited(arguments);
             var widget = this;
+
+            widget.gridWidget.bundlesWidget = this;
 
             widget.haContentPane.addTabLoadingState();
 
@@ -40,6 +44,25 @@ define([
                     http.handleError(error);
                 }
             );
+        },
+
+        detailProvider: function (grid, rowId, detailNode, renderred) {
+            console.log(this);
+            var rowData = grid.model.byId(rowId).item;
+            console.log(rowData);
+            var bundleDetailsWidget = new BundleDetailsWidget(
+                {
+                    "env" : grid.bundlesWidget.env,
+                    "server" : rowData.serverName,
+                    "bundleId" : rowData.bundleId,
+                    "renderred" : renderred
+
+        }
+            );
+            bundleDetailsWidget.placeAt(detailNode);
+            bundleDetailsWidget.startup();
+            return renderred;
+
         },
 
         resize: function () {

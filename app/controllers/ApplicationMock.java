@@ -140,4 +140,8 @@ public class ApplicationMock extends Controller {
         return ok("Memory limit updated");
     }
 
+    public static Action<AnyContent> bundle(String environment, String server, String bundleId) {
+        return Assets.at("/websrc/json", "bundle.json");
+    }
+
 }

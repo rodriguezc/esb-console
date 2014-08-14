@@ -1,0 +1,14 @@
+{
+
+    "routes": [
+        {
+            "name": "checkAntivirusDirect",
+            "xml": "<route.../>"
+        },
+        {
+            "name": "uneAutreRoute",
+            "xml": "<route.../>"
+        }
+    ]
+
+}

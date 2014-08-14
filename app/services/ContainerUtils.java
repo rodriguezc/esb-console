@@ -1,19 +1,20 @@
 package services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import config.ServiceMixType;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.libs.Json;
+import java.util.List;
 
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
+import javax.management.*;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 import javax.management.remote.JMXConnector;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -47,6 +48,57 @@ public class ContainerUtils {
         return list;
 
     }
+
+
+    public static  List<ObjectName> getBundleCamelContexts(ServiceMixType serviceMix, String bundleId) throws MalformedObjectNameException, IOException {
+
+
+        JMXConnector connector = ESB.getJmxConnector(serviceMix);
+        MBeanServerConnection connection = connector.getMBeanServerConnection();
+
+        Set<ObjectName> contexts = connection.queryNames(new ObjectName("org.apache.camel:context=*,type=context,name=*"), null);
+
+        List<ObjectName> bundleContexts = new ArrayList<ObjectName>();
+        for (ObjectName context : contexts) {
+            Logger.info(context.getCanonicalName());
+
+            String curBundleId = StringUtils.substringBetween(context.getKeyProperty("context"), "/", "-");
+            if(curBundleId.equals(bundleId)) {
+                bundleContexts.add(context);
+            }
+        }
+
+
+
+        return bundleContexts;
+
+    }
+
+
+    public static  List<ObjectName> getBundleRoutes(ServiceMixType serviceMix, String bundleId) throws MalformedObjectNameException, IOException {
+
+
+        JMXConnector connector = ESB.getJmxConnector(serviceMix);
+        MBeanServerConnection connection = connector.getMBeanServerConnection();
+
+        Set<ObjectName> routes = connection.queryNames(new ObjectName("org.apache.camel:context=*,type=routes,name=*"), null);
+
+        List<ObjectName> bundleRoutes = new ArrayList<ObjectName>();
+        for (ObjectName route : routes) {
+            Logger.info(route.getCanonicalName());
+
+            String curBundleId = StringUtils.substringBetween(route.getKeyProperty("context"), "/", "-");
+            if(curBundleId.equals(bundleId)) {
+                bundleRoutes.add(route);
+            }
+        }
+
+
+
+        return bundleRoutes;
+
+    }
+
 
     public static ArrayNode getBundles(ServiceMixType serviceMix) throws Exception {
 
@@ -88,4 +140,28 @@ public class ContainerUtils {
     }
 
 
+    public static ObjectNode getBundleDetails(ServiceMixType serviceMix, String bundleId) throws IOException, MalformedObjectNameException {
+        JMXConnector connector = ESB.getJmxConnector(serviceMix);
+        MBeanServerConnection connection = connector.getMBeanServerConnection();
+
+
+        ObjectNode result = Json.newObject();
+
+
+        List<ObjectName> routes = getBundleRoutes(serviceMix, bundleId);
+        ArrayNode routesRes = result.putArray("routes");
+
+        for(ObjectName route : routes) {
+            String name = route.getKeyProperty("name").replaceAll("\"", "");
+            String xml = null;
+            try {
+                xml = (String)connection.invoke(route, "dumpRouteAsXml", null, null);
+            } catch (Exception e) {
+                xml = "<error>CANNOT DUMP ROUTE</error>";
+            }
+            routesRes.addObject().put("name",name).put("xml", xml);
+        }
+
+        return result;
+    }
 }

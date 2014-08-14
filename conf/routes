@@ -10,6 +10,9 @@ GET           /services/environments                                            
 GET           /services/environments/:environment/brokers                                                      controllers.Application.brokers(environment)
 GET           /services/environments/:environment/queuesstats                                                  controllers.Application.queuesStats(environment)
 GET           /services/environments/:environment/bundles                                                      controllers.Application.bundles(environment)
+
+GET           /services/environments/:environment/bundles/:server/:bundleId                                    controllers.Application.bundle(environment, server, bundleId)
+
 GET           /services/environments/:environment/brokers/:broker/queues                                       controllers.Application.queues(environment, broker)
 GET           /services/environments/:environment/brokers/:broker/queues/:queue                                controllers.Application.queue(environment, broker, queue)
 DELETE        /services/environments/:environment/brokers/:broker/queues/:queue                                controllers.Application.deleteQueue(environment, broker, queue)

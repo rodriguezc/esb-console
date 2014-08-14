@@ -456,4 +456,16 @@ public class Application extends Controller {
             return internalServerError(e.getMessage());
         }
     }
+
+    public static Result bundle(String environment, String server, String bundleId) {
+        ServiceMixType serviceMix = ESB.getServiceMix(environment, server);
+        try {
+            ObjectNode result = ContainerUtils.getBundleDetails(serviceMix, bundleId);
+            return ok(result);
+        } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
+        }
+
+    }
 }

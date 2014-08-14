@@ -6,6 +6,11 @@
     <script type="dojo/require">QuickFilter: "gridx/modules/filter/QuickFilter"</script>
     <script type="dojo/require">VirtualVScroller: "gridx/modules/VirtualVScroller"</script>
 
+    <script type="dojo/require">Dod: 'gridx/modules/Dod'</script>
+    <script type="dojo/require">IndirectSelect: "gridx/modules/IndirectSelect"</script>
+    <script type="dojo/require">RowHeader: "gridx/modules/RowHeader"</script>
+    <script type="dojo/require">ExtendedSelectRow: "gridx/modules/extendedSelect/Row"</script>
+
     <div data-dojo-attach-point="gridStoreWidget" data-dojo-id="store" data-dojo-type="dojo/store/Memory" data-dojo-props="data: []"></div>
 
     <div data-dojo-type="gridx/Grid"
@@ -16,10 +21,19 @@
                                             Sort,
                                             Filter,
                                             QuickFilter,
-                                            VirtualVScroller
+                                            VirtualVScroller,
+                                             {
+                                                moduleClass: Dod,
+                                                defaultShow: false,
+                                                useAnimation: false,
+                                                showExpando: true,
+                                                detailProvider: this.detailProvider
+                                            },
+                                            IndirectSelect,
+                                            RowHeader,
+                                            ExtendedSelectRow,
                                          ],
                               structure: [
-                                            {field: 'name', name: 'name'},
                                             {field: 'symbolicName', name: 'symbolic name'},
                                             {field: 'version', name: 'version'},
                                             {field: 'serverName', name: 'server'},

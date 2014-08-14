@@ -1,0 +1,17 @@
+<div style="width: 100%;height: 100%" data-dojo-attach-point="contentNode">
+
+
+    <div data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick: _onRefreshClick">
+        <span class="dijitIconUndo" style="display: inline-block">&nbsp;</span>
+        <span>Refresh</span>
+    </div>
+
+    <div data-dojo-attach-point="subContentNode">
+        <div data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'routes')">
+            <span style="display: block;font-weight: bold" data-dojo-type="dojox/mvc/Output"
+                  data-dojo-props="value: at('#{this.index}', 'name')"></span>
+            <textarea readonly data-dojo-type="dijit/form/Textarea" data-dojo-props="value: at('#{this.index}', 'xml')"
+                      style="width:100%;height: 100%"></textarea>
+        </div>
+    </div>
+</div>
