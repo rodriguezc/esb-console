@@ -5,36 +5,52 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import config.ActiveMQType;
 import config.EsbType;
+import config.RoleType;
 import config.ServiceMixType;
-import org.apache.activemq.broker.Broker;
+import org.apache.commons.lang3.ArrayUtils;
 import play.Logger;
-import play.api.mvc.Action;
-import play.api.mvc.AnyContent;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import scala.util.parsing.json.JSON;
+import play.mvc.With;
+import security.SecurityROChecker;
+import security.SecurityRWChecker;
 import services.*;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.management.MalformedObjectNameException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Application extends Controller {
 
+
+    @With(SecurityROChecker.class)
     public static Result main() {
 
         ObjectNode env = Json.newObject();
-        env.putObject("application").put("user", "xsicrz").put("version", "1.0").put("environment", "DEV");
+        env.putObject("application").put("user", request().username()).put("version", "1.0").put("environment", "DEV");
         env.putObject("monitoring").put("globalState", "OK").put("Monitoring: All systems are working correctly", "1.0");
 
         ArrayNode environments = env.putArray("environments");
         List<EsbType> esbTypes = ESB.config.getEnvironnement();
 
         for (EsbType esbType : esbTypes) {
+
+            boolean currentUserHasRoleForEnv = false;
+
+            String[] roles = (String[]) ctx().args.get("userRoles");
+
+            for(RoleType role : esbType.getRole()) {
+                if(ArrayUtils.contains(roles, role.getName())) {
+                    currentUserHasRoleForEnv = true;
+                    break;
+                }
+            }
+            if(!currentUserHasRoleForEnv) {
+                continue;
+            }
+
 
             ObjectNode node = Json.newObject();
             environments.add(node);
@@ -60,6 +76,7 @@ public class Application extends Controller {
         return ok(env);
     }
 
+    @With(SecurityROChecker.class)
     public static Result environments() {
         ArrayNode env = Json.newObject().arrayNode();
         List<EsbType> esbTypes = ESB.config.getEnvironnement();
@@ -74,6 +91,7 @@ public class Application extends Controller {
         return ok(env);
     }
 
+    @With(SecurityROChecker.class)
     public static Result brokers(String environments) {
 
         ArrayNode brokersList = Json.newObject().arrayNode();
@@ -88,6 +106,7 @@ public class Application extends Controller {
 
     }
 
+    @With(SecurityROChecker.class)
     public static Result queues(String environments, String broker) {
 
         try {
@@ -107,6 +126,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityROChecker.class)
     public static Result queue(String environments, String broker, String queue) {
 
         try {
@@ -135,6 +155,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityROChecker.class)
     public static Result messages(String environments, String broker, String queue) {
 
         try {
@@ -148,6 +169,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityRWChecker.class)
     public static Result paste(String environments, String broker, String queue) {
 
         try {
@@ -164,6 +186,7 @@ public class Application extends Controller {
 
     }
 
+    @With(SecurityRWChecker.class)
     public static Result moveSelection(String environment, String broker, String sourceQueue) {
         JsonNode objectNode = request().body().asJson();
 
@@ -189,6 +212,7 @@ public class Application extends Controller {
     }
 
 
+    @With(SecurityRWChecker.class)
     public static Result moveAll(String environment, String broker, String sourceQueue) {
 
         JsonNode objectNode = request().body().asJson();
@@ -209,6 +233,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityRWChecker.class)
     public static Result purge(String environments, String broker, String queue) {
         try {
             ActiveMQType activeMQ = ESB.getActiveMQ(environments, broker);
@@ -224,6 +249,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityRWChecker.class)
     public static Result delete(String environments, String broker, String queue) {
         try {
 
@@ -236,10 +262,13 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityRWChecker.class)
     public static Result importFile(String environments, String broker, String queue) {
         return play.mvc.Results.TODO;
     }
 
+
+    @With(SecurityROChecker.class)
     public static Result queuesStats(String environments) throws Exception {
 
         List<ActiveMQType> amqList = ESB.getBrokers(environments);
@@ -307,6 +336,7 @@ public class Application extends Controller {
         return ok(list);
     }
 
+    @With(SecurityROChecker.class)
     public static Result bundles(String environments) throws Exception {
         ArrayNode result = Json.newObject().arrayNode();
 
@@ -318,6 +348,7 @@ public class Application extends Controller {
         return ok(result);
     }
 
+    @With(SecurityROChecker.class)
     public static Result monitoringState() throws Exception {
 
         JsonNode source = Json.parse(MonitorClientService.getInstance().getData());
@@ -405,12 +436,14 @@ public class Application extends Controller {
         return ok(node);
     }
 
+    @With(SecurityROChecker.class)
     public static Result auditSearch(String environment) throws Exception {
         int limit = Integer.valueOf(request().headers().get("limit")[0]);
         return ok(AuditUtils.auditSearch(environment, request().body().asText(), limit));
     }
 
 
+    @With(SecurityRWChecker.class)
     public static Result deleteQueue(String environment, String broker, String queue) {
         try {
             ActiveMQType activeMQ = ESB.getActiveMQ(environment, broker);
@@ -427,7 +460,8 @@ public class Application extends Controller {
    }
 
 
-   public static Result addQueue(String environment, String broker, String queue) {
+    @With(SecurityRWChecker.class)
+    public static Result addQueue(String environment, String broker, String queue) {
         try {
             ActiveMQType activeMQ = ESB.getActiveMQ(environment, broker);
             if (activeMQ != null) {
@@ -442,6 +476,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityRWChecker.class)
     public static Result updateMemoryLimit(String environment, String broker, String queue, String limit) {
         try {
             ActiveMQType activeMQ = ESB.getActiveMQ(environment, broker);
@@ -457,6 +492,7 @@ public class Application extends Controller {
         }
     }
 
+    @With(SecurityROChecker.class)
     public static Result bundle(String environment, String server, String bundleId) {
         ServiceMixType serviceMix = ESB.getServiceMix(environment, server);
         try {

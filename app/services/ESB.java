@@ -76,6 +76,18 @@ public class ESB {
         return new ArrayList<ServiceMixType>();
 
     }
+    public static List<RoleType> getRoles(String env) {
+        List<EsbType> esbTypes = config.getEnvironnement();
+        for (EsbType esbType : esbTypes) {
+            if (esbType.getName().equals(env)) {
+                return esbType.getRole();
+            }
+        }
+        return new ArrayList<RoleType>();
+    }
+
+
+
 
 
     public static ServiceMixType getServiceMix(String env, String node) {

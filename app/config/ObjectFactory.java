@@ -62,6 +62,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RoleType }
+     * 
+     */
+    public RoleType createRoleType() {
+        return new RoleType();
+    }
+
+    /**
      * Create an instance of {@link DataSourceType }
      * 
      */

@@ -16,6 +16,7 @@
                 <element name="auditDataSource" type="tns:dataSourceType"/>
                 <element name="cmptDataSource" type="tns:dataSourceType"/>
                 <element name="raft" type="string"/>
+                <element name="role" type="tns:RoleType" minOccurs="1" maxOccurs="unbounded" />
             </sequence>
 		   <attribute name="name" type="string"/>
            <attribute name="label" type="string"/>
@@ -55,5 +56,20 @@
             <element name="password" type="string"/>
         </sequence>
     </complexType>
+
+    <complexType name="RoleType">
+        <sequence>
+            <element name="name" type="string"/>
+            <element name="right" type="tns:RightType"/>
+        </sequence>
+    </complexType>
+
+
+    <simpleType name="RightType">
+        <restriction base="string">
+            <enumeration value="RO"/>
+            <enumeration value="RW"/>
+        </restriction>
+    </simpleType>
 
 </schema>

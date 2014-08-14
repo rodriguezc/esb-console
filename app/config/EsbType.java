@@ -1,9 +1,13 @@
 
 package config;
 
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -21,6 +25,7 @@ import java.util.List;
  *         &lt;element name="auditDataSource" type="{http://www.vd.ch/esb}dataSourceType"/>
  *         &lt;element name="cmptDataSource" type="{http://www.vd.ch/esb}dataSourceType"/>
  *         &lt;element name="raft" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="role" type="{http://www.vd.ch/esb}RoleType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="label" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -37,7 +42,8 @@ import java.util.List;
     "serviceMix",
     "auditDataSource",
     "cmptDataSource",
-    "raft"
+    "raft",
+    "role"
 })
 public class EsbType {
 
@@ -51,6 +57,8 @@ public class EsbType {
     protected DataSourceType cmptDataSource;
     @XmlElement(required = true)
     protected String raft;
+    @XmlElement(required = true)
+    protected List<RoleType> role;
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "label")
@@ -75,8 +83,8 @@ public class EsbType {
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ActiveMQType }
-     *
-     *
+     * 
+     * 
      */
     public List<ActiveMQType> getActivemq() {
         if (activemq == null) {
@@ -87,25 +95,25 @@ public class EsbType {
 
     /**
      * Gets the value of the serviceMix property.
-     *
+     * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the serviceMix property.
-     *
+     * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getServiceMix().add(newItem);
      * </pre>
-     *
-     *
+     * 
+     * 
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ServiceMixType }
-     *
-     *
+     * 
+     * 
      */
     public List<ServiceMixType> getServiceMix() {
         if (serviceMix == null) {
@@ -116,11 +124,11 @@ public class EsbType {
 
     /**
      * Gets the value of the auditDataSource property.
-     *
+     * 
      * @return
      *     possible object is
      *     {@link DataSourceType }
-     *
+     *     
      */
     public DataSourceType getAuditDataSource() {
         return auditDataSource;
@@ -128,11 +136,11 @@ public class EsbType {
 
     /**
      * Sets the value of the auditDataSource property.
-     *
+     * 
      * @param value
      *     allowed object is
      *     {@link DataSourceType }
-     *
+     *     
      */
     public void setAuditDataSource(DataSourceType value) {
         this.auditDataSource = value;
@@ -140,11 +148,11 @@ public class EsbType {
 
     /**
      * Gets the value of the cmptDataSource property.
-     *
+     * 
      * @return
      *     possible object is
      *     {@link DataSourceType }
-     *
+     *     
      */
     public DataSourceType getCmptDataSource() {
         return cmptDataSource;
@@ -152,7 +160,7 @@ public class EsbType {
 
     /**
      * Sets the value of the cmptDataSource property.
-     *
+     * 
      * @param value
      *     allowed object is
      *     {@link DataSourceType }
@@ -184,6 +192,35 @@ public class EsbType {
      */
     public void setRaft(String value) {
         this.raft = value;
+    }
+
+    /**
+     * Gets the value of the role property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the role property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getRole().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link RoleType }
+     * 
+     * 
+     */
+    public List<RoleType> getRole() {
+        if (role == null) {
+            role = new ArrayList<RoleType>();
+        }
+        return this.role;
     }
 
     /**
