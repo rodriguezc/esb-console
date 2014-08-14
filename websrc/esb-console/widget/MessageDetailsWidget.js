@@ -10,17 +10,32 @@ define([
     "dojo/_base/array",
     "dojo/store/Memory",
     "dojox/html/entities",
-    "dojo/topic", "dojo/dom-style","dojo/_base/event"
+    "dojo/topic", "dojo/dom-style","dojo/_base/event", "dojo/dom-construct"
 
 
 
-], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle, event) {
+], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request, Dialog, array, Store, entities, topic, domStyle, event, domConstruct) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
 
         postCreate: function () {
             this.inherited(arguments);
+
+            for(var i = 0 ; i< this.detailsProperties.length; i++) {
+                var prop =this.detailsProperties[i];
+                var value = prop.value;
+
+                var isHttpRef = false;
+                if(prop.value != undefined && prop.value != null &&  prop.value.indexOf("http") != -1) {
+                    value = "<a target=\"_blank\" href=\""+prop.value+"\">"+prop.value+"</a>";
+                    isHttpRef = true;
+                }
+                domConstruct.place("<tr><td contenteditable=\"true\">"+prop.name+"</td><td contenteditable=\""+!isHttpRef+"\">"+value+"</td></tr>", this.tablePropsNode);
+            }
+
+
+
         },
 
         detailsState: "default",

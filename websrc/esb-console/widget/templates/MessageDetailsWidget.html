@@ -9,11 +9,8 @@
         </legend>
         <div style="overflow-y: auto;height: 100%;">
             <table style="width: 100%;font-size: 14px;">
-                <tbody  data-dojo-type="dojox/mvc/Repeat" data-dojo-props="exprchar: '#',children: at(this, 'detailsProperties')">
-                <tr>
-                <td style="width: 50%"><span contenteditable="true" data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'name')"></span></td>
-                <td><span contenteditable="true" data-dojo-type="dojox/mvc/Output" data-dojo-props="value: at('#{this.index}', 'value')"></span></td>
-                </tr>
+                <tbody data-dojo-attach-point="tablePropsNode">
+
                 </tbody>
             </table>
         </div>
