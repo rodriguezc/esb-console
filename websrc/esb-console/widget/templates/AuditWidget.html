@@ -51,6 +51,17 @@
 
         <input type="text" data-dojo-type="dijit/form/TextBox"  data-dojo-attach-point="valueCriterion" />
         <button data-dojo-type="dijit/form/Button" type="submit">Add</button>
+
+        <select data-dojo-type="dijit/form/Select" data-dojo-attach-point="limitNode">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+            <option value="2000">2000</option>
+            <option value="20000">20000</option>
+            <option value="50000">50000</option>
+        </select>
+
         <button data-dojo-type="dijit/form/Button" type="button" data-dojo-attach-event="click: onSearch">Search</button>
         <span data-dojo-attach-point="resultLabel">No search</span>
 

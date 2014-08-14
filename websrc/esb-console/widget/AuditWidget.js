@@ -33,8 +33,15 @@ define([
                 this.hashChangeHandle=topic.subscribe("/dojo/hashchange", function (changedHash) {
 
                     var hashObj = ioQuery.queryToObject(changedHash);
-                    if (widget.env == hashObj.env && "audit" == hashObj.page && hashObj.q != null && (widget.currentquery != hashObj.q || hashObj.q == "") ) {
-                        widget.currentquery = hashObj.q
+                    if (widget.env == hashObj.env && "audit" == hashObj.page && hashObj.q != null && ((widget.currentquery != hashObj.q || widget.currentlimit != hashObj.limit) || hashObj.q == "") ) {
+                        widget.currentquery = hashObj.q;
+                        widget.currentlimit= hashObj.limit;
+
+
+
+                        widget.limitNode.attr("value",  hashObj.limit);
+
+
 
                         if (widget.currentquery == "") {
                             widget.requestNode.value = null;
@@ -60,7 +67,7 @@ define([
                             widget.haContentPane.addTabLoadingState();
 
                             request.post("/services/environments/" + widget.env + "/audit", {
-                            headers: {"Content-Type": "text/plain"},
+                            headers: {"Content-Type": "text/plain", "limit" : hashObj.limit},
                                 data:  widget.currentquery, handleAs: "json"}).then(
                                 function (data) {
                                     widget.resultLabel.innerHTML = data.length + ' records displayed. Search took ' + (new Date().getTime() - startTime)+" ms";
@@ -74,6 +81,7 @@ define([
                                 },
                                 function (error) {
                                     widget.haContentPane.removeTabLoadingState();
+                                    widget.resultLabel.innerHTML = "Seach in error";
                                     http.handleError(error);
                                 }
                             );
@@ -139,7 +147,7 @@ define([
 
 
             onSearch: function(event) {
-                var newHash = "env=" + this.env + "&page=audit&q=" + this.requestNode.value;
+                var newHash = "env=" + this.env + "&page=audit&limit="+this.limitNode.value+"&q=" + this.requestNode.value;
 
                 if(decodeURI(hash()) == newHash) {
                     this.currentquery = null;
@@ -156,13 +164,13 @@ define([
                 var widget = this;
                 if (event.ctrlKey) {
                     if (event.keyCode == 88) {
-                        var newHash = "env=" + this.env + "&page=audit&q=";
+                        var newHash = "env=" + this.env + "&page=audit&limit="+this.limitNode.value+"&q=";
                         if(decodeURI(hash()) == newHash) {
                             this.currentquery = null;
                             topic.publish("/dojo/hashchange", newHash);
 
                         } else {
-                            hash("env=" + this.env + "&page=audit&q=");
+                            hash("env=" + this.env + "&page=audit&limit="+this.limitNode.value+"&q=");
                         }
                     } else
                     if (event.keyCode == 13) {

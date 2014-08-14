@@ -31,7 +31,7 @@ import java.util.zip.Inflater;
 public class AuditUtils {
 
 
-    public static ArrayNode auditSearch(String env, String query) throws Exception {
+    public static ArrayNode auditSearch(String env, String query, int limit) throws Exception {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
@@ -45,7 +45,7 @@ public class AuditUtils {
         processQuery(find);
 
         BasicDBObject sort = new BasicDBObject().append("sendDate", -1);
-        DBCursor cursor = collection.find(find).sort(sort).limit(100);
+        DBCursor cursor = collection.find(find).sort(sort).limit(limit);
         while (cursor.hasNext()) {
 
             BasicDBObject dbObject = (BasicDBObject) cursor.next();
