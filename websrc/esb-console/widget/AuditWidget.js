@@ -141,7 +141,7 @@ define([
             onSearch: function(event) {
                 var newHash = "env=" + this.env + "&page=audit&q=" + this.requestNode.value;
 
-                if(hash() == newHash) {
+                if(decodeURI(hash()) == newHash) {
                     this.currentquery = null;
                     topic.publish("/dojo/hashchange", hash());
                 } else {
@@ -157,7 +157,7 @@ define([
                 if (event.ctrlKey) {
                     if (event.keyCode == 88) {
                         var newHash = "env=" + this.env + "&page=audit&q=";
-                        if(hash() == newHash) {
+                        if(decodeURI(hash()) == newHash) {
                             this.currentquery = null;
                             topic.publish("/dojo/hashchange", newHash);
 
