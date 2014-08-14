@@ -47,7 +47,7 @@ define([
                             }
                         }
                         if(!found) {
-                            alert("Limite non autorisée: "+hashObj.limit+". Nouvelle valeur: "+widget.limitNode.options[0].value);
+                            alert("Unauthorized limit: "+hashObj.limit+". New value: "+widget.limitNode.options[0].value);
                             hashObj.limit =  widget.limitNode.options[0].value;
                             widget.limitNode.attr("value", widget.limitNode.options[0].value);
                         }
