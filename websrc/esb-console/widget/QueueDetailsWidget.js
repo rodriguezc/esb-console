@@ -12,12 +12,13 @@ define([
     "dojox/html/entities",
     "dojo/topic","dojo/dom-style",
     "dojo/dom-form",
-    "esb-console/utils/http"
+    "esb-console/utils/http",
+    "dojo/dom-construct"
 
 
 
 ], function (declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin, template, request,
-             Dialog, array, Store, entities, topic, domStyle, domForm, http) {
+             Dialog, array, Store, entities, topic, domStyle, domForm, http, domConstruct) {
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _WidgetsInTemplateMixin], {
         // Note: string would come from dojo/text! plugin in a 'proper' dijit
         templateString: template,
@@ -160,6 +161,19 @@ define([
                 this.set("detailsProperties", msg.properties);
                 this.set("detailsId", msg.id);
                 this.set("detailsText", posId);
+
+                //
+                for(var i = 0 ; i<  msg.properties.length; i++) {
+                    var prop = msg.properties[i];
+                    var value = prop.value;
+
+                    var isHttpRef = false;
+                    if(prop.value != undefined && prop.value != null &&  prop.value.indexOf("http") != -1) {
+                        value = "<a target=\"_blank\" href=\""+prop.value+"\">"+prop.value+"</a>";
+                    }
+                    domConstruct.place("<tr><td  style=\"width: 50%\">"+prop.name+"</td><td>"+value+"</td></tr>", this.tablePropsNode);
+                }
+
 
             }
         },
