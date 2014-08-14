@@ -59,7 +59,9 @@ public class AuditUtils {
                     .put("context", dbObject.getString("context"))
                     .put("businessUser", dbObject.getString("businessUser"))
                     .put("serviceDestination", dbObject.getString("serviceDestination"))
-                    .put("sendDate", sdf.format(dbObject.getDate("sendDate")));
+                    .put("sendDate", sdf.format(dbObject.getDate("sendDate")))
+                    .put("type","TextMessage")
+                    ;
 
             ArrayNode properties = row.putArray("properties");
 
@@ -77,7 +79,22 @@ public class AuditUtils {
 
                 }
             }
-
+            properties.addObject().put("name", "messageId").put("type", "text").put("value", dbObject.getString("messageId"));
+            properties.addObject().put("name", "businessId").put("type", "text").put("value", dbObject.getString("businessId"));
+            if(dbObject.getString("businessCorrelationId") != null) {
+                properties.addObject().put("name", "businessCorrelationId").put("type", "text").put("value", dbObject.getString("businessCorrelationId"));
+            }
+            if(dbObject.getString("processInstanceId") != null) {
+                properties.addObject().put("name", "processInstanceId").put("type", "text").put("value", dbObject.getString("processInstanceId"));
+            }
+            properties.addObject().put("name", "application").put("type", "text").put("value", dbObject.getString("application"));
+            properties.addObject().put("name", "domain").put("type", "text").put("value", dbObject.getString("domain"));
+            properties.addObject().put("name", "context").put("type", "text").put("value", dbObject.getString("context"));
+            if(dbObject.getString("businessUser") != null) {
+                properties.addObject().put("name", "businessUser").put("type", "text").put("value", dbObject.getString("businessUser"));
+            }
+            properties.addObject().put("name", "serviceDestination").put("type", "text").put("value", dbObject.getString("serviceDestination"));
+            properties.addObject().put("name", "sendDate").put("type", "text").put("value",  sdf.format(dbObject.getDate("sendDate")));
 
             BasicDBList attachments = (BasicDBList) dbObject.get("attachments");
             if (attachments != null) {
@@ -87,7 +104,7 @@ public class AuditUtils {
                     ObjectNode property = properties.addObject();
                     BasicDBObject header = (BasicDBObject) attachments.get(t);
 
-                    property.put("name", "attachment[" + header.getString("name") + "]");
+                    property.put("name", "attachment_" + header.getString("name"));
                     property.put("type", "text");
                     property.put("value", header.getString("ref"));
 
