@@ -26,7 +26,10 @@ define(["dojo/_base/declare", "dijit/layout/TabContainer", "dojo/hash", "dojo/to
 
                         array.forEach(widget.getChildren(), function (item, index) {
                             //C'est la même ligne
-                            if (changedHash.indexOf(item.navHash) != -1) {
+                            if (changedHash.indexOf(item.navHash) != -1 && (    changedHash.charAt(item.navHash.length) == "&"
+                                                                             || item.navHash.length == changedHash.length
+                                                                           )
+                              )   {
                                 found = true;
                                 //!already selected?
                                 if (item != widget.selectedChildWidget) {

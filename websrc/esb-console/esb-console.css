@@ -49,19 +49,21 @@ html, body {
 
 
 .STATE_OK {
-    background-color:#AAFF88;
+    background-color:#DFF0D8;
+    font-size: 12px;
 
 }
 
 
 .STATE_WARN {
-    background-color:orange;
+    background-color:#FCF8E3;
+    font-size: 12px;
 
 }
 
 .STATE_KO,.STATE_ERROR {
-    background-color:red;
-
+    background-color:#F2DEDE;
+    font-size: 12px;
 }
 
 .BTN_STATE_OK {

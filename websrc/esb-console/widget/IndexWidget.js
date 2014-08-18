@@ -46,8 +46,10 @@ define([
             pMenuBar.startup();
             var pSubMenu = new DropDownMenu({});
             pMenuBar.addChild(new PopupMenuBarItem({
-                label: "Start",
-                popup: pSubMenu
+                label: "<img src=\"esb-console/images/windows-start.png\" height=\"24px\"/>",
+                popup: pSubMenu,
+                iconClass: "dijitEditorIcon dijitEditorIconCut",
+                style: 'width:24px;height:24px'
             }));
 
             var widget = this;
