@@ -113,14 +113,16 @@ public class AuditUtils {
             }
 
             BasicDBList acks = (BasicDBList) dbObject.get("acks");
-            for (int a=0; a<acks.size(); a++) {
+            if (acks != null) {
+                for (int a = 0; a < acks.size(); a++) {
 
-                BasicDBObject ack = (BasicDBObject) acks.get(a);
+                    BasicDBObject ack = (BasicDBObject) acks.get(a);
 
-                row.put("ackDate", sdf.format(ack.getDate("ackDate")));
-                row.put("ackBy", ack.getString("application"));
-                row.put("ackQueue", ack.getString("destination"));
+                    row.put("ackDate", sdf.format(ack.getDate("ackDate")));
+                    row.put("ackBy", ack.getString("application"));
+                    row.put("ackQueue", ack.getString("destination"));
 
+                }
             }
 
         }
