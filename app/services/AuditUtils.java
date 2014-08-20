@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.zip.Inflater;
 
 /**
@@ -49,6 +50,7 @@ public class AuditUtils {
         while (cursor.hasNext()) {
 
             BasicDBObject dbObject = (BasicDBObject) cursor.next();
+            Date sendDate = dbObject.getDate("sendDate");
             ObjectNode row = result.addObject()
                     .put("id", dbObject.getString("_id"))
                     .put("content", dbObject.getString("body"))
@@ -59,7 +61,7 @@ public class AuditUtils {
                     .put("context", dbObject.getString("context"))
                     .put("businessUser", dbObject.getString("businessUser"))
                     .put("serviceDestination", dbObject.getString("serviceDestination"))
-                    .put("sendDate", sdf.format(dbObject.getDate("sendDate")))
+                    .put("sendDate", sendDate != null ? sdf.format(sendDate) : null)
                     .put("type","TextMessage")
                     ;
 
@@ -94,7 +96,9 @@ public class AuditUtils {
                 properties.addObject().put("name", "businessUser").put("type", "text").put("value", dbObject.getString("businessUser"));
             }
             properties.addObject().put("name", "serviceDestination").put("type", "text").put("value", dbObject.getString("serviceDestination"));
-            properties.addObject().put("name", "sendDate").put("type", "text").put("value",  sdf.format(dbObject.getDate("sendDate")));
+            if(sendDate != null) {
+                properties.addObject().put("name", "sendDate").put("type", "text").put("value",  sdf.format(sendDate));
+            }
 
             BasicDBList attachments = (BasicDBList) dbObject.get("attachments");
             if (attachments != null) {
