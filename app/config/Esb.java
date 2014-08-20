@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="monitoringHostAndPort" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="environnement" type="{http://www.vd.ch/esb}esbType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -31,13 +32,40 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+    "monitoringHostAndPort",
     "environnement"
 })
 @XmlRootElement(name = "esb", namespace = "http://www.vd.ch/esb")
 public class Esb {
 
     @XmlElement(required = true)
+    protected String monitoringHostAndPort;
+    @XmlElement(required = true)
     protected List<EsbType> environnement;
+
+    /**
+     * Gets the value of the monitoringHostAndPort property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMonitoringHostAndPort() {
+        return monitoringHostAndPort;
+    }
+
+    /**
+     * Sets the value of the monitoringHostAndPort property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMonitoringHostAndPort(String value) {
+        this.monitoringHostAndPort = value;
+    }
 
     /**
      * Gets the value of the environnement property.

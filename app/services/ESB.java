@@ -29,6 +29,11 @@ public class ESB {
     private static Map<String, MongoClient> dataSources = new HashMap<>();
     public static Esb config;
 
+
+    public static String getMonitoringHostAndPort() {
+        return config.getMonitoringHostAndPort();
+    }
+
     public static List<ActiveMQType> getBrokers(String env) {
 
         if (env != null) {

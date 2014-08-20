@@ -44,7 +44,7 @@ public class MonitorClientService {
 
     public void initialize() throws Exception {
 
-        URL smartMonitorUrl = new URL("http://esb-tools.etat-de-vaud.ch:8080/services/data.json");
+        URL smartMonitorUrl = new URL("http://"+ ESB.getMonitoringHostAndPort()+"/services/data.json");
 
         HttpURLConnection connection = (HttpURLConnection) smartMonitorUrl.openConnection();
 
@@ -55,7 +55,7 @@ public class MonitorClientService {
 
         WebSocketClient client = new WebSocketClient();
         client.start();
-        URI monitorURI = new URI("ws://esb-tools.etat-de-vaud.ch:8080");
+        URI monitorURI = new URI("ws://"+ESB.getMonitoringHostAndPort());
         client.connect(this, monitorURI);
     }
 

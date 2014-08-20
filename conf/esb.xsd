@@ -4,7 +4,8 @@
 	<element name="esb">
     	<complexType>
 		    <sequence>
-			    <element name="environnement" type="tns:esbType" maxOccurs="unbounded"/>
+                <element name="monitoringHostAndPort" type="string" maxOccurs="1" />
+                <element name="environnement" type="tns:esbType" maxOccurs="unbounded"/>
 			</sequence>
 		</complexType>
 	</element>
