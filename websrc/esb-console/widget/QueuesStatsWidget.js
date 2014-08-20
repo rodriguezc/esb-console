@@ -35,7 +35,7 @@ define([
 
             widget.haContentPane.addTabLoadingState();
 
-            request("/services/environments/"+this.env+"/queuesstats", {handleAs: "json"}).then(
+            request("services/environments/"+this.env+"/queuesstats", {handleAs: "json"}).then(
                 function(data){
                     widget.haContentPane.removeTabLoadingState();
                     var store = new Store({data: data});

@@ -43,7 +43,7 @@ define([
             var messagesGridWidget = this.messagesGridWidget;
             var widget = this;
             widget.haContentPane.addTabLoadingState();
-            request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
+            request("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/"+this.queueName+"/messages", {"handleAs": "json"}).then(
                 function (text) {
                     widget.haContentPane.removeTabLoadingState();
                     messagesGridWidget.model.clearCache();
@@ -78,7 +78,7 @@ define([
             //rafraichir les stats jmx
             widget.haContentPane.addTabLoadingState();
 
-            request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
+            request("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName, {"handleAs": "json"}).then(
                 function (data) {
                     widget.haContentPane.removeTabLoadingState();
                     widget.set("size", data.size);
@@ -112,7 +112,7 @@ define([
 
                     widget.haContentPane.addTabLoadingState();
 
-                    request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages/delete", {
+                    request.post("services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages/delete", {
                         headers: {"Content-Type": "application/json"}, data: JSON.stringify(rowsToDelete)}).then(
                         function (data) {
                             widget.haContentPane.removeTabLoadingState();
@@ -134,7 +134,7 @@ define([
             if(confirm("You are about to purge the queue "+this.queueName)) {
                 var widget = this;
                 widget.haContentPane.addTabLoadingState();
-                request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
+                request("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/all", {"method" : "DELETE"}).then(
                     function (data) {
                         widget.haContentPane.removeTabLoadingState();
                         alert(data);
@@ -203,7 +203,7 @@ define([
                 if(confirm("Your are about to paste "+msgList.length +" msgs to the queue "+widget.queueName)) {
 
                     widget.haContentPane.addTabLoadingState();
-                    request.post("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages",
+                    request.post("services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/messages",
                         {
                             headers: {"Content-Type": "application/json"},
                             data: JSON.stringify(msgList)}).then(
@@ -303,7 +303,7 @@ define([
             var widget = this;
             widget.haContentPane.addTabLoadingState();
 
-            request("/services/environments", {handleAs: "json"}).then(
+            request("services/environments", {handleAs: "json"}).then(
                 function(text) {
                     widget.haContentPane.removeTabLoadingState();
                     widget.envStore.data = text;
@@ -336,7 +336,7 @@ define([
                         var postDataStr = JSON.stringify(postData);
 
                         widget.haContentPane.addTabLoadingState();
-                        request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/selection", {
+                        request.post("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/selection", {
                             headers: {"Content-Type": "application/json"},
                             data: postDataStr}).then(
                             function(text) {
@@ -361,7 +361,7 @@ define([
                     postData.destination = formJson;
                     var postDataStr = JSON.stringify(postData);
                     widget.haContentPane.addTabLoadingState();
-                    request.post("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all",
+                    request.post("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + this.queueName+"/messages/move/all",
                         {
                             headers: {"Content-Type": "application/json"},
                             data: postDataStr}).then(
@@ -390,7 +390,7 @@ define([
             this.filteringSelectBrokerWidget.attr("value", null);
             this.filteringSelectQueueWidget.attr("value", null);
             widget.haContentPane.addTabLoadingState();
-            request("/services/environments/"+env+"/brokers", {handleAs: "json"}).then(
+            request("services/environments/"+env+"/brokers", {handleAs: "json"}).then(
                 function(text) {
                     widget.haContentPane.removeTabLoadingState();
                     brokersStore.data = text;
@@ -414,7 +414,7 @@ define([
                 var brokersStore = this.brokersStore;
                 var widget = this;
                 widget.haContentPane.addTabLoadingState();
-                request("/services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
+                request("services/environments/"+env+"/brokers/"+broker+"/queues", {handleAs: "json"}).then(
                     function(text) {
                         widget.haContentPane.removeTabLoadingState();
                         queuesStore.data = text;
@@ -441,7 +441,7 @@ define([
                 if(confirm("You are about to update memory limit to "+newMemoryLimit+" for the queue "+widget.queueName)) {
                     var widget = this;
                     widget.haContentPane.addTabLoadingState();
-                    request("/services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/memoryLimit/"+newMemoryLimit, {"method" : "POST"}).then(
+                    request("services/environments/" + widget.env + "/brokers/" + widget.broker + "/queues/" + widget.queueName+"/memoryLimit/"+newMemoryLimit, {"method" : "POST"}).then(
                         function (data) {
                             widget.haContentPane.removeTabLoadingState();
                             alert(data);

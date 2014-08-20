@@ -30,7 +30,7 @@ define([
 
             widget.haContentPane.addTabLoadingState();
 
-            request("/services/environments/"+this.env+"/bundles", {handleAs: "json"}).then(
+            request("services/environments/"+this.env+"/bundles", {handleAs: "json"}).then(
                 function(data){
                     var store = new Store({data: data});
                     widget.gridWidget.model.clearCache();

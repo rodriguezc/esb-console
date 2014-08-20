@@ -23,7 +23,7 @@ define([
             var widget = this;
 
 
-            request("/services/environments/" + this.env + "/bundles/" + this.server + "/" + this.bundleId, {handleAs: "json"}).then(
+            request("services/environments/" + this.env + "/bundles/" + this.server + "/" + this.bundleId, {handleAs: "json"}).then(
                 function (data) {
                     widget.set("routes", data.routes);
                     widget.renderred.callback();
@@ -41,7 +41,7 @@ define([
             var widget = this;
 
             dojo.fadeOut({"node": widget.subContentNode}).play();
-            request("/services/environments/" + this.env + "/bundles/" + this.server + "/" + this.bundleId, {handleAs: "json"}).then(
+            request("services/environments/" + this.env + "/bundles/" + this.server + "/" + this.bundleId, {handleAs: "json"}).then(
                 function (data) {
                     widget.set("routes", data.routes);
                     dojo.fadeIn({"node": widget.subContentNode}).play();

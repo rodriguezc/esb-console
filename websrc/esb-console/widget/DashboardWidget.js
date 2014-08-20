@@ -38,7 +38,7 @@ define([
 
         refresh: function() {
             var widget = this;
-            request("/services/monitoring/state", {handleAs: "json"}).then(
+            request("services/monitoring/state", {handleAs: "json"}).then(
                 function (data) {
                     widget.set("lastUpdate", data.lastUpdate);
                     widget.set("environments", data.state);

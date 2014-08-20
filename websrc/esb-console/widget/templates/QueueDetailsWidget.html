@@ -24,7 +24,7 @@
     <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="importDialog" data-dojo-id="importDialog" title="Import messages" style="width:400px;height: 250px">
 
         <form method="post"
-              action="/services/environments/${env}/brokers/${broker}/queues/${queueName}/messages/import"
+              action="services/environments/${env}/brokers/${broker}/queues/${queueName}/messages/import"
               enctype="multipart/form-data"
              >
 
@@ -173,7 +173,7 @@
         </div>
 
              <span data-dojo-id="messagesStore" data-dojo-type="dojo/store/JsonRest"
-                   data-dojo-props="target: '/services/environnements/${env}/brokers/${broker}/queues/${queueName}/messages'">
+                   data-dojo-props="target: 'services/environnements/${env}/brokers/${broker}/queues/${queueName}/messages'">
              </span>
            <span data-dojo-id="messagesOStore" data-dojo-type="dojo/data/ObjectStore"
                  data-dojo-props="objectStore: messagesStore">

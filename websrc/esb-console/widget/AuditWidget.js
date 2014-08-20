@@ -94,7 +94,7 @@ define([
 
                             widget.haContentPane.addTabLoadingState();
 
-                            request.post("/services/environments/" + widget.env + "/audit", {
+                            request.post("services/environments/" + widget.env + "/audit", {
                             headers: {"Content-Type": "text/plain", "limit" : hashObj.limit},
                                 data:  widget.currentquery, handleAs: "json"}).then(
                                 function (data) {
@@ -129,7 +129,7 @@ define([
                             jmsQueue = line.ackQueue;
                         }
 
-                        request("/services/environments/"+widget.env+"/brokers", {handleAs: "json"}).then(
+                        request("services/environments/"+widget.env+"/brokers", {handleAs: "json"}).then(
                             function(text) {
                                 array.forEach(text, function (broker, i) {
                                     hashUtils.changeHashParamByParam("env="+widget.env+"&page=jmsBrowser&broker="+broker.id+"&queue="+jmsQueue);

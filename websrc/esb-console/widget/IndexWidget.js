@@ -54,7 +54,7 @@ define([
 
             var widget = this;
 
-            request("/services/main", {handleAs: "json"}).then(
+            request("services/main", {handleAs: "json"}).then(
                 function (data) {
                     widget.set("mainData", data);
                     widget.set("appUser", data.application.user);
@@ -190,7 +190,7 @@ define([
 
         reloadMonitoringInfo: function () {
             var widget = this;
-            request("/services/monitoring/state", {handleAs: "json"}).then(
+            request("services/monitoring/state", {handleAs: "json"}).then(
                 function (data) {
                     topic.publish("/esb-console/monitoringdata", data);
                 },

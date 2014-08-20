@@ -87,7 +87,7 @@ define([
             var widget = this;
             var queueToAdd = widget.addQueueInput.value;
             widget.haContentPane.addTabLoadingState();
-            request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + queueToAdd, {"method" : "PUT"}).then(
+            request("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + queueToAdd, {"method" : "PUT"}).then(
                 function (data) {
                     widget.haContentPane.removeTabLoadingState();
                     alert(data);
@@ -115,7 +115,7 @@ define([
             if (confirm("You are about to delete " + selectedQueue)) {
 
                 widget.haContentPane.addTabLoadingState();
-                request("/services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + selectedQueue, {"method" : "DELETE"}).then(
+                request("services/environments/" + this.env + "/brokers/" + this.broker + "/queues/" + selectedQueue, {"method" : "DELETE"}).then(
                     function (data) {
                         widget.haContentPane.removeTabLoadingState();
                         alert(data);
@@ -144,7 +144,7 @@ define([
             widget.haContentPane.addTabLoadingState();
 
 
-            request("/services/environments/" + env + "/brokers/" + broker + "/queues", {handleAs: "json"}).then(
+            request("services/environments/" + env + "/brokers/" + broker + "/queues", {handleAs: "json"}).then(
                 function (text) {
 
                     var filterValue = queueGridWidget.quickFilter.quickFilter.textBox.get("value");
