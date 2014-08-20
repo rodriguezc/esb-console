@@ -37,6 +37,7 @@ var profile = (function () {
             "layouts/all": {
                 include: [
                     "esb-console/widget/AuditWidget",
+                    "esb-console/widget/BundleDetailsWidget",
                     "esb-console/widget/BundlesWidget",
                     "esb-console/widget/DashboardWidget",
                     "esb-console/widget/DetailsWidget",
@@ -125,6 +126,13 @@ var profile = (function () {
                     "dijit/form/FilteringSelect",
                     "dijit/form/ComboBox",
                     "dijit/form/Textarea",
+
+                    "dijit/form/Form",
+                    "dijit/form/Select",
+                    "dijit/form/_FormSelectWidget",
+                    "dijit/MenuSeparator",
+                    "dojo/data/util/sorter",
+
                     "gridx/Grid",
                     "gridx/modules/Filter",
                     "gridx/core/model/extensions/ClientFilter",
@@ -140,6 +148,7 @@ var profile = (function () {
                     "dojox/gesture/Base",
                     "gridx/modules/VirtualVScroller",
                     "gridx/modules/IndirectSelect",
+                    "gridx/modules/Menu",
                     "gridx/modules/RowHeader",
                     "gridx/modules/extendedSelect/Row",
                     "gridx/modules/extendedSelect/_RowCellBase",
@@ -148,7 +157,10 @@ var profile = (function () {
                     "gridx/modules/AutoScroll",
                     "gridx/modules/Dod",
                     "dojo/store/JsonRest",
-                    "dojo/data/ObjectStore"
+                    "dojo/data/ObjectStore",
+                    "dojo/date/locale"
+
+
                 ],
                 customBase: true
             }
