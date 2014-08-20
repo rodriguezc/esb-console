@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="url" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="user" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="database" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,7 +33,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "dataSourceType", namespace = "http://www.vd.ch/esb", propOrder = {
     "url",
     "user",
-    "password"
+    "password",
+    "database"
 })
 public class DataSourceType {
 
@@ -42,6 +44,8 @@ public class DataSourceType {
     protected String user;
     @XmlElement(required = true)
     protected String password;
+    @XmlElement(required = true)
+    protected String database;
 
     /**
      * Gets the value of the url property.
@@ -113,6 +117,30 @@ public class DataSourceType {
      */
     public void setPassword(String value) {
         this.password = value;
+    }
+
+    /**
+     * Gets the value of the database property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDatabase() {
+        return database;
+    }
+
+    /**
+     * Sets the value of the database property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDatabase(String value) {
+        this.database = value;
     }
 
 }

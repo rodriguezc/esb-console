@@ -54,6 +54,7 @@
             <element name="url" type="string"/>
             <element name="user" type="string"/>
             <element name="password" type="string"/>
+            <element name="database" type="string"/>
         </sequence>
     </complexType>
 

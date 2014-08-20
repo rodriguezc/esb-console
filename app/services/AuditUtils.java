@@ -38,7 +38,7 @@ public class AuditUtils {
         ArrayNode result = Json.newObject().arrayNode();
 
         MongoClient mongoClient = ESB.getDataSource(env);
-        DB audit = mongoClient.getDB("audit");
+        DB audit = mongoClient.getDB(ESB.getAuditDatabase(env));
         DBCollection collection = audit.getCollection("message");
 
         BasicDBObject find = (BasicDBObject) JSON.parse(query);
@@ -51,7 +51,7 @@ public class AuditUtils {
             BasicDBObject dbObject = (BasicDBObject) cursor.next();
             ObjectNode row = result.addObject()
                     .put("id", dbObject.getString("_id"))
-                    .put("content", getBody(dbObject))
+                    .put("content", dbObject.getString("body"))
                     .put("businessId", dbObject.getString("businessId"))
                     .put("processInstanceId", dbObject.getString("processInstanceId"))
                     .put("application", dbObject.getString("application"))
@@ -110,7 +110,6 @@ public class AuditUtils {
 
                 }
 
-
             }
 
             BasicDBList acks = (BasicDBList) dbObject.get("acks");
@@ -127,48 +126,6 @@ public class AuditUtils {
         }
 
         return result;
-
-    }
-
-    private static String getBody(BasicDBObject dbObject) throws Exception {
-
-        byte[] body = (byte[]) dbObject.get("body");
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
-        ByteArrayOutputStream nice = new ByteArrayOutputStream();
-
-        boolean compressed = dbObject.getBoolean("bodyCompressed");
-        if (compressed) {
-
-            Inflater inflater = new Inflater();
-            inflater.setInput(body);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            while(!inflater.finished()) {
-                int byteCount = inflater.inflate(buffer);
-                out.write(buffer, 0, byteCount);
-            }
-            inflater.end();
-
-            try {
-                transformer.transform(new StreamSource(new ByteArrayInputStream(out.toByteArray())), new StreamResult(nice));
-            } catch (TransformerException e) {
-                return new String(body, "UTF-8");
-            }
-
-        } else {
-
-            try {
-                transformer.transform(new StreamSource(new ByteArrayInputStream(body)), new StreamResult(nice));
-            } catch (TransformerException e) {
-                return new String(body, "UTF-8");
-            }
-        }
-
-        return new String(nice.toByteArray(), "UTF-8");
 
     }
 

@@ -138,6 +138,7 @@ public class ESB {
 
                     MongoClient mongoClient = new MongoClient(esbType.getAuditDataSource().getUrl());
                     dataSources.put(env, mongoClient);
+                    break;
                 }
             }
 
@@ -145,6 +146,36 @@ public class ESB {
 
         return dataSources.get(env);
 
+    }
+
+    public static String getAuditDatabase(String env) throws Exception {
+
+        String database = null;
+
+        List<EsbType> esbTypes = ESB.config.getEnvironnement();
+        for (EsbType esbType : esbTypes) {
+            if (esbType.getName().equals(env)) {
+                database = esbType.getAuditDataSource().getDatabase();
+                break;
+            }
+        }
+
+        return database;
+    }
+
+    public static String getCmptDatabase(String env) throws Exception {
+
+        String database = null;
+
+        List<EsbType> esbTypes = ESB.config.getEnvironnement();
+        for (EsbType esbType : esbTypes) {
+            if (esbType.getName().equals(env)) {
+                database = esbType.getCmptDataSource().getDatabase();
+                break;
+            }
+        }
+
+        return database;
     }
 
     public static JMXConnector getJmxConnector(JmxServerType jmxServer) throws MalformedURLException, IOException {
