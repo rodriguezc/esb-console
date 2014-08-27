@@ -64,9 +64,9 @@ define([
                     widget.set("monitoringInfo", data.monitoring.info);
 
                     if ("OK" == data.monitoring.state) {
-                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_OK.png';
+                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_Green.png';
                     } else if ("WARN" == data.monitoring.state) {
-                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_ORANGE.png';
+                        widget.globalMonitorState.src = 'esb-console/images/32/Circle_Orange.png';
                     }
                     else if ("KO" == data.monitoring.state) {
                         widget.globalMonitorState.src = 'esb-console/images/32/Circle_Red.png';

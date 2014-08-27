@@ -30,7 +30,19 @@ public class Application extends Controller {
 
         ObjectNode env = Json.newObject();
         env.putObject("application").put("user", request().username()).put("version", "1.0").put("environment", "DEV");
-        env.putObject("monitoring").put("globalState", "OK").put("Monitoring: All systems are working correctly", "1.0");
+
+        try {
+            ObjectNode monitoringState = _monitoringState();
+            ObjectNode monitoringNode =env.putObject("monitoring");
+            monitoringNode.put("state", monitoringState.get("globalState"));
+            monitoringNode.put("info", monitoringState.get("globalInfo"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ObjectNode monitoringNode =env.putObject("monitoring");
+            monitoringNode.put("state", "KO");
+            monitoringNode.put("info", "Monitoring: unavailable");
+        }
 
         ArrayNode environments = env.putArray("environments");
         List<EsbType> esbTypes = ESB.config.getEnvironnement();
@@ -350,6 +362,11 @@ public class Application extends Controller {
 
     @With(SecurityROChecker.class)
     public static Result monitoringState() throws Exception {
+        return ok(_monitoringState());
+    }
+
+    private static ObjectNode _monitoringState() throws Exception {
+
 
         JsonNode source = Json.parse(MonitorClientService.getInstance().getData());
 
@@ -433,8 +450,10 @@ public class Application extends Controller {
         } else  {
             node.put("globalInfo", nbSystemsInError + " systems in error, "+ nbSystemsInWarn +" systems in warn.");
         }
-        return ok(node);
+        return node;
     }
+
+
 
     @With(SecurityROChecker.class)
     public static Result auditSearch(String environment) throws Exception {
